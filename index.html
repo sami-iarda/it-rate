@@ -479,153 +479,22 @@
             </div>
           </section>
  
-          <section class="card">
-            <h2>4. تقييم تقنية المعلومات - Technical Assessment</h2>
-            <div class="section-note">
-              يتم تقييم هذا المحور من ناحية قابلية التنفيذ، المعمارية، الموارد، التكامل، المخاطر، وقابلية الدعم. إجمالي الوزن: 40%.
-            </div>
- 
-            <div class="form-grid">
-              <div>
-                <label class="required">نتيجة قابلية التطبيق الفنية</label>
-                <select name="technicalApplicability" id="technicalApplicability" required onchange="calculateAll()">
-                  <option value="">اختر</option>
-                  <option value="applicable">قابل للتطبيق</option>
-                  <option value="conditional">قابل للتطبيق مع متطلبات إضافية</option>
-                  <option value="not_now">غير قابل للتطبيق حالياً</option>
-                  <option value="not_applicable">غير قابل للتطبيق</option>
-                </select>
-              </div>
-              <div>
-                <label>التصنيف الفني</label>
-                <select name="technicalType">
-                  <option value="update">متطلب جديد / تعديل على نظام قائم</option>
-                  <option value="new">نظام جديد</option>
-                  <option value="integration">تكامل مع أنظمة أخرى</option>
-                  <option value="reports">لوحة مؤشرات / تقارير</option>
-                  <option value="refactor">تحسين بنية أو أداء</option>
-                </select>
-              </div>
-            </div>
- 
-            <table class="criteria-table" style="margin-top:14px">
-              <thead>
-                <tr>
-                  <th>المعيار</th>
-                  <th>الوزن</th>
-                  <th>التقييم</th>
-                  <th>النتيجة</th>
-                </tr>
-              </thead>
-              <tbody id="technicalCriteria"></tbody>
-            </table>
-          </section>
- 
-          <section class="card">
-            <h2>5. التقدير الزمني والمخاطر</h2>
-            <div class="form-grid">
-              <div>
-                <label>مدة التحليل المتوقعة</label>
-                <input type="text" name="analysisDuration" placeholder="مثال: 5 أيام عمل" />
-              </div>
-              <div>
-                <label>مدة التطوير المتوقعة</label>
-                <input type="text" name="developmentDuration" placeholder="مثال: 15 يوم عمل" />
-              </div>
-              <div>
-                <label>مدة الاختبار المتوقعة</label>
-                <input type="text" name="testingDuration" placeholder="مثال: 5 أيام عمل" />
-              </div>
-              <div>
-                <label>مدة الإطلاق المتوقعة</label>
-                <input type="text" name="launchDuration" placeholder="مثال: يومان" />
-              </div>
-            </div>
- 
-            <div class="form-grid one" style="margin-top:14px">
-              <div>
-                <label>المخاطر المحتملة</label>
-                <textarea name="risks" placeholder="مخاطر تقنية، تشغيلية، أمنية، تكاملية، أو متعلقة بجودة البيانات"></textarea>
-              </div>
-              <div>
-                <label>المتطلبات الإضافية</label>
-                <textarea name="additionalRequirements" placeholder="بيانات، موافقات، تراخيص، موارد، تكاملات، أو متطلبات أمنية"></textarea>
-              </div>
-            </div>
-          </section>
- 
-          <section class="card">
-            <h2>6. القرار والتوصية النهائية</h2>
-            <div class="form-grid">
-              <div>
-                <label>القرار النهائي المقترح</label>
-                <select name="finalDecision" id="finalDecision">
-                  <option>يحدد تلقائياً بعد التقييم</option>
-                  <option>مقبول للتنفيذ</option>
-                  <option>مقبول بشروط</option>
-                  <option>مؤجل</option>
-                  <option>مرفوض</option>
-                </select>
-              </div>
-              <div>
-                <label>المسار المقترح للتنفيذ</label>
-                <select name="executionPath">
-                  <option value="inline">ضمن خطة المشاريع التقنية</option>
-                  <option value="fast">مسار سريع</option>
-                  <option value="refactor">تحسين على نظام قائم</option>
-                  <option value="separate">طلب توريد / ميزانية مستقل</option>
-                  <option value="return">يعاد للإدارة الطالبة للاستكمال</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-grid one" style="margin-top:14px">
-              <div>
-                <label>ملاحظات تقنية المعلومات</label>
-                <textarea name="itNotes" placeholder="التوصية، القيود، الملاحظات الفنية، أو المتطلبات قبل التنفيذ"></textarea>
-              </div>
-              <div>
-                <label>اعتماد / اسم المقيم</label>
-                <input type="text" name="reviewerName" placeholder="اسم مسؤول التقييم" />
-              </div>
-            </div>
-          </section>
         </main>
  
         <aside class="card sticky">
-          <h2>نتيجة التقييم</h2>
+          <h2>ملخص التقييم الذاتي</h2>
           <div class="result-box">
-            <p class="score"><span id="totalScore">0</span><small> / 100</small></p>
-            <div id="priorityBadge" class="badge rejected">لم يتم التقييم</div>
+            <p class="score"><span id="businessScore">0</span><small> / 60</small></p>
+            <div class="badge high">تقييم الإدارة الطالبة</div>
           </div>
- 
+
           <div class="summary-line">
-            <span>تقييم الأعمال</span>
-            <span><span id="businessScore">0</span> / 60</span>
+            <span>عدد معايير الأعمال</span>
+            <span>7</span>
           </div>
-          <div class="summary-line">
-            <span>التقييم الفني</span>
-            <span><span id="technicalScore">0</span> / 40</span>
-          </div>
-          <div class="summary-line">
-            <span>قابلية التطبيق</span>
-            <span id="applicabilityText">غير محدد</span>
-          </div>
-          <div class="summary-line">
-            <span>القرار المقترح</span>
-            <span id="decisionText">غير محدد</span>
-          </div>
- 
-          <div class="decision" id="decisionBox">
-            يتم احتساب القرار بعد تعبئة التقييم واختيار قابلية التطبيق.
-          </div>
- 
+
           <div class="section-note" style="margin-top:14px">
-            التصنيف:
-            <br>85–100: حرجة / استراتيجية
-            <br>75–84: عالية
-            <br>60–74: متوسطة
-            <br>45–59: منخفضة
-            <br>أقل من 45: غير مؤهل حالياً
+            هذا التقييم الذاتي للإدارة الطالبة (محور الأعمال فقط). تتولى إدارة تقنية المعلومات استكمال التقييم الفني، والتقدير الزمني، واحتساب الأولوية والقرار النهائي.
           </div>
         </aside>
       </div>
@@ -636,178 +505,15 @@
     </div>
   </div>
  
+  <script src="eval-core.js"></script>
   <script>
-    const businessCriteria = [
-      { id:"b1", title:"وضوح الهدف والمشكلة الحالية", weight:10, desc:"وضوح الحاجة التشغيلية والمشكلة الحالية والأثر المتوقع." },
-      { id:"b2", title:"المواءمة مع الأهداف الاستراتيجية", weight:10, desc:"ارتباط الطلب بأهداف الهيئة والتحول الرقمي والحوكمة." },
-      { id:"b3", title:"الأثر التشغيلي على أعمال الهيئة", weight:12, desc:"تحسين سير العمل وتقليل الجهد اليدوي وتسريع الإجراءات." },
-      { id:"b4", title:"حجم المستفيدين ونطاق التأثير", weight:8, desc:"نطاق التأثير: إدارة واحدة، عدة إدارات، أو مستوى الهيئة." },
-      { id:"b5", title:"درجة الإلحاح والاحتياج", weight:8, desc:"مدى الحاجة العاجلة ووجود أثر مباشر في حال التأخير." },
-      { id:"b6", title:"جاهزية الإدارة الطالبة", weight:6, desc:"وجود مالك مشروع وفريق داعم واستعداد للتحليل والاختبار." },
-      { id:"b7", title:"اكتمال آلية العمل والوثائق الداعمة", weight:6, desc:"توفر As-Is و To-Be والنماذج والتقارير والبيانات." }
-    ];
- 
-    const technicalCriteria = [
-      { id:"t1", title:"قابلية التطبيق الفنية", weight:8, desc:"إمكانية التنفيذ بالحلول التقنية المتاحة دون تعارض جوهري." },
-      { id:"t2", title:"التوافق مع المعمارية التقنية", weight:6, desc:"التوافق مع الأنظمة والمنصات والبنية التقنية المعتمدة." },
-      { id:"t3", title:"جاهزية البنية التحتية والموارد", weight:6, desc:"توفر الخوادم وقواعد البيانات والشبكات والتراخيص والموارد." },
-      { id:"t4", title:"جاهزية البيانات والتكامل", weight:6, desc:"توفر البيانات ومصادرها وإمكانية التكامل مع الأنظمة الأخرى." },
-      { id:"t5", title:"مستوى التعقيد والمدة المتوقعة", weight:5, desc:"تعقيد التحليل والتطوير والاختبار مقارنة بالأثر المتوقع." },
-      { id:"t6", title:"مخاطر الأمن السيبراني وحماية البيانات", weight:5, desc:"المخاطر المتعلقة بالصلاحيات والبيانات الحساسة والامتثال." },
-      { id:"t7", title:"الاستدامة وقابلية التشغيل والدعم", weight:4, desc:"سهولة الصيانة والدعم والتطوير المستقبلي وقياس الأداء." }
-    ];
- 
-    function scoreOptions(){
-      return `
-        <option value="0">اختر</option>
-        <option value="5">5 - ممتاز / مكتمل</option>
-        <option value="4">4 - جيد جداً</option>
-        <option value="3">3 - متوسط</option>
-        <option value="2">2 - ضعيف</option>
-        <option value="1">1 - غير واضح</option>
-      `;
-    }
- 
-    function renderCriteria(targetId, items){
-      const target = document.getElementById(targetId);
-      target.innerHTML = items.map(item => `
-        <tr>
-          <td>
-            <div class="criterion-title">${item.title}</div>
-            <div class="criterion-desc">${item.desc}</div>
-          </td>
-          <td class="weight">${item.weight}%</td>
-          <td>
-            <select class="score-select" name="${item.id}" data-weight="${item.weight}" onchange="calculateAll()">
-              ${scoreOptions()}
-            </select>
-          </td>
-          <td class="weighted-score" id="${item.id}_weighted">0</td>
-        </tr>
-      `).join("");
-    }
- 
-    function weightedValue(score, weight){
-      return (Number(score || 0) / 5) * Number(weight || 0);
-    }
- 
-    function calculateGroup(items){
-      let total = 0;
-      items.forEach(item => {
-        const field = document.querySelector(`[name="${item.id}"]`);
-        const value = weightedValue(field.value, item.weight);
-        total += value;
-        document.getElementById(`${item.id}_weighted`).textContent = value.toFixed(1);
-      });
-      return total;
-    }
- 
-    function getApplicabilityText(value){
-      const map = {
-        applicable:"قابل للتطبيق",
-        conditional:"قابل للتطبيق مع متطلبات إضافية",
-        not_now:"غير قابل للتطبيق حالياً",
-        not_applicable:"غير قابل للتطبيق"
-      };
-      return map[value] || "غير محدد";
-    }
- 
-    function classifyPriority(total, applicability){
-      if(applicability === "not_applicable"){
-        return {
-          label:"مرفوض",
-          cls:"rejected",
-          decision:"مرفوض",
-          message:"الطلب غير قابل للتطبيق فنياً أو تنظيمياً، ويوصى برفضه أو إعادة تصميمه من الأساس."
-        };
-      }
- 
-      if(applicability === "not_now"){
-        return {
-          label:"مؤجل",
-          cls:"low",
-          decision:"مؤجل",
-          message:"الطلب غير قابل للتطبيق حالياً بسبب نقص متطلبات أو موارد أو جاهزية، ويوصى بتأجيله مع تحديد المتطلبات الناقصة."
-        };
-      }
- 
-      if(total >= 85){
-        return {
-          label:"أولوية حرجة / استراتيجية",
-          cls:"critical",
-          decision: applicability === "conditional" ? "مقبول بشروط" : "مقبول للتنفيذ",
-          message:"الطلب ذو أولوية عالية جداً، ويوصى بإدراجه في مسار سريع أو خطة تنفيذ قريبة."
-        };
-      }
- 
-      if(total >= 75){
-        return {
-          label:"أولوية عالية",
-          cls:"high",
-          decision: applicability === "conditional" ? "مقبول بشروط" : "مقبول للتنفيذ",
-          message:"الطلب مهم وله أثر واضح، ويوصى بإدراجه ضمن خطة التنفيذ القريبة."
-        };
-      }
- 
-      if(total >= 60){
-        return {
-          label:"أولوية متوسطة",
-          cls:"medium",
-          decision: applicability === "conditional" ? "مقبول بشروط" : "يدرج في خطة المشاريع حسب الموارد",
-          message:"الطلب مناسب للجدولة ضمن خطة المشاريع الدورية حسب توفر الموارد."
-        };
-      }
- 
-      if(total >= 45){
-        return {
-          label:"أولوية منخفضة",
-          cls:"low",
-          decision:"مؤجل",
-          message:"الطلب تحسيني أو محدود الأثر، ويمكن تأجيله أو دمجه مع طلبات مشابهة."
-        };
-      }
- 
-      return {
-        label:"غير مؤهل حالياً",
-        cls:"rejected",
-        decision:"يعاد للإدارة الطالبة للاستكمال",
-        message:"الطلب يحتاج إلى استكمال المبررات أو الوثائق أو إعادة توضيح الأثر قبل اعتماده."
-      };
-    }
- 
+    // Applicant side computes the business self-assessment only.
+    // The full technical evaluation and final priority are done by IT in the admin dashboard.
     function calculateAll(){
-      const business = calculateGroup(businessCriteria);
-      const technical = calculateGroup(technicalCriteria);
-      const total = business + technical;
-      const applicability = document.getElementById("technicalApplicability").value;
-      const result = classifyPriority(total, applicability);
- 
+      const business = calculateGroup(BUSINESS_CRITERIA);
       document.getElementById("businessScore").textContent = business.toFixed(1);
-      document.getElementById("technicalScore").textContent = technical.toFixed(1);
-      document.getElementById("totalScore").textContent = total.toFixed(1);
- 
-      const badge = document.getElementById("priorityBadge");
-      badge.textContent = result.label;
-      badge.className = `badge ${result.cls}`;
- 
-      document.getElementById("applicabilityText").textContent = getApplicabilityText(applicability);
-      document.getElementById("decisionText").textContent = result.decision;
-      document.getElementById("decisionBox").textContent = result.message;
- 
-      const finalDecision = document.getElementById("finalDecision");
-      if(finalDecision.value === "يحدد تلقائياً بعد التقييم" || finalDecision.dataset.auto === "true"){
-        finalDecision.dataset.auto = "true";
-        const options = Array.from(finalDecision.options).map(o => o.value);
-        if(options.includes(result.decision)) finalDecision.value = result.decision;
-      }
- 
       return {
-        businessScore: Number(business.toFixed(2)),
-        technicalScore: Number(technical.toFixed(2)),
-        totalScore: Number(total.toFixed(2)),
-        priority: result.label,
-        suggestedDecision: result.decision,
-        applicability: getApplicabilityText(applicability)
+        businessScore: Number(business.toFixed(2))
       };
     }
  
@@ -917,8 +623,7 @@
       }
     }
  
-    renderCriteria("businessCriteria", businessCriteria);
-    renderCriteria("technicalCriteria", technicalCriteria);
+    renderCriteria("businessCriteria", BUSINESS_CRITERIA);
     calculateAll();
   </script>
 </body>

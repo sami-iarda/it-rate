@@ -131,16 +131,17 @@ if (!empty($_FILES['attachments']) && is_array($_FILES['attachments']['name'])) 
 // ---- 6. Send the two emails ----
 function makeMailer(): PHPMailer {
     $mail = new PHPMailer(true);
-    // --- SMTP settings: adjust to your provider ---
+    // --- MailHog (local SMTP catcher) settings ---
+    // MailHog listens on 127.0.0.1:1025, requires no auth and no encryption.
+    // View captured mail at http://127.0.0.1:8025
     $mail->isSMTP();
-    $mail->Host       = '127.0.0.1';   // e.g. smtp.gmail.com
-    $mail->SMTPAuth   = true;
-    $mail->Username   = null;      // SMTP username
-    $mail->Password   = null;  // SMTP password / app password
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // or ENCRYPTION_SMTPS
-    $mail->Port       = 1025;                   // 465 for SMTPS
+    $mail->Host       = '127.0.0.1';
+    $mail->Port       = 1025;
+    $mail->SMTPAuth   = false;
+    $mail->SMTPSecure = '';            // no TLS/SSL for MailHog
+    $mail->SMTPAutoTLS = false;        // don't auto-upgrade to TLS
     $mail->CharSet    = 'UTF-8';
-    $mail->setFrom('no-reply@example.com', 'IT Project Requests');
+    $mail->setFrom('no-reply@iarda.gov.sa', 'IT Project Requests');
     return $mail;
 }
 
