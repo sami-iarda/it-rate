@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بيانات الطلب من الإدارة الطالبة</title>
+  <style>
+    :root{
+      --primary:#0f3f3a;
+      --primary-2:#17665d;
+      --gold:#b68a2c;
+      --bg:#f6f8f7;
+      --card:#ffffff;
+      --muted:#667085;
+      --line:#d9e1df;
+      --soft:#eef5f3;
+      --danger:#b42318;
+      --warning:#b54708;
+      --success:#067647;
+      --text:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.7;
+    }
+    .page{max-width:1180px;margin:24px auto;padding:0 18px 40px}
+    .hero{
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff;border-radius:24px;padding:30px 34px;
+      box-shadow:0 14px 32px rgba(15,63,58,.18);
+      position:relative;overflow:hidden;
+    }
+    .hero:before{
+      content:"";position:absolute;inset:auto -80px -95px auto;
+      width:280px;height:280px;background:rgba(255,255,255,.08);border-radius:50%;
+    }
+    .hero h1{margin:0 0 8px;font-size:31px;font-weight:900}
+    .hero p{margin:0;color:#dbe9e6;font-size:15px}
+    .workflow{display:grid;grid-template-columns:1fr 42px 1fr 42px 1fr;gap:10px;align-items:center;margin:18px 0}
+    .step{
+      background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:14px;text-align:center;font-weight:900;color:var(--primary);
+      box-shadow:0 6px 14px rgba(16,24,40,.04)
+    }
+    .step.active{background:var(--primary);color:#fff}
+    .arrow{font-size:26px;text-align:center;color:var(--gold);font-weight:900}
+    .grid{display:grid;gap:18px;margin-top:18px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:18px;
+      padding:20px;box-shadow:0 8px 20px rgba(16,24,40,.05);
+    }
+    .card h2{
+      margin:0 0 14px;font-size:20px;color:var(--primary);
+      display:flex;align-items:center;gap:8px;
+    }
+    .section-note{color:var(--muted);font-size:13px;margin-top:-8px;margin-bottom:14px}
+    label{display:block;font-weight:800;font-size:13px;margin-bottom:6px;color:#344054}
+    input,select,textarea{
+      width:100%;border:1px solid #cfd8d6;border-radius:12px;
+      padding:10px 12px;font:inherit;background:#fff;color:var(--text);outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--primary-2);box-shadow:0 0 0 3px rgba(23,102,93,.12)}
+    textarea{min-height:105px;resize:vertical}
+    .field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .checks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .check-line{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;
+      font-weight:800;font-size:14px;
+    }
+    .check-line select{max-width:110px}
+    .upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .upload{
+      border:1.8px dashed #c5d3d0;border-radius:16px;background:#fbfdfc;
+      padding:16px;min-height:96px;text-align:center;color:var(--primary);font-weight:900;
+    }
+    .upload small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      border-radius:999px;padding:7px 12px;font-weight:900;font-size:13px;border:1px solid transparent;
+    }
+    .badge.success{background:#ecfdf3;color:var(--success);border-color:#abefc6}
+    .badge.warning{background:#fffaeb;color:var(--warning);border-color:#fedf89}
+    .badge.danger{background:#fef3f2;color:var(--danger);border-color:#fecdca}
+    .decision-box{border:2px dashed #c5d3d0;border-radius:18px;padding:18px;background:#fbfdfc}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    button{
+      border:none;background:var(--primary);color:#fff;padding:12px 20px;
+      border-radius:13px;font:inherit;font-weight:900;cursor:pointer
+    }
+    button.secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+    button.gold{background:var(--gold)}
+    .small{font-size:12px;color:var(--muted);margin-top:10px}
+    @media(max-width:900px){
+      .grid.two,.grid.three,.field-grid,.checks,.upload-grid,.workflow{grid-template-columns:1fr}
+      .arrow{display:none}
+    }
+    @media print{
+      body{background:#fff}.page{max-width:none;margin:0;padding:0}.card,.hero{box-shadow:none}.actions{display:none}
+      .hero{border-radius:0}.card{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <h1>بيانات الطلب من الإدارة الطالبة</h1>
+    <p>صفحة موحدة لتقديم طلب مشروع تطويري برمجي، تشمل بيانات الطلب، التقييم الأولي من الإدارة الطالبة، شروط الجاهزية، والإقرار.</p>
+  </section>
+
+  <section class="workflow">
+    <div class="step active">1. بيانات الطلب من الإدارة الطالبة</div>
+    <div class="arrow">←</div>
+    <div class="step">2. تقييم تقنية المعلومات</div>
+    <div class="arrow">←</div>
+    <div class="step">3. النتيجة والقرار</div>
+  </section>
+
+  <section class="card">
+    <h2>بيانات الطلب</h2>
+    <div class="field-grid">
+      <div><label>اسم المشروع / الطلب</label><input id="projectName" placeholder="مثال: منصة إدارة المركبات"></div>
+      <div><label>الإدارة الطالبة</label><input id="department" placeholder="مثال: الموارد البشرية"></div>
+      <div><label>تاريخ التقديم</label><input id="submitDate" type="date"></div>
+      <div><label>مقدم الطلب</label><input id="requester" placeholder="اسم مقدم الطلب"></div>
+      <div>
+        <label>نوع الطلب</label>
+        <select id="requestType">
+          <option>نظام جديد</option>
+          <option>متطلب جديد على نظام قائم</option>
+          <option>تعديل على نظام قائم</option>
+          <option>تكامل مع نظام آخر</option>
+          <option>تقرير / لوحة مؤشرات</option>
+        </select>
+      </div>
+      <div><label>اسم المقيم / مالك الأعمال</label><input id="businessOwner" placeholder="Business Owner"></div>
+      <div><label>رقم مرجعي للطلب</label><input id="reference" readonly></div>
+      <div><label>تاريخ التقييم الأولي</label><input id="businessDate" type="date"></div>
+    </div>
+  </section>
+
+  <section class="grid two">
+    <div class="card">
+      <h2>تقييم الإدارة الطالبة</h2>
+      <p class="section-note">يتم تعبئة هذه البيانات من صاحب الطلب قبل الإحالة إلى تقنية المعلومات.</p>
+      <label>وصف الهدف من الطلب</label>
+      <textarea id="requestDescription" placeholder="توضيح المشكلة الحالية أو الحاجة التشغيلية أو أثر المشروع من تنفيذ الطلب..."></textarea>
+      <label style="margin-top:12px">الدوافع من الأهداف أو القيمة المضافة</label>
+      <textarea id="projectGoals" placeholder="مدى ارتباط الطلب بفكرة أو أهداف استراتيجية للجهة..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>جاهزية الإدارة المعنية</h2>
+      <div class="checks">
+        <div class="check-line"><span>وجود مالك أعمال محدد</span><select id="ownerReady"><option>نعم</option><option>لا</option></select></div>
+        <div class="check-line"><span>توفر فريق داعم من الإدارة</span><select id="teamReady"><option>نعم</option><option>لا</option></select></div>
+        <div class="check-line"><span>الاستعداد للمشاركة في التحليل</span><select id="analysisReady"><option>نعم</option><option>لا</option></select></div>
+        <div class="check-line"><span>الاستعداد للاختبار والتشغيل</span><select id="testingReady"><option>نعم</option><option>لا</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>آلية العمل والوثائق الداعمة</h2>
+    <div class="grid two" style="margin-top:0">
+      <div>
+        <label>الإجراءات الحالية (As-Is)</label>
+        <textarea id="asIs" placeholder="شرح الإجراءات الحالية قبل تنفيذ المشروع..."></textarea>
+      </div>
+      <div>
+        <label>الإجراءات المستهدفة (To-Be)</label>
+        <textarea id="toBe" placeholder="شرح الإجراءات المستهدفة بعد تنفيذ المشروع..."></textarea>
+      </div>
+    </div>
+
+    <div class="upload-grid" style="margin-top:14px">
+      <div class="upload">إرفاق As-Is <input type="file"><small>اختياري</small></div>
+      <div class="upload">إرفاق To-Be <input type="file"><small>اختياري</small></div>
+      <div class="upload">النماذج والتقارير <input type="file"><small>اختياري</small></div>
+      <div class="upload">السياسات واللوائح <input type="file"><small>اختياري</small></div>
+      <div class="upload">ملفات داعمة أخرى <input type="file"><small>اختياري</small></div>
+      <div class="upload">أي وثائق ذات صلة <input type="file"><small>اختياري</small></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>شروط الجاهزية قبل بدء التقييم</h2>
+    <p class="section-note">إذا كانت إجابة أي بند «لا»، يُعاد الطلب لاستكمال المتطلبات قبل المتابعة للتقييم النقاطي.</p>
+    <div class="checks" id="gateChecks">
+      <div class="check-line"><span>إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة</span><select><option>نعم</option><option>لا</option></select></div>
+      <div class="check-line"><span>وجود مالك أعمال (Business Owner) محدد</span><select><option>نعم</option><option>لا</option></select></div>
+      <div class="check-line"><span>توفر فريق داعم من الإدارة الطالبة</span><select><option>نعم</option><option>لا</option></select></div>
+      <div class="check-line"><span>الاستعداد للمشاركة في التحليل والاختبار والتشغيل</span><select><option>نعم</option><option>لا</option></select></div>
+      <div class="check-line"><span>توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)</span><select><option>نعم</option><option>لا</option></select></div>
+      <div class="check-line"><span>توفر النماذج والتقارير والوثائق الداعمة ذات العلاقة</span><select><option>نعم</option><option>لا</option></select></div>
+    </div>
+  </section>
+
+  <section class="grid two">
+    <div class="card decision-box">
+      <h2>نتيجة البوابة</h2>
+      <div style="margin-bottom:14px"><span id="gateBadge" class="badge success">مكتمل — جاهز للتقييم</span></div>
+      <label>ملاحظات الإدارة الطالبة</label>
+      <textarea id="requestNotes" placeholder="أي ملاحظات إضافية..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>الإقرار بصحة المعلومات</h2>
+      <div class="check-line">
+        <span>أقر رسميًا من الإدارة الطالبة بصحة واكتمال البيانات المقدمة</span>
+        <select id="acknowledgement"><option>نعم</option><option>لا</option></select>
+      </div>
+      <div class="actions">
+        <button class="gold" onclick="submitRequest()">إرسال الطلب إلى تقنية المعلومات</button>
+        <button class="secondary" onclick="saveDraft()">حفظ كمسودة</button>
+        <button onclick="window.print()">طباعة / حفظ PDF</button>
+      </div>
+      <p class="small">عند الإرسال، يتم حفظ بيانات الطلب وربطها تلقائيًا مع صفحة تقييم تقنية المعلومات.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  function generateReference(){
+    const current = document.getElementById('reference').value;
+    if(!current){
+      const y = new Date().getFullYear();
+      const r = Math.floor(Math.random()*9000)+1000;
+      document.getElementById('reference').value = 'REQ-' + y + '-' + r;
+    }
+  }
+
+  function gateStatus(){
+    const selects = [...document.querySelectorAll('#gateChecks select'), document.getElementById('acknowledgement')];
+    const complete = selects.every(s => s.value === 'نعم');
+    const badge = document.getElementById('gateBadge');
+    if(complete){
+      badge.className = 'badge success';
+      badge.textContent = 'مكتمل — جاهز للتقييم';
+    }else{
+      badge.className = 'badge danger';
+      badge.textContent = 'غير مكتمل — يعاد لاستكمال المتطلبات';
+    }
+    return complete;
+  }
+
+  function collectData(status){
+    return {
+      projectName: document.getElementById('projectName').value,
+      department: document.getElementById('department').value,
+      submitDate: document.getElementById('submitDate').value,
+      requester: document.getElementById('requester').value,
+      requestType: document.getElementById('requestType').value,
+      businessOwner: document.getElementById('businessOwner').value,
+      reference: document.getElementById('reference').value,
+      businessDate: document.getElementById('businessDate').value,
+      requestDescription: document.getElementById('requestDescription').value,
+      projectGoals: document.getElementById('projectGoals').value,
+      asIs: document.getElementById('asIs').value,
+      toBe: document.getElementById('toBe').value,
+      requestNotes: document.getElementById('requestNotes').value,
+      gateComplete: gateStatus(),
+      status: status
+    };
+  }
+
+  function saveDraft(){
+    generateReference();
+    localStorage.setItem('projectRequestData', JSON.stringify(collectData('مسودة')));
+    alert('تم حفظ الطلب كمسودة.');
+  }
+
+  function submitRequest(){
+    generateReference();
+    const data = collectData('محال إلى تقنية المعلومات');
+    localStorage.setItem('projectRequestData', JSON.stringify(data));
+    alert('تم إرسال الطلب إلى تقنية المعلومات.');
+    window.location.href = 'it_technical_assessment_modern.html';
+  }
+
+  document.querySelectorAll('select,input,textarea').forEach(el=>el.addEventListener('input', gateStatus));
+  document.getElementById('submitDate').valueAsDate = new Date();
+  document.getElementById('businessDate').valueAsDate = new Date();
+  generateReference();
+  gateStatus();
+</script>
+</body>
+</html>
