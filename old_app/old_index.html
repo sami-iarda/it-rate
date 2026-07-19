@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نموذج تقييم طلبات المشاريع التقنية</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#667085;
+      --line:#e6eaf0;
+      --primary:#14532d;
+      --primary-2:#166534;
+      --soft:#eef7f0;
+      --warning:#fff7ed;
+      --danger:#fff1f2;
+      --info:#eff6ff;
+      --shadow:0 12px 30px rgba(16,24,40,.08);
+      --radius:18px;
+    }
+ 
+    *{box-sizing:border-box}
+ 
+    body{
+      margin:0;
+      font-family: "Tahoma", "Arial", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.8;
+    }
+ 
+    .container{
+      width:min(1180px, calc(100% - 32px));
+      margin:30px auto;
+    }
+ 
+    .hero{
+      background:linear-gradient(135deg, #123c2c 0%, #1f7a47 100%);
+      color:white;
+      padding:28px;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+ 
+    .hero h1{
+      margin:0 0 8px;
+      font-size:26px;
+    }
+ 
+    .hero p{
+      margin:0;
+      opacity:.92;
+      font-size:15px;
+    }
+ 
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:16px 0 24px;
+    }
+ 
+    button{
+      border:0;
+      padding:11px 16px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      font-family:inherit;
+      transition:.15s ease;
+    }
+ 
+    button.primary{
+      background:var(--primary);
+      color:#fff;
+    }
+ 
+    button.secondary{
+      background:#fff;
+      color:var(--primary);
+      border:1px solid var(--line);
+    }
+ 
+    button.danger{
+      background:#fff1f2;
+      color:#9f1239;
+      border:1px solid #ffe4e6;
+    }
+ 
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(16,24,40,.08);
+    }
+ 
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+ 
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:18px;
+    }
+ 
+    .card h2{
+      margin:0 0 14px;
+      font-size:20px;
+      color:var(--primary);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+ 
+    .section-note{
+      background:var(--soft);
+      border:1px solid #d9eadc;
+      padding:12px 14px;
+      border-radius:14px;
+      color:#24563b;
+      margin-bottom:16px;
+      font-size:14px;
+    }
+ 
+    .form-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+ 
+    .form-grid.one{
+      grid-template-columns:1fr;
+    }
+ 
+    label{
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+      font-size:14px;
+    }
+ 
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-family:inherit;
+      font-size:14px;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+ 
+    textarea{min-height:92px; resize:vertical}
+ 
+    input:focus, select:focus, textarea:focus{
+      border-color:#86b897;
+      box-shadow:0 0 0 4px rgba(22,101,52,.08);
+    }
+ 
+    .criteria-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 10px;
+    }
+ 
+    .criteria-table th{
+      color:var(--muted);
+      text-align:right;
+      font-size:13px;
+      padding:0 10px;
+      white-space:nowrap;
+    }
+ 
+    .criteria-table td{
+      background:#fbfcfe;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:10px;
+      vertical-align:middle;
+    }
+ 
+    .criteria-table td:first-child{
+      border-right:1px solid var(--line);
+      border-radius:0 14px 14px 0;
+    }
+ 
+    .criteria-table td:last-child{
+      border-left:1px solid var(--line);
+      border-radius:14px 0 0 14px;
+    }
+ 
+    .criterion-title{
+      font-weight:700;
+      font-size:14px;
+    }
+ 
+    .criterion-desc{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:2px;
+    }
+ 
+    .weight{
+      font-weight:800;
+      color:var(--primary);
+      white-space:nowrap;
+    }
+ 
+    .score-select{
+      min-width:92px;
+    }
+ 
+    .weighted-score{
+      font-weight:800;
+      text-align:center;
+      color:#101828;
+      min-width:62px;
+    }
+ 
+    .sticky{
+      position:sticky;
+      top:18px;
+    }
+ 
+    .result-box{
+      border-radius:18px;
+      padding:18px;
+      background:#f8fafc;
+      border:1px solid var(--line);
+      margin-bottom:14px;
+    }
+ 
+    .score{
+      font-size:42px;
+      font-weight:900;
+      color:var(--primary);
+      margin:0;
+      line-height:1.2;
+    }
+ 
+    .score small{
+      font-size:16px;
+      color:var(--muted);
+    }
+ 
+    .badge{
+      display:inline-flex;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      margin-top:8px;
+    }
+ 
+    .badge.critical{background:#ecfdf3;color:#05603a}
+    .badge.high{background:#eff6ff;color:#1d4ed8}
+    .badge.medium{background:#fff7ed;color:#c2410c}
+    .badge.low{background:#f8fafc;color:#475467}
+    .badge.rejected{background:#fff1f2;color:#be123c}
+ 
+    .summary-line{
+      display:flex;
+      justify-content:space-between;
+      border-bottom:1px dashed var(--line);
+      padding:9px 0;
+      gap:10px;
+      font-size:14px;
+    }
+ 
+    .summary-line:last-child{border-bottom:0}
+ 
+    .summary-line span:last-child{
+      font-weight:800;
+      text-align:left;
+    }
+ 
+    .checklist{
+      display:grid;
+      gap:9px;
+    }
+ 
+    .check-item{
+      display:flex;
+      gap:9px;
+      align-items:flex-start;
+      background:#fbfcfe;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:9px 10px;
+    }
+ 
+    .check-item input{
+      width:auto;
+      margin-top:7px;
+    }
+ 
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+    }
+ 
+    .required::after{
+      content:" *";
+      color:#dc2626;
+    }
+ 
+    .decision{
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcfe;
+      font-weight:700;
+      margin-top:10px;
+    }
+ 
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      margin:26px 0 10px;
+    }
+ 
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .sticky{position:static}
+      .form-grid{grid-template-columns:1fr}
+    }
+ 
+    @media print{
+      body{background:white}
+      .toolbar{display:none}
+      .grid{display:block}
+      .sticky{position:static}
+      .card, .hero{box-shadow:none; break-inside:avoid}
+      .container{width:100%; margin:0}
+      button{display:none}
+    }
+  </style>
+</head>
+ 
+<body>
+  <div class="container">
+    <header class="hero">
+      <h1>نموذج تقييم طلبات المشاريع التقنية والتطويرية البرمجية</h1>
+      <p>نموذج إلكتروني لتقييم طلبات الإدارات وفق معايير الأعمال والتقنية، واحتساب أولوية التنفيذ تلقائيًا من 100.</p>
+    </header>
+ 
+    <div class="toolbar">
+      <!--<button class="primary" onclick="calculateAll()">احتساب النتيجة</button>
+      <button class="secondary" onclick="saveDraft()">حفظ مسودة محليًا</button>
+      <button class="secondary" onclick="loadDraft()">استرجاع المسودة</button>
+      <button class="secondary" onclick="exportJSON()">تصدير JSON</button>
+      <button class="secondary" onclick="window.print()">طباعة / حفظ PDF</button>-->
+      <button class="danger" onclick="resetForm()">مسح النموذج</button>
+      <button type="button" class="primary" onclick="submitRequest()">إرسال الطلب</button>
+    </div>
+ 
+    <form id="projectForm">
+      <div class="grid">
+        <main>
+          <section class="card">
+            <h2>1. بيانات الطلب الأساسية</h2>
+            <div class="form-grid one">
+              <div>
+                <label class="required">اسم المشروع / الطلب</label>
+                <input type="text" name="projectName" required placeholder="مثال: منصة إدارة طلبات الإدارة العامة..." />
+              </div>
+            </div>
+            <div class="form-grid" style="margin-top:14px">
+              <div>
+                <label class="required">الإدارة الطالبة</label>
+                <input type="text" name="requestingDepartment" required placeholder="اسم الإدارة" />
+              </div>
+              <div>
+                <label class="required">مالك المشروع من الإدارة</label>
+                <input type="text" name="businessOwner" required placeholder="المسؤول المعتمد من الإدارة" />
+              </div>
+            </div>
+            <div class="form-grid" style="margin-top:14px">
+              <div>
+                <label class="required">مقدم الطلب</label>
+                <input type="text" name="requesterName" required placeholder="اسم مقدم الطلب" />
+              </div>
+              <div>
+                <label class="required">البريد الالكتروني</label>
+                <input type="email" name="requesterEmail" required placeholder="البريد الالكتروني" />
+              </div>
+              <div>
+                <label class="required">نوع الطلب</label>
+                <select name="requestType" required>
+                  <option value="">اختر</option>
+                  <option value="new">متطلب جديد / طلب تعديل</option>
+                  <option value="develop">تطوير نظام قائم</option>
+                  <option value="automate">أتمتة - نظام جديد</option>
+                  <option value="integration">تكامل بين أنظمة</option>
+                  <option value="uiux">تحسين تجربة مستخدم</option>
+                  <option value="reports">تقرير / لوحة مؤشرات</option>
+                </select>
+              </div>
+              <div>
+                <label>الأنظمة المتأثرة</label>
+                <input type="text" name="affectedSystems" placeholder="مثال: العرمة، GLPI، Power BI..." />
+              </div>
+              <div>
+                <label>تاريخ تقديم الطلب</label>
+                <input type="date" name="requestDate" />
+              </div>
+              <div>
+                <label>مستوى السرية</label>
+                <select name="confidentiality">
+                  <option value="general">عام داخلي</option>
+                  <option value="restricted">مقيد</option>
+                  <option value="secret">سري</option>
+                </select>
+              </div>
+            </div>
+ 
+            <div class="form-grid one" style="margin-top:14px">
+              <div>
+                <label class="required">وصف الطلب</label>
+                <textarea name="requestDescription" required placeholder="وصف تفصيلي للطلب ونطاقه المتوقع"></textarea>
+              </div>
+              <div>
+                <label class="required">المشكلة الحالية أو الحاجة التشغيلية</label>
+                <textarea name="currentProblem" required placeholder="ما المشكلة الحالية؟ وما الأثر الناتج عن استمرار الوضع الحالي؟"></textarea>
+              </div>
+              <div>
+                <label>الأثر المتوقع بعد التنفيذ</label>
+                <textarea name="expectedImpact" placeholder="مثال: تقليل زمن الإجراء، رفع الشفافية، تحسين جودة البيانات..."></textarea>
+              </div>
+            </div>
+          </section>
+ 
+          <section class="card">
+            <h2>2. تقييم الإدارة الطالبة - Business Assessment</h2>
+            <div class="section-note">
+              يتم تقييم هذا المحور بناءً على الحاجة، الأثر، المواءمة الاستراتيجية، وجاهزية الإدارة الطالبة. إجمالي الوزن: 60%.
+            </div>
+            <table class="criteria-table">
+              <thead>
+                <tr>
+                  <th>المعيار</th>
+                  <th>الوزن</th>
+                  <th>التقييم</th>
+                  <th>النتيجة</th>
+                </tr>
+              </thead>
+              <tbody id="businessCriteria"></tbody>
+            </table>
+          </section>
+ 
+          <section class="card">
+            <h2>3. جاهزية الوثائق وآلية العمل</h2>
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" name="doc_as_is"> توفر إجراءات الوضع الحالي As-Is</label>
+              <label class="check-item"><input type="checkbox" name="doc_to_be"> توفر إجراءات الوضع المستهدف To-Be</label>
+              <label class="check-item"><input type="checkbox" name="doc_forms"> توفر النماذج والتقارير ذات العلاقة</label>
+              <label class="check-item"><input type="checkbox" name="doc_data"> توفر بيانات أو عينات بيانات داعمة</label>
+              <label class="check-item"><input type="checkbox" name="doc_approval"> إقرار الإدارة الطالبة بدقة المعلومات</label>
+            </div>
+            <div class="hint">ملاحظة: عدم توفر الوثائق لا يمنع التقييم، لكنه يؤثر على قرار القبول النهائي.</div>
+
+            <div class="form-grid one" style="margin-top:14px">
+              <div>
+                <label>المرفقات (اختياري)</label>
+                <input type="file" name="attachments" id="attachments" multiple />
+                <div class="hint">يمكن إرفاق أكثر من ملف: مستندات، صور، بيانات...</div>
+              </div>
+            </div>
+          </section>
+ 
+        </main>
+ 
+        <aside class="card sticky">
+          <h2>ملخص التقييم الذاتي</h2>
+          <div class="result-box">
+            <p class="score"><span id="businessScore">0</span><small> / 60</small></p>
+            <div class="badge high">تقييم الإدارة الطالبة</div>
+          </div>
+
+          <div class="summary-line">
+            <span>عدد معايير الأعمال</span>
+            <span>7</span>
+          </div>
+
+          <div class="section-note" style="margin-top:14px">
+            هذا التقييم الذاتي للإدارة الطالبة (محور الأعمال فقط). تتولى إدارة تقنية المعلومات استكمال التقييم الفني، والتقدير الزمني، واحتساب الأولوية والقرار النهائي.
+          </div>
+        </aside>
+      </div>
+    </form>
+ 
+    <div class="footer">
+      نموذج داخلي لتقييم وترتيب أولوية طلبات المشاريع التقنية - قابل للتعديل والربط مع أنظمة الهيئة الداخلية.
+    </div>
+  </div>
+ 
+  <script src="eval-core.js"></script>
+  <script>
+    // Applicant side computes the business self-assessment only.
+    // The full technical evaluation and final priority are done by IT in the admin dashboard.
+    function calculateAll(){
+      const business = calculateGroup(BUSINESS_CRITERIA);
+      document.getElementById("businessScore").textContent = business.toFixed(1);
+      return {
+        businessScore: Number(business.toFixed(2))
+      };
+    }
+ 
+    function formToObject(){
+      const form = document.getElementById("projectForm");
+      const data = {};
+      new FormData(form).forEach((value, key) => {
+        data[key] = value;
+      });
+ 
+      form.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+        data[chk.name] = chk.checked;
+      });
+ 
+      data.evaluationResult = calculateAll();
+      data.exportedAt = new Date().toISOString();
+      return data;
+    }
+ 
+    function saveDraft(){
+      localStorage.setItem("technicalProjectRequestDraft", JSON.stringify(formToObject()));
+      alert("تم حفظ المسودة على هذا الجهاز.");
+    }
+ 
+    function loadDraft(){
+      const saved = localStorage.getItem("technicalProjectRequestDraft");
+      if(!saved){
+        alert("لا توجد مسودة محفوظة.");
+        return;
+      }
+ 
+      const data = JSON.parse(saved);
+      const form = document.getElementById("projectForm");
+ 
+      Object.keys(data).forEach(key => {
+        const field = form.elements[key];
+        if(!field) return;
+ 
+        if(field.type === "checkbox"){
+          field.checked = !!data[key];
+        } else {
+          field.value = data[key];
+        }
+      });
+ 
+      calculateAll();
+      alert("تم استرجاع المسودة.");
+    }
+ 
+    function exportJSON(){
+      const data = formToObject();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeName = (data.projectName || "technical-project-request").replace(/[^\u0600-\u06FF\w\-]+/g, "_");
+      a.href = url;
+      a.download = `${safeName}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+ 
+    function resetForm(){
+      if(confirm("هل تريد مسح جميع البيانات؟")){
+        document.getElementById("projectForm").reset();
+        document.querySelectorAll(".weighted-score").forEach(el => el.textContent = "0");
+        calculateAll();
+      }
+    }
+
+    async function submitRequest(){
+      const form = document.getElementById("projectForm");
+
+      // native required-field check
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
+
+      const data = formToObject();               // your existing serializer
+      const fd = new FormData();
+      fd.append("payload", JSON.stringify(data)); // all form data as JSON
+
+      // attach uploaded files
+      const fileInput = document.getElementById("attachments");
+      if(fileInput && fileInput.files){
+        for(const f of fileInput.files){
+          fd.append("attachments[]", f, f.name);
+        }
+      }
+
+      try{
+        const res = await fetch("submit.php", { method:"POST", body: fd });
+        const result = await res.json();
+        if(result.ok){
+          let msg = "تم إرسال الطلب وحفظه بنجاح.\nالمسار: " + result.path;
+          if(result.emailErrors && result.emailErrors.length){
+            msg += "\n\nملاحظة: تم الحفظ لكن تعذّر إرسال بعض الإيميلات.";
+          }
+          alert(msg);
+        } else {
+          alert("خطأ: " + (result.error || "تعذّر إرسال الطلب"));
+        }
+      } catch(err){
+        alert("تعذّر الاتصال بالخادم: " + err.message);
+      }
+    }
+ 
+    renderCriteria("businessCriteria", BUSINESS_CRITERIA);
+    calculateAll();
+  </script>
+</body>
+</html>

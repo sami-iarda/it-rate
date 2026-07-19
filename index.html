@@ -1,630 +1,1730 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>نموذج تقييم طلبات المشاريع التقنية</title>
-  <style>
-    :root{
-      --bg:#f6f8fb;
-      --card:#ffffff;
-      --text:#172033;
-      --muted:#667085;
-      --line:#e6eaf0;
-      --primary:#14532d;
-      --primary-2:#166534;
-      --soft:#eef7f0;
-      --warning:#fff7ed;
-      --danger:#fff1f2;
-      --info:#eff6ff;
-      --shadow:0 12px 30px rgba(16,24,40,.08);
-      --radius:18px;
-    }
- 
-    *{box-sizing:border-box}
- 
-    body{
-      margin:0;
-      font-family: "Tahoma", "Arial", sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.8;
-    }
- 
-    .container{
-      width:min(1180px, calc(100% - 32px));
-      margin:30px auto;
-    }
- 
-    .hero{
-      background:linear-gradient(135deg, #123c2c 0%, #1f7a47 100%);
-      color:white;
-      padding:28px;
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      margin-bottom:18px;
-    }
- 
-    .hero h1{
-      margin:0 0 8px;
-      font-size:26px;
-    }
- 
-    .hero p{
-      margin:0;
-      opacity:.92;
-      font-size:15px;
-    }
- 
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:16px 0 24px;
-    }
- 
-    button{
-      border:0;
-      padding:11px 16px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:700;
-      font-family:inherit;
-      transition:.15s ease;
-    }
- 
-    button.primary{
-      background:var(--primary);
-      color:#fff;
-    }
- 
-    button.secondary{
-      background:#fff;
-      color:var(--primary);
-      border:1px solid var(--line);
-    }
- 
-    button.danger{
-      background:#fff1f2;
-      color:#9f1239;
-      border:1px solid #ffe4e6;
-    }
- 
-    button:hover{
-      transform:translateY(-1px);
-      box-shadow:0 8px 18px rgba(16,24,40,.08);
-    }
- 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:18px;
-      align-items:start;
-    }
- 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      margin-bottom:18px;
-    }
- 
-    .card h2{
-      margin:0 0 14px;
-      font-size:20px;
-      color:var(--primary);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
- 
-    .section-note{
-      background:var(--soft);
-      border:1px solid #d9eadc;
-      padding:12px 14px;
-      border-radius:14px;
-      color:#24563b;
-      margin-bottom:16px;
-      font-size:14px;
-    }
- 
-    .form-grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:14px;
-    }
- 
-    .form-grid.one{
-      grid-template-columns:1fr;
-    }
- 
-    label{
-      display:block;
-      font-weight:700;
-      margin-bottom:6px;
-      font-size:14px;
-    }
- 
-    input, select, textarea{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 12px;
-      font-family:inherit;
-      font-size:14px;
-      background:#fff;
-      color:var(--text);
-      outline:none;
-    }
- 
-    textarea{min-height:92px; resize:vertical}
- 
-    input:focus, select:focus, textarea:focus{
-      border-color:#86b897;
-      box-shadow:0 0 0 4px rgba(22,101,52,.08);
-    }
- 
-    .criteria-table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0 10px;
-    }
- 
-    .criteria-table th{
-      color:var(--muted);
-      text-align:right;
-      font-size:13px;
-      padding:0 10px;
-      white-space:nowrap;
-    }
- 
-    .criteria-table td{
-      background:#fbfcfe;
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-      padding:10px;
-      vertical-align:middle;
-    }
- 
-    .criteria-table td:first-child{
-      border-right:1px solid var(--line);
-      border-radius:0 14px 14px 0;
-    }
- 
-    .criteria-table td:last-child{
-      border-left:1px solid var(--line);
-      border-radius:14px 0 0 14px;
-    }
- 
-    .criterion-title{
-      font-weight:700;
-      font-size:14px;
-    }
- 
-    .criterion-desc{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:2px;
-    }
- 
-    .weight{
-      font-weight:800;
-      color:var(--primary);
-      white-space:nowrap;
-    }
- 
-    .score-select{
-      min-width:92px;
-    }
- 
-    .weighted-score{
-      font-weight:800;
-      text-align:center;
-      color:#101828;
-      min-width:62px;
-    }
- 
-    .sticky{
-      position:sticky;
-      top:18px;
-    }
- 
-    .result-box{
-      border-radius:18px;
-      padding:18px;
-      background:#f8fafc;
-      border:1px solid var(--line);
-      margin-bottom:14px;
-    }
- 
-    .score{
-      font-size:42px;
-      font-weight:900;
-      color:var(--primary);
-      margin:0;
-      line-height:1.2;
-    }
- 
-    .score small{
-      font-size:16px;
-      color:var(--muted);
-    }
- 
-    .badge{
-      display:inline-flex;
-      padding:7px 12px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:13px;
-      margin-top:8px;
-    }
- 
-    .badge.critical{background:#ecfdf3;color:#05603a}
-    .badge.high{background:#eff6ff;color:#1d4ed8}
-    .badge.medium{background:#fff7ed;color:#c2410c}
-    .badge.low{background:#f8fafc;color:#475467}
-    .badge.rejected{background:#fff1f2;color:#be123c}
- 
-    .summary-line{
-      display:flex;
-      justify-content:space-between;
-      border-bottom:1px dashed var(--line);
-      padding:9px 0;
-      gap:10px;
-      font-size:14px;
-    }
- 
-    .summary-line:last-child{border-bottom:0}
- 
-    .summary-line span:last-child{
-      font-weight:800;
-      text-align:left;
-    }
- 
-    .checklist{
-      display:grid;
-      gap:9px;
-    }
- 
-    .check-item{
-      display:flex;
-      gap:9px;
-      align-items:flex-start;
-      background:#fbfcfe;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:9px 10px;
-    }
- 
-    .check-item input{
-      width:auto;
-      margin-top:7px;
-    }
- 
-    .hint{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:6px;
-    }
- 
-    .required::after{
-      content:" *";
-      color:#dc2626;
-    }
- 
-    .decision{
-      padding:14px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#fbfcfe;
-      font-weight:700;
-      margin-top:10px;
-    }
- 
-    .footer{
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-      margin:26px 0 10px;
-    }
- 
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-      .sticky{position:static}
-      .form-grid{grid-template-columns:1fr}
-    }
- 
-    @media print{
-      body{background:white}
-      .toolbar{display:none}
-      .grid{display:block}
-      .sticky{position:static}
-      .card, .hero{box-shadow:none; break-inside:avoid}
-      .container{width:100%; margin:0}
-      button{display:none}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --saudi:#006c35;
+    --saudi-dark:#004c25;
+    --saudi-darker:#00351a;
+    --saudi-light:#e6f6ee;
+    --gold:#c99a2e;
+    --gold-light:#e8c873;
+    --sand:#f5ead1;
+    --bg:#f4f7fb;
+    --paper:#fbfaf6;
+    --paper-2:#f1ede1;
+    --ink:#172033;
+    --ink-soft:#566274;
+    --line:#dfe6d8;
+    --white:#ffffff;
+    --green:#1f7a44;
+    --green-bg:#e6f6ee;
+    --amber:#a8741e;
+    --amber-bg:#fbf0dd;
+    --red:#b42318;
+    --red-bg:#fbeae6;
+    --radius:18px;
+    --shadow-1: 0 4px 14px rgba(0,76,37,.08);
+    --shadow-2: 0 20px 55px rgba(0,76,37,.16);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 6%, rgba(201,154,46,.18), transparent 26%),
+      radial-gradient(circle at 88% 4%, rgba(0,108,53,.18), transparent 28%),
+      linear-gradient(135deg,#f8f2e5 0%,#f7fbf8 38%,#eaf7ef 100%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;
+    font-weight:400;
+    line-height:1.65;
+    min-height:100vh;
+    position:relative;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.14;
+    background-image:
+      linear-gradient(30deg, transparent 35%, rgba(0,108,53,.18) 35%, rgba(0,108,53,.18) 37%, transparent 37%),
+      linear-gradient(150deg, transparent 35%, rgba(201,154,46,.18) 35%, rgba(201,154,46,.18) 37%, transparent 37%);
+    background-size:44px 44px;
+    z-index:0;
+  }
+
+  .mono{font-family:'IBM Plex Mono','IBM Plex Sans Arabic',monospace;}
+
+  /* ============ Header / official letterhead strip ============ */
+  .letterhead{
+    position:relative;
+    overflow:hidden;
+    background:
+      linear-gradient(135deg, rgba(0,108,53,.97), rgba(0,76,37,.96) 55%, var(--saudi-darker) 100%),
+      radial-gradient(circle at top right, rgba(201,154,46,.30), transparent 35%);
+    color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.18);
+    box-shadow:var(--shadow-2);
+  }
+  .letterhead::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(230,200,115,0.06) 0 1px, transparent 1px 64px);
+    pointer-events:none;
+  }
+  .letterhead::before{
+    content:"";
+    position:absolute;
+    left:-50px; bottom:-90px;
+    width:260px; height:260px; border-radius:50%;
+    background:rgba(201,154,46,.16);
+    border:24px solid rgba(255,255,255,.08);
+    pointer-events:none;
+  }
+  .letterhead-gold-bar{
+    height:5px;
+    background:linear-gradient(90deg, var(--saudi) 0 22%, var(--gold) 22% 36%, #fff 36% 44%, var(--saudi) 44% 66%, var(--gold) 66% 80%, #fff 80% 88%, var(--saudi) 88% 100%);
+    background-size:140px 100%;
+    opacity:.95;
+  }
+  .letterhead-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:34px 28px 28px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:24px;
+    position:relative;
+    z-index:1;
+  }
+  .lh-titles{display:flex; gap:16px; align-items:flex-start;}
+  .flag-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:58px;height:58px;border-radius:14px;flex:none;
+    background:#fff;color:var(--saudi);
+    box-shadow:0 10px 24px rgba(0,0,0,.22);
+    font-size:26px;
+    margin-top:2px;
+  }
+  .lh-titles .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.14em;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin:0 0 9px;
+    direction:ltr;
+    text-align:right;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .ksa-seal{
+    border:1px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.13);
+    color:#fff;
+    border-radius:999px;
+    padding:3px 10px;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+    direction:rtl;
+  }
+  .lh-titles h1{
+    margin:0 0 6px;
+    font-size:clamp(22px,3vw,30px);
+    font-weight:700;
+    letter-spacing:.01em;
+  }
+  .lh-titles p{
+    margin:0;
+    color:rgba(255,255,255,.82);
+    font-size:14.5px;
+    max-width:560px;
+  }
+  .lh-meta{
+    text-align:left;
+    direction:ltr;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:#cfe8d8;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.20);
+    border-radius:14px;
+    padding:14px 20px;
+    min-width:160px;
+    line-height:1.9;
+  }
+  .lh-meta b{color:#fff;font-weight:700;}
+
+  /* progress rail */
+  .progress-wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 28px 22px;
+    position:relative;
+    z-index:1;
+  }
+  .progress-rail{
+    display:flex;
+    gap:6px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:999px;
+    padding:5px;
+  }
+  .progress-step{
+    flex:1;
+    text-align:center;
+    padding:9px 6px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:500;
+    color:#cfe8d8;
+    cursor:pointer;
+    transition:background .2s, color .2s;
+    user-select:none;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .progress-step .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:700;
+    margin-left:5px;
+    opacity:.8;
+  }
+  .progress-step.active{
+    background:linear-gradient(135deg, var(--gold) 0%, #b9852a 100%);
+    color:#241a02;
+    font-weight:700;
+    box-shadow:0 4px 14px rgba(201,154,46,.35);
+  }
+  .progress-step.done{ color:#e9f6ee; }
+  .progress-step.done .num::after{content:"✓"; margin-right:4px;}
+
+  /* ============ Layout shell ============ */
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 28px 80px;
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:28px;
+    align-items:start;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ============ Sidebar nav (desktop) ============ */
+  .side-nav{
+    position:sticky;
+    top:24px;
+    background:rgba(255,255,255,.94);
+    border:1px solid rgba(0,108,53,.16);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    padding:18px;
+  }
+  .side-nav h4{
+    margin:0 0 12px;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .side-nav .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-radius:12px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    margin-bottom:2px;
+    transition:background .15s, color .15s;
+    border-right:3px solid transparent;
+  }
+  .side-nav .nav-item:hover{background:var(--saudi-light);}
+  .side-nav .nav-item.active{
+    background:linear-gradient(135deg, var(--saudi), var(--saudi-dark));
+    color:#fff;
+    border-right-color:var(--gold);
+    box-shadow:0 6px 16px rgba(0,108,53,.25);
+  }
+  .side-nav .nav-item .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--line);
+    flex:none;
+  }
+  .side-nav .nav-item.active .dot{background:var(--gold-light);}
+
+  .side-score-card{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+  }
+  .side-score-card .label{
+    font-size:11px;color:var(--ink-soft);
+    letter-spacing:.06em; text-transform:uppercase;
+    margin-bottom:6px;
+    font-weight:700;
+  }
+  .side-score-card .score-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:34px;
+    font-weight:700;
+    color:var(--saudi-dark);
+    line-height:1;
+  }
+  .side-score-card .score-num span{font-size:16px;color:var(--ink-soft); font-weight:400;}
+  .side-priority-pill{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 13px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+  }
+
+  /* ============ Main panel ============ */
+  .panel{
+    position:relative;
+    background:var(--paper);
+    border:1px solid rgba(0,108,53,.13);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    overflow:hidden;
+  }
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:0 0 auto 0;
+    height:5px;
+    background:linear-gradient(90deg,var(--saudi),var(--gold),var(--saudi));
+    z-index:2;
+  }
+
+  .section{
+    display:none;
+    padding:34px 36px 36px;
+    animation:fadein .25s ease;
+  }
+  .section.active{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .section-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:26px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-head .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin:0 0 6px;
+    font-weight:700;
+  }
+  .section-head h2{
+    margin:0 0 6px;
+    font-size:21px;
+    font-weight:700;
+    color:var(--saudi-dark);
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .section-head h2::before{
+    content:"";
+    width:11px;height:11px;border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 4px rgba(201,154,46,.16);
+    flex:none;
+  }
+  .section-head p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    max-width:620px;
+  }
+  .section-badge{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    background:var(--saudi-light);
+    border:1px solid rgba(0,108,53,.2);
+    color:var(--saudi-dark);
+    font-weight:700;
+    padding:5px 12px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+
+  /* form fields */
+  .field-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px 22px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  .field.full{grid-column:1/-1;}
+  .field label{
+    font-size:12px;
+    font-weight:700;
+    color:#465267;
+  }
+  .field .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:-3px;
+  }
+  input[type=text], input[type=date], input[type=email], textarea, select{
+    font-family:inherit;
+    font-size:14px;
+    color:var(--ink);
+    background:#fff;
+    border:1.5px solid #d9e6dd;
+    border-radius:13px;
+    padding:11px 12px;
+    width:100%;
+    transition:border-color .15s, background .15s, box-shadow .15s;
+  }
+  textarea{resize:vertical; min-height:78px; line-height:1.6;}
+  input:focus, textarea:focus, select:focus, input[type=email]:focus{
+    outline:none;
+    border-color:var(--saudi);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(0,108,53,.14);
+  }
+  select{appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%23566274' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:left 12px center;
+    padding-left:30px;
+  }
+
+  /* Card-style criterion block (used in scoring sections) */
+  .criterion{
+    border:1.5px solid var(--line);
+    border-radius:15px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    background:#fff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .criterion:focus-within{border-color:var(--saudi); box-shadow:0 0 0 3px rgba(0,108,53,.08);}
+  .criterion-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:10px;
+  }
+  .criterion-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .criterion-title small{
+    display:block;
+    font-weight:400;
+    color:var(--ink-soft);
+    font-size:12px;
+    margin-top:3px;
+  }
+  .criterion-points{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--saudi-dark);
+    background:var(--saudi-light);
+    border:1px solid rgba(0,108,53,.18);
+    padding:3px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+    flex:none;
+    font-weight:700;
+  }
+
+  .seg{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .seg label{
+    flex:1 1 auto;
+    min-width:max-content;
+  }
+  .seg input{display:none;}
+  .seg .seg-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:9px 14px;
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    font-size:13px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s;
+    text-align:center;
+  }
+  .seg input:checked + .seg-btn{
+    background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));
+    border-color:var(--saudi-dark);
+    color:#fff;
+    font-weight:700;
+    box-shadow:0 4px 12px rgba(0,108,53,.25);
+  }
+  .seg .seg-btn .pts{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    opacity:.8;
+  }
+
+  .yn{display:flex; gap:8px;}
+  .yn label{flex:1;}
+  .yn input{display:none;}
+  .yn .yn-btn{
+    display:block;
+    text-align:center;
+    padding:9px;
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    font-size:13px;
+    background:#fff;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s;
+    font-weight:600;
+  }
+  .yn input:checked + .yn-btn.yes{background:var(--green-bg); border-color:var(--green); color:var(--green); font-weight:700;}
+  .yn input:checked + .yn-btn.no{background:var(--red-bg); border-color:var(--red); color:var(--red); font-weight:700;}
+
+  textarea.justification{
+    margin-top:10px;
+    font-size:13px;
+    min-height:56px;
+  }
+
+  .yn-single{max-width:340px;}
+  .yn-single .yn-btn.yes{
+    padding:12px 16px;
+    font-size:13.5px;
+  }
+  .yn-single input:checked + .yn-btn.yes{
+    background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));
+    border-color:var(--saudi-dark);
+    color:#fff;
+  }
+
+  .file-upload{margin-top:2px;}
+  .file-input{display:none;}
+  .file-drop{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    border:1.5px dashed #b7cdbd;
+    border-radius:13px;
+    padding:18px 14px;
+    background:var(--saudi-light);
+    color:var(--saudi-dark);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .file-drop:hover{
+    background:#dcf0e4;
+    border-color:var(--saudi);
+  }
+  .file-drop.dragover{
+    background:#dcf0e4;
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,154,46,.18);
+  }
+  .file-drop-icon{font-size:18px;}
+  .file-list{
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .file-chip{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:7px 12px;
+    font-size:12.5px;
+    color:var(--ink);
+  }
+  .file-chip .fc-name{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .file-chip .fc-size{color:var(--ink-soft); font-size:11px; flex:none;}
+  .file-chip .fc-remove{
+    cursor:pointer;
+    color:var(--red);
+    font-weight:700;
+    font-size:14px;
+    flex:none;
+    line-height:1;
+    background:none;
+    border:none;
+    padding:0 2px;
+  }
+  .reveal-box.open{
+    max-height:90px;
+    opacity:1;
+    margin-top:12px;
+  }
+  .reveal-box input{
+    border-color:var(--saudi);
+    background:var(--saudi-light);
+  }
+
+  .group-title{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--saudi-dark);
+    margin:24px 0 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .group-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:repeating-linear-gradient(90deg, var(--gold) 0 6px, transparent 6px 11px);
+    opacity:.6;
+  }
+  .group-title:first-child{margin-top:0;}
+
+  .axis-total{
+    margin-top:6px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:linear-gradient(135deg, var(--saudi), var(--saudi-dark));
+    color:#fff;
+    padding:14px 18px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,108,53,.2);
+  }
+  .axis-total .lbl{font-size:13px; color:rgba(255,255,255,.85);}
+  .axis-total .val{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:20px;
+    font-weight:700;
+  }
+  .axis-total .val span{font-size:13px; color:var(--gold-light); font-weight:400;}
+
+  /* Gate */
+  .gate-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 16px;
+    border:1.5px solid var(--line);
+    border-radius:15px;
+    margin-bottom:10px;
+    background:#fff;
+  }
+  .gate-item .gi-text{font-size:13.5px; color:var(--ink); max-width:70%;}
+  .gate-banner{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 18px;
+    border-radius:15px;
+    font-weight:700;
+    font-size:14px;
+    margin-top:18px;
+    border:1.5px solid transparent;
+  }
+  .gate-banner.ok{background:var(--green-bg); color:var(--green); border-color:#bfe3cf;}
+  .gate-banner.bad{background:var(--red-bg); color:var(--red); border-color:#f0c4ba;}
+  .gate-banner.neutral{background:var(--paper-2); color:var(--ink-soft); border-color:var(--line);}
+  .gate-banner .icon{font-size:20px;}
+
+  /* Result page */
+  .result-hero{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:24px;
+    margin-bottom:28px;
+  }
+  .result-score-card{
+    position:relative;
+    overflow:hidden;
+    background:
+      linear-gradient(135deg, rgba(0,108,53,.97), rgba(0,76,37,.96) 55%, var(--saudi-darker) 100%),
+      radial-gradient(circle at top right, rgba(201,154,46,.30), transparent 35%);
+    color:#fff;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:var(--shadow-2);
+  }
+  .result-score-card::after{
+    content:"";
+    position:absolute; left:-40px; bottom:-60px;
+    width:200px; height:200px; border-radius:50%;
+    background:rgba(201,154,46,.18);
+    border:20px solid rgba(255,255,255,.08);
+  }
+  .result-score-card .rsc-label{
+    font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold-light); margin-bottom:10px; font-family:'IBM Plex Mono',monospace;
+    font-weight:700;
+  }
+  .result-score-card .rsc-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:64px;
+    font-weight:700;
+    line-height:1;
+    margin-bottom:4px;
+    position:relative; z-index:1;
+  }
+  .result-score-card .rsc-num span{font-size:24px; color:#cfe8d8; font-weight:400;}
+  .result-score-card .rsc-priority{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    padding:7px 16px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:13.5px;
+    position:relative; z-index:1;
+  }
+  .result-breakdown{
+    background:#fff;
+    border:1.5px solid rgba(0,108,53,.16);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:var(--shadow-1);
+  }
+  .result-breakdown h4{margin:0 0 16px; font-size:13px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; font-weight:700;}
+  .bd-row{margin-bottom:14px;}
+  .bd-row:last-child{margin-bottom:0;}
+  .bd-row .bd-top{display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;}
+  .bd-row .bd-top b{color:var(--ink);}
+  .bd-row .bd-top span{font-family:'IBM Plex Mono',monospace; color:var(--ink-soft);}
+  .bd-bar{height:9px; background:var(--paper-2); border-radius:999px; overflow:hidden;}
+  .bd-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--saudi), var(--gold)); transition:width .4s ease;}
+
+  .applic-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:6px;
+  }
+  .applic-card{
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:13px;
+    text-align:center;
+    font-size:12.5px;
+    cursor:pointer;
+    background:#fff;
+    transition:all .15s;
+    font-weight:600;
+  }
+  .applic-card input{display:none;}
+  .applic-card.checked{border-color:var(--saudi-dark); background:linear-gradient(135deg,var(--saudi),var(--saudi-dark)); color:#fff; font-weight:700; box-shadow:0 6px 16px rgba(0,108,53,.25);}
+
+  .signoff-table{width:100%; border-collapse:collapse; margin-top:8px;}
+  .signoff-table th{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); text-align:right; padding:8px 10px;
+    border-bottom:2px solid var(--line);
+    font-weight:700;
+  }
+  .signoff-table td{padding:8px 10px; border-bottom:1px solid var(--line);}
+  .signoff-table input{padding:7px 10px; font-size:13px;}
+
+  /* Nav buttons */
+  .nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 36px;
+    border-top:1px solid var(--line);
+    background:var(--paper-2);
+  }
+  .btn{
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    padding:11px 22px;
+    border-radius:13px;
+    border:1.5px solid transparent;
+    cursor:pointer;
+    transition:all .2s;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:linear-gradient(135deg,var(--saudi),var(--saudi-dark)); color:#fff; box-shadow:0 6px 16px rgba(0,108,53,.25);}
+  .btn-primary:hover{filter:brightness(1.05);}
+  .btn-ghost{background:#fff; color:var(--ink-soft); border-color:var(--line);}
+  .btn-ghost:hover{background:var(--saudi-light); color:var(--saudi-dark); border-color:rgba(0,108,53,.25);}
+  .btn-gold{background:linear-gradient(135deg, var(--gold), #a77717); color:#fff;}
+  .btn-gold:hover{filter:brightness(1.05);}
+  .btn:disabled{opacity:.4; cursor:not-allowed; transform:none;}
+
+  /* Toast */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(135deg,var(--saudi),var(--saudi-dark)); color:#fff; padding:12px 22px; border-radius:999px;
+    font-size:13px; box-shadow:var(--shadow-2);
+    opacity:0; pointer-events:none; transition:all .3s ease;
+    z-index:100;
+    font-weight:600;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 28px 40px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12px;
+    position:relative;
+    z-index:1;
+  }
+
+  @media (max-width:920px){
+    .shell{grid-template-columns:1fr; padding:20px 16px 60px;}
+    .side-nav{position:static;}
+    .field-grid{grid-template-columns:1fr;}
+    .result-hero{grid-template-columns:1fr;}
+    .applic-grid{grid-template-columns:repeat(2,1fr);}
+    .letterhead-inner{flex-direction:column;}
+    .lh-meta{width:100%;}
+    .section{padding:24px 18px 28px;}
+    .nav-buttons{padding:16px 18px;}
+  }
+
+  @media print{
+    .side-nav, .nav-buttons, .progress-wrap{display:none;}
+    .section{display:block !important; page-break-after:always;}
+    body::before{display:none;}
+  }
+</style>
 </head>
- 
 <body>
-  <div class="container">
-    <header class="hero">
-      <h1>نموذج تقييم طلبات المشاريع التقنية والتطويرية البرمجية</h1>
-      <p>نموذج إلكتروني لتقييم طلبات الإدارات وفق معايير الأعمال والتقنية، واحتساب أولوية التنفيذ تلقائيًا من 100.</p>
-    </header>
- 
-    <div class="toolbar">
-      <!--<button class="primary" onclick="calculateAll()">احتساب النتيجة</button>
-      <button class="secondary" onclick="saveDraft()">حفظ مسودة محليًا</button>
-      <button class="secondary" onclick="loadDraft()">استرجاع المسودة</button>
-      <button class="secondary" onclick="exportJSON()">تصدير JSON</button>
-      <button class="secondary" onclick="window.print()">طباعة / حفظ PDF</button>-->
-      <button class="danger" onclick="resetForm()">مسح النموذج</button>
-      <button type="button" class="primary" onclick="submitRequest()">إرسال الطلب</button>
-    </div>
- 
-    <form id="projectForm">
-      <div class="grid">
-        <main>
-          <section class="card">
-            <h2>1. بيانات الطلب الأساسية</h2>
-            <div class="form-grid one">
-              <div>
-                <label class="required">اسم المشروع / الطلب</label>
-                <input type="text" name="projectName" required placeholder="مثال: منصة إدارة طلبات الإدارة العامة..." />
-              </div>
-            </div>
-            <div class="form-grid" style="margin-top:14px">
-              <div>
-                <label class="required">الإدارة الطالبة</label>
-                <input type="text" name="requestingDepartment" required placeholder="اسم الإدارة" />
-              </div>
-              <div>
-                <label class="required">مالك المشروع من الإدارة</label>
-                <input type="text" name="businessOwner" required placeholder="المسؤول المعتمد من الإدارة" />
-              </div>
-            </div>
-            <div class="form-grid" style="margin-top:14px">
-              <div>
-                <label class="required">مقدم الطلب</label>
-                <input type="text" name="requesterName" required placeholder="اسم مقدم الطلب" />
-              </div>
-              <div>
-                <label class="required">البريد الالكتروني</label>
-                <input type="email" name="requesterEmail" required placeholder="البريد الالكتروني" />
-              </div>
-              <div>
-                <label class="required">نوع الطلب</label>
-                <select name="requestType" required>
-                  <option value="">اختر</option>
-                  <option value="new">متطلب جديد / طلب تعديل</option>
-                  <option value="develop">تطوير نظام قائم</option>
-                  <option value="automate">أتمتة - نظام جديد</option>
-                  <option value="integration">تكامل بين أنظمة</option>
-                  <option value="uiux">تحسين تجربة مستخدم</option>
-                  <option value="reports">تقرير / لوحة مؤشرات</option>
-                </select>
-              </div>
-              <div>
-                <label>الأنظمة المتأثرة</label>
-                <input type="text" name="affectedSystems" placeholder="مثال: العرمة، GLPI، Power BI..." />
-              </div>
-              <div>
-                <label>تاريخ تقديم الطلب</label>
-                <input type="date" name="requestDate" />
-              </div>
-              <div>
-                <label>مستوى السرية</label>
-                <select name="confidentiality">
-                  <option value="general">عام داخلي</option>
-                  <option value="restricted">مقيد</option>
-                  <option value="secret">سري</option>
-                </select>
-              </div>
-            </div>
- 
-            <div class="form-grid one" style="margin-top:14px">
-              <div>
-                <label class="required">وصف الطلب</label>
-                <textarea name="requestDescription" required placeholder="وصف تفصيلي للطلب ونطاقه المتوقع"></textarea>
-              </div>
-              <div>
-                <label class="required">المشكلة الحالية أو الحاجة التشغيلية</label>
-                <textarea name="currentProblem" required placeholder="ما المشكلة الحالية؟ وما الأثر الناتج عن استمرار الوضع الحالي؟"></textarea>
-              </div>
-              <div>
-                <label>الأثر المتوقع بعد التنفيذ</label>
-                <textarea name="expectedImpact" placeholder="مثال: تقليل زمن الإجراء، رفع الشفافية، تحسين جودة البيانات..."></textarea>
-              </div>
-            </div>
-          </section>
- 
-          <section class="card">
-            <h2>2. تقييم الإدارة الطالبة - Business Assessment</h2>
-            <div class="section-note">
-              يتم تقييم هذا المحور بناءً على الحاجة، الأثر، المواءمة الاستراتيجية، وجاهزية الإدارة الطالبة. إجمالي الوزن: 60%.
-            </div>
-            <table class="criteria-table">
-              <thead>
-                <tr>
-                  <th>المعيار</th>
-                  <th>الوزن</th>
-                  <th>التقييم</th>
-                  <th>النتيجة</th>
-                </tr>
-              </thead>
-              <tbody id="businessCriteria"></tbody>
-            </table>
-          </section>
- 
-          <section class="card">
-            <h2>3. جاهزية الوثائق وآلية العمل</h2>
-            <div class="checklist">
-              <label class="check-item"><input type="checkbox" name="doc_as_is"> توفر إجراءات الوضع الحالي As-Is</label>
-              <label class="check-item"><input type="checkbox" name="doc_to_be"> توفر إجراءات الوضع المستهدف To-Be</label>
-              <label class="check-item"><input type="checkbox" name="doc_forms"> توفر النماذج والتقارير ذات العلاقة</label>
-              <label class="check-item"><input type="checkbox" name="doc_data"> توفر بيانات أو عينات بيانات داعمة</label>
-              <label class="check-item"><input type="checkbox" name="doc_approval"> إقرار الإدارة الطالبة بدقة المعلومات</label>
-            </div>
-            <div class="hint">ملاحظة: عدم توفر الوثائق لا يمنع التقييم، لكنه يؤثر على قرار القبول النهائي.</div>
 
-            <div class="form-grid one" style="margin-top:14px">
-              <div>
-                <label>المرفقات (اختياري)</label>
-                <input type="file" name="attachments" id="attachments" multiple />
-                <div class="hint">يمكن إرفاق أكثر من ملف: مستندات، صور، بيانات...</div>
-              </div>
-            </div>
-          </section>
- 
-        </main>
- 
-        <aside class="card sticky">
-          <h2>ملخص التقييم الذاتي</h2>
-          <div class="result-box">
-            <p class="score"><span id="businessScore">0</span><small> / 60</small></p>
-            <div class="badge high">تقييم الإدارة الطالبة</div>
-          </div>
-
-          <div class="summary-line">
-            <span>عدد معايير الأعمال</span>
-            <span>7</span>
-          </div>
-
-          <div class="section-note" style="margin-top:14px">
-            هذا التقييم الذاتي للإدارة الطالبة (محور الأعمال فقط). تتولى إدارة تقنية المعلومات استكمال التقييم الفني، والتقدير الزمني، واحتساب الأولوية والقرار النهائي.
-          </div>
-        </aside>
+<div class="letterhead">
+  <div class="letterhead-inner">
+    <div class="lh-titles">
+      <div class="flag-badge">🇸🇦</div>
+      <div>
+        <p class="eyebrow">PROJECT INTAKE &amp; SCORING SYSTEM <span class="ksa-seal">المملكة العربية السعودية</span></p>
+        <h1>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية</h1>
+        <p>أداة موحّدة لتقييم طلبات التطوير البرمجي عبر بوابة اكتمال، تقييم أعمال وتقني وصفي، وتقييم نقاطي مرجّح يُحدّد الأولوية وقابلية التطبيق تلقائياً.</p>
       </div>
-    </form>
- 
-    <div class="footer">
-      نموذج داخلي لتقييم وترتيب أولوية طلبات المشاريع التقنية - قابل للتعديل والربط مع أنظمة الهيئة الداخلية.
+    </div>
+    <div class="lh-meta">
+      رقم النموذج<br><b id="metaRef">REQ-000000</b><br><br>
+      آخر تحديث<br><b id="metaDate">—</b>
     </div>
   </div>
- 
-  <script src="eval-core.js"></script>
-  <script>
-    // Applicant side computes the business self-assessment only.
-    // The full technical evaluation and final priority are done by IT in the admin dashboard.
-    function calculateAll(){
-      const business = calculateGroup(BUSINESS_CRITERIA);
-      document.getElementById("businessScore").textContent = business.toFixed(1);
-      return {
-        businessScore: Number(business.toFixed(2))
-      };
+  <div class="progress-wrap">
+    <div class="progress-rail" id="progressRail"></div>
+  </div>
+</div>
+<div class="letterhead-gold-bar"></div>
+
+<div class="shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="side-nav" id="sideNav">
+    <h4>أقسام النموذج</h4>
+    <div id="navItems"></div>
+    <div class="side-score-card" style="display:none;">
+      <div class="label">النقاط الإجمالية</div>
+      <div class="score-num"><span id="sideScore">0.0</span><span>/100</span></div>
+      <div class="side-priority-pill" id="sidePriorityPill">—</div>
+    </div>
+  </nav>
+
+  <!-- ===== MAIN PANEL ===== -->
+  <div class="panel">
+
+    <!-- SECTION 0: بيانات الطلب -->
+    <section class="section active" data-section="0">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">القسم الأول</p>
+          <h2>بيانات الطلب</h2>
+          <p>البيانات التعريفية الأساسية للمشروع أو الطلب ومقدّمه.</p>
+        </div>
+        <span class="section-badge">معلومات عامة</span>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label>اسم المشروع / الطلب <span style="color:var(--red)">*</span></label>
+          <input type="text" id="f_projectName" placeholder="مثال: نظام إدارة طلبات الإجازات">
+        </div>
+        <div class="field">
+          <label>الإدارة الطالبة <span style="color:var(--red)">*</span></label>
+          <input type="text" id="f_dept" placeholder="مثال: إدارة الموارد البشرية">
+        </div>
+        <div class="field">
+          <label>مقدم الطلب <span style="color:var(--red)">*</span></label>
+          <input type="text" id="f_submitter" placeholder="الاسم الكامل">
+        </div>
+        <div class="field">
+          <label>البريد الإلكتروني لمقدم الطلب <span style="color:var(--red)">*</span></label>
+          <input type="email" id="f_email" placeholder="name@example.com" dir="ltr" style="text-align:right;">
+          <div class="hint">سيتم إرسال إشعار استلام الطلب إلى هذا البريد.</div>
+        </div>
+        <div class="field">
+          <label>تاريخ التقديم <span style="color:var(--red)">*</span></label>
+          <input type="date" id="f_submitDate">
+        </div>
+        <div class="field">
+          <label>نوع الطلب <span style="color:var(--red)">*</span></label>
+          <select id="f_reqType">
+            <option value="">اختر النوع</option>
+            <option value="تطوير على نظام قائم">تطوير على نظام قائم</option>
+            <option value="متطلب جديد في نظام قائم">متطلب جديد في نظام قائم</option>
+            <option value="نظام جديد">نظام جديد</option>
+            <option value="تكامل مع أنظمة أخرى">تكامل مع أنظمة أخرى</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: التقييم الوصفي -->
+    <section class="section" data-section="1">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">القسم الثاني</p>
+          <h2>التقييم الوصفي</h2>
+          <p>تقييم الإدارة الطالبة (Business Assessment) ثم التقييم التقني الوصفي (Technical Assessment).</p>
+        </div>
+        <span class="section-badge">وصفي — بدون نقاط</span>
+      </div>
+
+      <div class="group-title">أولاً — تقييم الإدارة الطالبة</div>
+
+      <div class="field full" style="margin-bottom:16px;">
+        <label>1. الهدف من الطلب <span style="color:var(--red)">*</span></label>
+        <div class="hint">توضيح المشكلة الحالية أو الحاجة التشغيلية والأثر المتوقع من تنفيذ الطلب.</div>
+        <textarea id="q_goal" placeholder="اكتب وصفاً موجزاً..."></textarea>
+      </div>
+
+      <div class="field full" style="margin-bottom:20px;">
+        <label>2. المواءمة مع الأهداف الاستراتيجية <span style="color:var(--red)">*</span></label>
+        <div class="hint">مدى ارتباط الطلب بالركائز أو الأهداف الاستراتيجية المعتمدة في الجهة.</div>
+        <textarea id="q_strategicAlign" placeholder="اكتب وصفاً موجزاً..."></textarea>
+      </div>
+
+      <div class="group-title" style="margin-top:8px;">3. جاهزية الإدارة المعنية</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">مالك المشروع (Business Owner) <span style="color:var(--red)">*</span></div></div>
+        <input type="text" id="ba_owner_detail_text" class="req-detail" placeholder="اسم مالك الأعمال / تفاصيل إضافية">
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">توفر فريق داعم من الإدارة الطالبة <span style="color:var(--red)">*</span></div></div>
+        <input type="text" id="ba_team_detail_text" class="req-detail" placeholder="تفاصيل الفريق الداعم (الأسماء / الأدوار)">
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">الاستعداد للمشاركة في التحليل والاختبار والتشغيل <span style="color:var(--red)">*</span></div></div>
+        <input type="text" id="ba_ready_detail_text" class="req-detail" placeholder="تفاصيل الاستعداد للمشاركة">
+      </div>
+
+
+      <div class="group-title">4. آلية العمل والوثائق الداعمة</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">الإجراءات الحالية (As-Is) <span style="color:var(--red)">*</span></div></div>
+        <div class="hint">ارفق مستنداً يوضّح خطوات وإجراءات العمل المتّبعة حالياً قبل التطوير المطلوب (الوضع الراهن).</div>
+        <div class="file-upload" data-target="ba_asis_file">
+          <input type="file" id="ba_asis_file" class="file-input" multiple>
+          <label for="ba_asis_file" class="file-drop">
+            <span class="file-drop-icon">⤓</span>
+            <span class="file-drop-text">اضغط لرفع الملفات أو اسحبها هنا</span>
+          </label>
+          <div class="file-list" id="ba_asis_file_list"></div>
+        </div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">الإجراءات المستهدفة (To-Be) <span style="color:var(--red)">*</span></div></div>
+        <div class="hint">ارفق مستنداً يوضّح خطوات وإجراءات العمل المستهدفة بعد تنفيذ الطلب (الوضع المأمول).</div>
+        <div class="file-upload" data-target="ba_tobe_file">
+          <input type="file" id="ba_tobe_file" class="file-input" multiple>
+          <label for="ba_tobe_file" class="file-drop">
+            <span class="file-drop-icon">⤓</span>
+            <span class="file-drop-text">اضغط لرفع الملفات أو اسحبها هنا</span>
+          </label>
+          <div class="file-list" id="ba_tobe_file_list"></div>
+        </div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">النماذج والتقارير ذات العلاقة <span style="color:var(--red)">*</span></div></div>
+        <div class="file-upload" data-target="ba_forms_file">
+          <input type="file" id="ba_forms_file" class="file-input" multiple>
+          <label for="ba_forms_file" class="file-drop">
+            <span class="file-drop-icon">⤓</span>
+            <span class="file-drop-text">اضغط لرفع الملفات أو اسحبها هنا</span>
+          </label>
+          <div class="file-list" id="ba_forms_file_list"></div>
+        </div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">أي وثائق داعمة للطلب <span style="color:var(--red)">*</span></div></div>
+        <div class="file-upload" data-target="ba_docs_file">
+          <input type="file" id="ba_docs_file" class="file-input" multiple>
+          <label for="ba_docs_file" class="file-drop">
+            <span class="file-drop-icon">⤓</span>
+            <span class="file-drop-text">اضغط لرفع الملفات أو اسحبها هنا</span>
+          </label>
+          <div class="file-list" id="ba_docs_file_list"></div>
+        </div>
+      </div>
+
+      <div class="group-title">5. الإقرار بدقة المعلومات</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة <span style="color:var(--red)">*</span></div></div>
+        <div class="yn yn-single">
+          <label><input type="checkbox" id="ba_attest"><span class="yn-btn yes">نعم، أقرّ بصحة واكتمال البيانات</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: بوابة الاكتمال -->
+    <section class="section" data-section="2">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">القسم الثالث</p>
+          <h2>بوابة اكتمال الطلب</h2>
+          <p>شروط إلزامية يجب توفرها قبل قبول الطلب للتقييم النقاطي. إن كانت إجابة أي بند «لا»، يُعاد الطلب لمقدّمه.</p>
+        </div>
+        <span class="section-badge" id="gateBadge">0 / 6</span>
+      </div>
+
+      <div id="gateList"></div>
+      <div class="gate-banner neutral" id="gateBanner">
+        <span class="icon">●</span>
+        <span id="gateBannerText">أكمل تعبئة جميع البنود لعرض نتيجة البوابة</span>
+      </div>
+    </section>
+
+    <!-- SECTION 3: التقييم التفصيلي -->
+    <section class="section" data-section="3">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">القسم الرابع</p>
+          <h2>التقييم التفصيلي</h2>
+          <p>الأثر التشغيلي، المواءمة الاستراتيجية، الجاهزية الفنية، والتأثير على الأنظمة والمخاطر.</p>
+        </div>
+        <span class="section-badge mono" id="detailTotalBadge">0.0 / 100</span>
+      </div>
+
+      <div class="group-title">تصنيف الطلب (تقييم تقنية المعلومات)</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">تصنيف الطلب</div></div>
+        <select id="q_techClass">
+          <option value="">اختر التصنيف</option>
+          <option value="تعديل على نظام قائم">تعديل على نظام قائم</option>
+          <option value="متطلب جديد في نظام قائم">متطلب جديد في نظام قائم</option>
+          <option value="نظام جديد">نظام جديد</option>
+          <option value="تكامل مع أنظمة أخرى">تكامل مع أنظمة أخرى</option>
+        </select>
+      </div>
+
+      <div class="group-title">المحور 1 — الأثر التشغيلي <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 30)</span></div>
+
+      <div class="criterion">
+        <div class="criterion-top">
+          <div class="criterion-title">نطاق الاستفادة من الطلب</div>
+        </div>
+        <div class="seg" data-group="op_scope" data-max="10">
+          <label><input type="radio" name="op_scope" value="5"><span class="seg-btn">إدارة واحدة <span class="pts">(5)</span></span></label>
+          <label><input type="radio" name="op_scope" value="8"><span class="seg-btn">عدة إدارات <span class="pts">(8)</span></span></label>
+          <label><input type="radio" name="op_scope" value="10"><span class="seg-btn">على مستوى الجهة <span class="pts">(10)</span></span></label>
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-top">
+          <div class="criterion-title">عدد المستفيدين</div>
+        </div>
+        <div class="seg" data-group="op_users" data-max="10">
+          <label><input type="radio" name="op_users" value="3"><span class="seg-btn">أقل من 20 <span class="pts">(3)</span></span></label>
+          <label><input type="radio" name="op_users" value="6"><span class="seg-btn">20–100 <span class="pts">(6)</span></span></label>
+          <label><input type="radio" name="op_users" value="10"><span class="seg-btn">أكثر من 100 / مستفيدون خارجيون <span class="pts">(10)</span></span></label>
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-top">
+          <div class="criterion-title">درجة تحسين الخدمة / العملية</div>
+        </div>
+        <div class="seg" data-group="op_improve" data-max="15">
+          <label><input type="radio" name="op_improve" value="5"><span class="seg-btn">تحسين خدمة داخل إدارة <span class="pts">(5)</span></span></label>
+          <label><input type="radio" name="op_improve" value="10"><span class="seg-btn">تحسين عمليات مشتركة <span class="pts">(10)</span></span></label>
+          <label><input type="radio" name="op_improve" value="15"><span class="seg-btn">تحسين عملية رئيسية بمستوى الجهة <span class="pts">(15)</span></span></label>
+        </div>
+      </div>
+
+      <div class="axis-total">
+        <span class="lbl">إجمالي تقييم الأثر التشغيلي</span>
+        <span class="val"><span id="opRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 35</span></span>
+      </div>
+
+      <div class="group-title">المحور 2 — المواءمة الاستراتيجية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 20)</span></div>
+
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">ارتباط الطلب بالخطة التشغيلية للإدارة</div></div>
+        <div class="seg" data-group="st_plan" data-max="5">
+          <label><input type="radio" name="st_plan" value="0"><span class="seg-btn">غير مرتبط <span class="pts">(0)</span></span></label>
+          <label><input type="radio" name="st_plan" value="3"><span class="seg-btn">مرتبط جزئياً <span class="pts">(3)</span></span></label>
+          <label><input type="radio" name="st_plan" value="5"><span class="seg-btn">مرتبط بالكامل <span class="pts">(5)</span></span></label>
+        </div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">دعم هدف استراتيجي أو مبادرة واحدة</div></div>
+        <div class="yn">
+          <label><input type="radio" name="st_one" value="10"><span class="yn-btn yes">نعم</span></label>
+          <label><input type="radio" name="st_one" value="0"><span class="yn-btn no">لا</span></label>
+        </div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">دعم عدة أهداف أو مبادرات استراتيجية</div></div>
+        <div class="yn">
+          <label><input type="radio" name="st_multi" value="10"><span class="yn-btn yes">نعم</span></label>
+          <label><input type="radio" name="st_multi" value="0"><span class="yn-btn no">لا</span></label>
+        </div>
+      </div>
+
+      <div class="axis-total">
+        <span class="lbl">إجمالي تقييم المواءمة الاستراتيجية</span>
+        <span class="val"><span id="stRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 25</span></span>
+      </div>
+
+      <div class="group-title">المحور 3 — الجاهزية والجدوى الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
+
+      <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">أ) جاهزية البنية التحتية</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">البنية التحتية متوفرة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_infra1" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra1" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">الأنظمة الداعمة متوفرة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_infra2" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra2" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">الموارد التقنية متوفرة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_infra3" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra3" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+
+      <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:16px 0 8px;">ب) الجدوى والتوافق الفني</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">يتوافق مع المعمارية التقنية المعتمدة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f1" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f1" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">لا يتعارض مع الأنظمة الحالية</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f2" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f2" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">يمكن تنفيذه باستخدام التقنيات المعتمدة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f3" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f3" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">البيانات اللازمة متوفرة</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f4" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f4" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">يمكن التكامل مع الأنظمة الأخرى</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f5" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f5" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">يتوافق مع سياسات الأمن السيبراني وحوكمة البيانات</div></div>
+        <div class="yn"><label><input type="radio" name="tc_f6" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f6" value="0"><span class="yn-btn no">لا</span></label></div>
+      </div>
+
+      <div class="axis-total">
+        <span class="lbl">إجمالي تقييم الجاهزية الفنية</span>
+        <span class="val"><span id="tcRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 24</span></span>
+      </div>
+
+      <div class="group-title">المحور 4 — (ج) التأثير على الأنظمة الأخرى / (د) المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
+
+      <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">(ج) التأثير على الأنظمة الأخرى</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">تأثير الطلب على الأنظمة الحالية<small>الدرجة الخام = الحد الأقصى − مستوى التأثير (كلما زاد التأثير قلّت الدرجة)</small></div></div>
+        <div class="seg" data-group="rk_impact" data-max="8">
+          <label><input type="radio" name="rk_impact" value="8"><span class="seg-btn">لا يوجد <span class="pts">(0)</span></span></label>
+          <label><input type="radio" name="rk_impact" value="6"><span class="seg-btn">محدود <span class="pts">(2)</span></span></label>
+          <label><input type="radio" name="rk_impact" value="3"><span class="seg-btn">متوسط <span class="pts">(5)</span></span></label>
+          <label><input type="radio" name="rk_impact" value="0"><span class="seg-btn">مرتفع <span class="pts">(8)</span></span></label>
+        </div>
+      </div>
+
+      <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:16px 0 8px;">(د) المخاطر الفنية</div>
+      <div class="criterion">
+        <div class="criterion-top"><div class="criterion-title">المخاطر التقنية والتشغيلية<small>الدرجة الخام = الحد الأقصى − مستوى الخطورة</small></div></div>
+        <div class="seg" data-group="rk_level" data-max="8">
+          <label><input type="radio" name="rk_level" value="8"><span class="seg-btn">منخفضة <span class="pts">(2)</span></span></label>
+          <label><input type="radio" name="rk_level" value="3"><span class="seg-btn">متوسطة <span class="pts">(5)</span></span></label>
+          <label><input type="radio" name="rk_level" value="0"><span class="seg-btn">مرتفعة <span class="pts">(8)</span></span></label>
+        </div>
+      </div>
+
+      <div class="axis-total">
+        <span class="lbl">إجمالي تقييم التأثير والمخاطر (ج + د)</span>
+        <span class="val"><span id="rkRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 16</span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 4: النتيجة والقرار -->
+    <section class="section" data-section="4">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">القسم الخامس</p>
+          <h2>النتيجة والقرار</h2>
+          <p>ملخص النقاط المرجّحة، الأولوية المحسوبة تلقائياً، قرار قابلية التطبيق، والاعتماد.</p>
+        </div>
+        <span class="section-badge" id="resultGateStatus">—</span>
+      </div>
+
+      <div class="result-hero">
+        <div class="result-score-card">
+          <div class="rsc-label">إجمالي النقاط المرجّحة</div>
+          <div class="rsc-num"><span id="resultScoreNum">0.0</span><span>/ 100</span></div>
+          <div class="rsc-priority" id="resultPriorityPill">الأولوية: —</div>
+        </div>
+        <div class="result-breakdown">
+          <h4>تفصيل النقاط حسب المحور</h4>
+          <div id="breakdownList"></div>
+        </div>
+      </div>
+
+      <div class="group-title">قرار قابلية التطبيق</div>
+      <p style="font-size:12.5px;color:var(--ink-soft); margin-top:-6px;">يُحدَّد هذا القرار استناداً لنتيجة محوري «الجاهزية والجدوى الفنية» و«المخاطر»، وليس بدلالة النقاط الإجمالية وحدها.</p>
+      <div class="applic-grid" id="applicGrid">
+        <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق">قابل للتطبيق</label>
+        <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق مع متطلبات إضافية">قابل للتطبيق مع متطلبات إضافية</label>
+        <label class="applic-card"><input type="radio" name="applicability" value="غير قابل للتطبيق حالياً">غير قابل للتطبيق حالياً</label>
+        <label class="applic-card"><input type="radio" name="applicability" value="غير قابل للتطبيق">غير قابل للتطبيق</label>
+      </div>
+
+      <div class="group-title">ملاحظات وتوصية اللجنة</div>
+      <textarea id="committeeNotes" style="min-height:90px;" placeholder="اكتب ملاحظات اللجنة وتوصيتها النهائية..."></textarea>
+
+      <div class="group-title">الاعتماد</div>
+      <table class="signoff-table">
+        <thead>
+          <tr><th>الجهة</th><th>الاسم</th><th>التوقيع</th><th>التاريخ</th></tr>
+        </thead>
+        <tbody id="signoffBody"></tbody>
+      </table>
+    </section>
+
+    <!-- NAV BUTTONS -->
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" id="btnPrev">→ السابق</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost" id="btnReset" title="مسح جميع البيانات">إعادة تعيين</button>
+        <button class="btn btn-ghost" id="btnPrint" title="طباعة / حفظ PDF">طباعة</button>
+        <button class="btn btn-primary" id="btnNext">التالي ←</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية — جميع البيانات تُحفظ محلياً في هذه الجلسة فقط.</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+
+  // Applicant-facing flow: only the first two steps. The remaining
+  // sections (gate / detailed scoring / decision) are for IT review.
+  const SECTIONS = [
+    {id:0, label:"بيانات الطلب"},
+    {id:1, label:"التقييم الوصفي"},
+  ];
+
+  const WEIGHTS = { op:30, st:20, tc:25, rk:25 };
+  const MAXRAW  = { op:35, st:25, tc:24, rk:16 };
+
+  let currentSection = 0;
+
+  // ---------- Build progress rail & side nav ----------
+  const rail = document.getElementById('progressRail');
+  const navItems = document.getElementById('navItems');
+  SECTIONS.forEach((s, i) => {
+    const step = document.createElement('div');
+    step.className = 'progress-step';
+    step.dataset.idx = i;
+    step.innerHTML = `<span class="num">${i+1}</span>${s.label}`;
+    step.addEventListener('click', () => goTo(i));
+    rail.appendChild(step);
+
+    const item = document.createElement('div');
+    item.className = 'nav-item';
+    item.dataset.idx = i;
+    item.innerHTML = `<span class="dot"></span><span>${s.label}</span>`;
+    item.addEventListener('click', () => goTo(i));
+    navItems.appendChild(item);
+  });
+
+  function goTo(idx){
+    currentSection = idx;
+    document.querySelectorAll('.section').forEach(sec => {
+      sec.classList.toggle('active', Number(sec.dataset.section) === idx);
+    });
+    document.querySelectorAll('.progress-step').forEach(el => {
+      const i = Number(el.dataset.idx);
+      el.classList.toggle('active', i === idx);
+      el.classList.toggle('done', i < idx);
+    });
+    document.querySelectorAll('.side-nav .nav-item').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.idx) === idx);
+    });
+    document.getElementById('btnPrev').disabled = idx === 0;
+    document.getElementById('btnNext').textContent = idx === SECTIONS.length - 1 ? '✓ إرسال الطلب' : 'التالي ←';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.getElementById('btnPrev').addEventListener('click', () => { if(currentSection>0) goTo(currentSection-1); });
+  document.getElementById('btnNext').addEventListener('click', () => {
+    if(currentSection < SECTIONS.length - 1) goTo(currentSection+1);
+    else submitForm();
+  });
+
+  // ---------- Gate ----------
+  const gateItems = [
+    "إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة",
+    "وجود مالك أعمال (Business Owner) محدد",
+    "توفر فريق داعم من الإدارة الطالبة",
+    "الاستعداد للمشاركة في التحليل والاختبار والتشغيل",
+    "توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)",
+    "توفر النماذج والتقارير والوثائق الداعمة ذات العلاقة",
+  ];
+  const gateList = document.getElementById('gateList');
+  gateItems.forEach((txt, i) => {
+    const row = document.createElement('div');
+    row.className = 'gate-item';
+    row.innerHTML = `
+      <span class="gi-text">${txt}</span>
+      <div class="yn" style="max-width:160px;">
+        <label><input type="radio" name="gate_${i}" value="نعم"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="gate_${i}" value="لا"><span class="yn-btn no">لا</span></label>
+      </div>`;
+    gateList.appendChild(row);
+  });
+
+  function evalGate(){
+    let answered = 0, noCount = 0;
+    gateItems.forEach((_, i) => {
+      const sel = document.querySelector(`input[name="gate_${i}"]:checked`);
+      if(sel){ answered++; if(sel.value === 'لا') noCount++; }
+    });
+    document.getElementById('gateBadge').textContent = `${answered} / ${gateItems.length}`;
+    const banner = document.getElementById('gateBanner');
+    const txt = document.getElementById('gateBannerText');
+    banner.classList.remove('ok','bad','neutral');
+    let status = 'pending';
+    if(answered < gateItems.length){
+      banner.classList.add('neutral');
+      txt.textContent = 'أكمل تعبئة جميع البنود لعرض نتيجة البوابة';
+    } else if(noCount > 0){
+      banner.classList.add('bad');
+      txt.textContent = `غير مكتمل — يوجد ${noCount} ${noCount===1?'بند':'بنود'} غير متوفر. أعد الطلب لمقدّمه لاستكمال المتطلبات.`;
+      status = 'bad';
+    } else {
+      banner.classList.add('ok');
+      txt.textContent = 'مكتمل — الطلب جاهز للانتقال إلى التقييم النقاطي.';
+      status = 'ok';
     }
- 
-    function formToObject(){
-      const form = document.getElementById("projectForm");
-      const data = {};
-      new FormData(form).forEach((value, key) => {
-        data[key] = value;
+    document.getElementById('resultGateStatus').textContent =
+      status === 'ok' ? 'البوابة: مكتملة' : status === 'bad' ? 'البوابة: غير مكتملة' : 'البوابة: قيد التعبئة';
+    return status;
+  }
+  gateList.addEventListener('change', () => { evalGate(); persist(); });
+
+  // ---------- Scoring ----------
+  function sumRadioGroup(names){
+    return names.reduce((acc, n) => {
+      const el = document.querySelector(`input[name="${n}"]:checked`);
+      return acc + (el ? Number(el.value) : 0);
+    }, 0);
+  }
+
+  function recalcScores(){
+    const opRaw = sumRadioGroup(['op_scope','op_users','op_improve']);
+    const stRaw = sumRadioGroup(['st_plan','st_one','st_multi']);
+    const tcRaw = sumRadioGroup(['tc_infra1','tc_infra2','tc_infra3','tc_f1','tc_f2','tc_f3','tc_f4','tc_f5','tc_f6']);
+    const rkRaw = sumRadioGroup(['rk_impact','rk_level']);
+
+    document.getElementById('opRawDisplay').textContent = opRaw;
+    document.getElementById('stRawDisplay').textContent = stRaw;
+    document.getElementById('tcRawDisplay').textContent = tcRaw;
+    document.getElementById('rkRawDisplay').textContent = rkRaw;
+
+    const opW = (opRaw / MAXRAW.op) * WEIGHTS.op;
+    const stW = (stRaw / MAXRAW.st) * WEIGHTS.st;
+    const tcW = (tcRaw / MAXRAW.tc) * WEIGHTS.tc;
+    const rkW = (rkRaw / MAXRAW.rk) * WEIGHTS.rk;
+    const total = Math.round((opW + stW + tcW + rkW) * 10) / 10;
+
+    document.getElementById('detailTotalBadge').textContent = `${total} / 100`;
+    document.getElementById('sideScore').textContent = total.toFixed(1);
+    document.getElementById('resultScoreNum').textContent = total.toFixed(1);
+
+    let priority = 'منخفضة', pColor = 'red';
+    if(total >= 80){ priority = 'عالية'; pColor = 'green'; }
+    else if(total >= 60){ priority = 'متوسطة'; pColor = 'amber'; }
+
+    const sidePill = document.getElementById('sidePriorityPill');
+    sidePill.textContent = `الأولوية: ${priority}`;
+    sidePill.style.background = `var(--${pColor}-bg)`;
+    sidePill.style.color = `var(--${pColor})`;
+
+    const resPill = document.getElementById('resultPriorityPill');
+    resPill.textContent = `الأولوية: ${priority}`;
+    resPill.style.background = pColor === 'green' ? 'rgba(47,125,82,0.22)' : pColor === 'amber' ? 'rgba(168,116,30,0.22)' : 'rgba(179,64,47,0.22)';
+    resPill.style.color = pColor === 'green' ? '#bdeed0' : pColor === 'amber' ? '#f3d99c' : '#f3bfb2';
+
+    // breakdown
+    const breakdown = document.getElementById('breakdownList');
+    breakdown.innerHTML = '';
+    const axes = [
+      {label:'الأثر التشغيلي', val: opW, max: WEIGHTS.op},
+      {label:'المواءمة الاستراتيجية', val: stW, max: WEIGHTS.st},
+      {label:'الجاهزية والجدوى الفنية', val: tcW, max: WEIGHTS.tc},
+      {label:'التأثير والمخاطر', val: rkW, max: WEIGHTS.rk},
+    ];
+    axes.forEach(a => {
+      const pct = a.max ? (a.val / a.max) * 100 : 0;
+      const row = document.createElement('div');
+      row.className = 'bd-row';
+      row.innerHTML = `
+        <div class="bd-top"><b>${a.label}</b><span>${a.val.toFixed(1)} / ${a.max}</span></div>
+        <div class="bd-bar"><div class="bd-fill" style="width:${pct}%"></div></div>`;
+      breakdown.appendChild(row);
+    });
+
+    return total;
+  }
+
+  document.getElementById('panel') // no-op guard
+  document.querySelectorAll('.seg input, .yn input').forEach(el => {
+    el.addEventListener('change', () => { recalcScores(); persist(); });
+  });
+
+  // ---------- conditional reveal textboxes ----------
+  document.querySelectorAll('.reveal-trigger').forEach(el => {
+    el.addEventListener('change', () => {
+      const boxId = el.dataset.reveal;
+      const box = document.getElementById(boxId);
+      if(!box) return;
+      if(el.value === 'نعم' && el.checked){
+        box.classList.add('open');
+      } else if(el.checked){
+        box.classList.remove('open');
+        const input = box.querySelector('input, textarea');
+        if(input) input.value = '';
+      }
+    });
+  });
+
+  // ---------- file upload widgets ----------
+  function formatSize(bytes){
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  // Global registry so submitForm() can gather every selected file.
+  const UPLOADS = {};
+
+  document.querySelectorAll('.file-upload').forEach(wrap => {
+    const targetId = wrap.dataset.target;
+    const input = document.getElementById(targetId);
+    const list = document.getElementById(targetId + '_list');
+    const drop = wrap.querySelector('.file-drop');
+    const files = [];        // mutated in place so the reference stays valid
+    UPLOADS[targetId] = files;
+
+    function render(){
+      list.innerHTML = '';
+      files.forEach((f, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.innerHTML = `
+          <span class="fc-name">📎 ${f.name} <span class="fc-size">(${formatSize(f.size)})</span></span>
+          <button type="button" class="fc-remove" data-idx="${idx}" title="إزالة الملف">✕</button>`;
+        list.appendChild(chip);
       });
- 
-      form.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-        data[chk.name] = chk.checked;
-      });
- 
-      data.evaluationResult = calculateAll();
-      data.exportedAt = new Date().toISOString();
-      return data;
-    }
- 
-    function saveDraft(){
-      localStorage.setItem("technicalProjectRequestDraft", JSON.stringify(formToObject()));
-      alert("تم حفظ المسودة على هذا الجهاز.");
-    }
- 
-    function loadDraft(){
-      const saved = localStorage.getItem("technicalProjectRequestDraft");
-      if(!saved){
-        alert("لا توجد مسودة محفوظة.");
-        return;
-      }
- 
-      const data = JSON.parse(saved);
-      const form = document.getElementById("projectForm");
- 
-      Object.keys(data).forEach(key => {
-        const field = form.elements[key];
-        if(!field) return;
- 
-        if(field.type === "checkbox"){
-          field.checked = !!data[key];
-        } else {
-          field.value = data[key];
-        }
-      });
- 
-      calculateAll();
-      alert("تم استرجاع المسودة.");
-    }
- 
-    function exportJSON(){
-      const data = formToObject();
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const safeName = (data.projectName || "technical-project-request").replace(/[^\u0600-\u06FF\w\-]+/g, "_");
-      a.href = url;
-      a.download = `${safeName}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
- 
-    function resetForm(){
-      if(confirm("هل تريد مسح جميع البيانات؟")){
-        document.getElementById("projectForm").reset();
-        document.querySelectorAll(".weighted-score").forEach(el => el.textContent = "0");
-        calculateAll();
-      }
     }
 
-    async function submitRequest(){
-      const form = document.getElementById("projectForm");
+    input.addEventListener('change', () => {
+      files.push(...Array.from(input.files));
+      render();
+      input.value = '';
+    });
 
-      // native required-field check
-      if(!form.checkValidity()){
-        form.reportValidity();
-        return;
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('.fc-remove');
+      if(!btn) return;
+      const idx = Number(btn.dataset.idx);
+      files.splice(idx, 1);
+      render();
+    });
+
+    ['dragover','dragenter'].forEach(ev => {
+      drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('dragover'); });
+    });
+    ['dragleave','drop'].forEach(ev => {
+      drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('dragover'); });
+    });
+    drop.addEventListener('drop', (e) => {
+      const dropped = Array.from(e.dataTransfer.files || []);
+      if(dropped.length){
+        files.push(...dropped);
+        render();
       }
+    });
+  });
 
-      const data = formToObject();               // your existing serializer
-      const fd = new FormData();
-      fd.append("payload", JSON.stringify(data)); // all form data as JSON
 
-      // attach uploaded files
-      const fileInput = document.getElementById("attachments");
-      if(fileInput && fileInput.files){
-        for(const f of fileInput.files){
-          fd.append("attachments[]", f, f.name);
-        }
-      }
+  document.querySelectorAll('#applicGrid input').forEach(el => {
+    el.addEventListener('change', () => {
+      document.querySelectorAll('.applic-card').forEach(c => c.classList.remove('checked'));
+      el.closest('.applic-card').classList.add('checked');
+      persist();
+    });
+  });
 
-      try{
-        const res = await fetch("submit.php", { method:"POST", body: fd });
-        const result = await res.json();
-        if(result.ok){
-          let msg = "تم إرسال الطلب وحفظه بنجاح.\nالمسار: " + result.path;
-          if(result.emailErrors && result.emailErrors.length){
-            msg += "\n\nملاحظة: تم الحفظ لكن تعذّر إرسال بعض الإيميلات.";
-          }
-          alert(msg);
-        } else {
-          alert("خطأ: " + (result.error || "تعذّر إرسال الطلب"));
-        }
-      } catch(err){
-        alert("تعذّر الاتصال بالخادم: " + err.message);
-      }
+  // signoff table
+  const signers = ['الإدارة الطالبة','تقنية المعلومات','اللجنة المختصة / الجهة المخوّلة بالاعتماد'];
+  const tbody = document.getElementById('signoffBody');
+  signers.forEach((s, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:13px;font-weight:600;">${s}</td>
+      <td><input type="text" id="sign_name_${i}" placeholder="الاسم"></td>
+      <td><input type="text" id="sign_sig_${i}" placeholder="التوقيع"></td>
+      <td><input type="date" id="sign_date_${i}"></td>`;
+    tbody.appendChild(tr);
+  });
+
+  // ---------- meta header ----------
+  function updateMeta(){
+    document.getElementById('metaRef').textContent = 'يُنشأ تلقائياً';
+    document.getElementById('metaDate').textContent = new Date().toLocaleDateString('ar-SA');
+  }
+
+  // ---------- persistence (in-memory only, per skill rules: no localStorage) ----------
+  let STATE = {};
+  function persist(){
+    // intentionally in-memory; collects all field values for potential export
+    STATE.timestamp = new Date().toISOString();
+  }
+
+  // ---------- toast ----------
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // ---------- reset ----------
+  document.getElementById('btnReset').addEventListener('click', () => {
+    if(!confirm('سيتم مسح جميع البيانات المدخلة في هذه الجلسة. هل تريد المتابعة؟')) return;
+    document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(el => el.value = '');
+    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
+    document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+    document.querySelectorAll('.applic-card').forEach(c => c.classList.remove('checked'));
+    document.querySelectorAll('.reveal-box').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.file-list').forEach(l => l.innerHTML = '');
+    location.reload();
+    return;
+    evalGate();
+    recalcScores();
+    updateMeta();
+    goTo(0);
+    showToast('تمت إعادة تعيين النموذج');
+  });
+
+  document.getElementById('btnPrint').addEventListener('click', () => window.print());
+
+  // ---------- submit (applicant) ----------
+  const val   = id => (document.getElementById(id)?.value || '').trim();
+  const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+
+  function collectPayload(){
+    return {
+      // Step 1 — بيانات الطلب
+      projectName:    val('f_projectName'),
+      department:     val('f_dept'),
+      applicantName:  val('f_submitter'),
+      applicantEmail: val('f_email'),
+      submitDate:     val('f_submitDate'),
+      requestType:    val('f_reqType'),
+      // Step 2 — التقييم الوصفي
+      goal:            val('q_goal'),
+      strategicAlign:  val('q_strategicAlign'),
+      businessOwnerDetail:      val('ba_owner_detail_text'),
+      supportTeamDetail:        val('ba_team_detail_text'),
+      readyToParticipateDetail: val('ba_ready_detail_text'),
+      attestation: document.getElementById('ba_attest')?.checked || false,
+    };
+  }
+
+  async function submitForm(){
+    const payload = collectPayload();
+
+    // ---- required-field validation ----
+    const missing = [];
+    if(!payload.projectName)   missing.push('اسم المشروع / الطلب');
+    if(!payload.department)    missing.push('الإدارة الطالبة');
+    if(!payload.applicantName) missing.push('مقدم الطلب');
+    if(!payload.applicantEmail)missing.push('البريد الإلكتروني');
+    if(!payload.submitDate)    missing.push('تاريخ التقديم');
+    if(!payload.requestType)   missing.push('نوع الطلب');
+    if(missing.length){
+      showToast('يرجى تعبئة: ' + missing.join('، '));
+      goTo(0);
+      return;
     }
- 
-    renderCriteria("businessCriteria", BUSINESS_CRITERIA);
-    calculateAll();
-  </script>
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.applicantEmail)){
+      showToast('صيغة البريد الإلكتروني غير صحيحة');
+      goTo(0);
+      return;
+    }
+
+    // ---- required step-2 fields ----
+    const has = key => (UPLOADS[key] || []).length > 0;
+    const missing2 = [];
+    if(!payload.goal)                     missing2.push('الهدف من الطلب');
+    if(!payload.strategicAlign)           missing2.push('المواءمة مع الأهداف الاستراتيجية');
+    if(!payload.businessOwnerDetail)      missing2.push('وجود مالك أعمال (Business Owner)');
+    if(!payload.supportTeamDetail)        missing2.push('توفر فريق داعم من الإدارة الطالبة');
+    if(!payload.readyToParticipateDetail) missing2.push('الاستعداد للمشاركة في التحليل والاختبار والتشغيل');
+    if(!has('ba_asis_file'))              missing2.push('الإجراءات الحالية (As-Is)');
+    if(!has('ba_tobe_file'))              missing2.push('الإجراءات المستهدفة (To-Be)');
+    if(!has('ba_forms_file'))             missing2.push('النماذج والتقارير ذات العلاقة');
+    if(!has('ba_docs_file'))              missing2.push('أي وثائق داعمة للطلب');
+    if(missing2.length){
+      showToast('يرجى استكمال: ' + missing2.join('، '));
+      goTo(1);
+      return;
+    }
+    if(!payload.attestation){
+      showToast('يجب الإقرار بصحة واكتمال البيانات المقدمة');
+      goTo(1);
+      return;
+    }
+
+    // ---- build multipart body ----
+    const fd = new FormData();
+    fd.append('payload', JSON.stringify(payload));
+    ['ba_asis_file','ba_tobe_file','ba_forms_file','ba_docs_file'].forEach(key => {
+      (UPLOADS[key] || []).forEach(f => fd.append('attachments[]', f, f.name));
+    });
+
+    const btn = document.getElementById('btnNext');
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = 'جارٍ الإرسال...';
+
+    try {
+      const res  = await fetch('submit.php', { method:'POST', body: fd });
+      const data = await res.json();
+      if(!res.ok || !data.ok){
+        throw new Error(data.error || 'تعذّر إرسال الطلب');
+      }
+      showSuccess(data);
+    } catch(err){
+      showToast('حدث خطأ أثناء الإرسال: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
+
+  function showSuccess(data){
+    const emailNote = (data.emailErrors && data.emailErrors.length)
+      ? `<p style="color:var(--amber);font-size:13px;">تم حفظ الطلب، لكن تعذّر إرسال بعض الإشعارات البريدية.</p>`
+      : `<p style="font-size:13.5px;color:var(--ink-soft);">تم إرسال إشعار الاستلام إلى بريدك، وإشعار إلى إدارة تقنية المعلومات.</p>`;
+    const panel = document.querySelector('.panel');
+    panel.innerHTML = `
+      <div class="section active" style="text-align:center;">
+        <div style="font-size:54px;line-height:1;margin:14px 0;">✅</div>
+        <h2 style="color:var(--saudi-dark);margin:0 0 10px;">تم استلام طلبك بنجاح</h2>
+        <p style="font-size:14.5px;color:var(--ink);max-width:520px;margin:0 auto 6px;">
+          طلبك الآن <strong>قيد المراجعة والمعالجة</strong> من قبل إدارة تقنية المعلومات.
+        </p>
+        ${emailNote}
+        <div style="display:inline-block;margin-top:18px;padding:14px 22px;border:1.5px dashed var(--line);border-radius:15px;background:#fff;">
+          <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">الرقم المرجعي</div>
+          <div class="mono" style="font-size:22px;font-weight:700;color:var(--saudi-dark);">${data.reference || '—'}</div>
+        </div>
+        <div style="margin-top:26px;">
+          <button class="btn btn-primary" onclick="location.reload()">تقديم طلب جديد</button>
+        </div>
+      </div>`;
+    document.getElementById('metaRef').textContent = data.reference || '—';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // ---------- init ----------
+  goTo(0);
+  evalGate();
+  recalcScores();
+  updateMeta();
+
+})();
+</script>
+
 </body>
 </html>

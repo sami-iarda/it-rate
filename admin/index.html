@@ -1,534 +1,668 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>لوحة تحكم طلبات المشاريع التقنية</title>
-  <style>
-    :root{
-      --bg:#f6f8fb; --card:#ffffff; --text:#172033; --muted:#667085;
-      --line:#e6eaf0; --primary:#14532d; --primary-2:#166534; --soft:#eef7f0;
-      --shadow:0 12px 30px rgba(16,24,40,.08); --radius:18px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:"Tahoma","Arial",sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
-    .container{width:min(1180px,calc(100% - 32px));margin:24px auto}
-    .hero{background:linear-gradient(135deg,#123c2c 0%,#1f7a47 100%);color:#fff;padding:24px 28px;border-radius:24px;box-shadow:var(--shadow);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-    .hero h1{margin:0 0 6px;font-size:24px}
-    .hero p{margin:0;opacity:.92;font-size:14px}
-    button{border:0;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;font-family:inherit;transition:.15s ease}
-    button.primary{background:var(--primary);color:#fff}
-    button.secondary{background:#fff;color:var(--primary);border:1px solid var(--line)}
-    button.ghost{background:rgba(255,255,255,.15);color:#fff}
-    button.danger{background:#fff1f2;color:#9f1239;border:1px solid #ffe4e6}
-    button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(16,24,40,.08)}
-    button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
-    .card h2{margin:0 0 14px;font-size:19px;color:var(--primary)}
-    label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px;font-weight:700}
-    input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:#fff;color:var(--text)}
-    textarea{min-height:90px;resize:vertical}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-2);box-shadow:0 0 0 3px var(--soft)}
-    /* login */
-    .login-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
-    .login-card{width:min(420px,100%)}
-    .login-card .logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#123c2c,#1f7a47);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px}
-    .login-card h2{text-align:center}
-    .msg{padding:10px 12px;border-radius:12px;font-size:13px;margin-top:12px;display:none}
-    .msg.err{background:#fff1f2;color:#9f1239;border:1px solid #ffe4e6;display:block}
-    .msg.ok{background:var(--soft);color:var(--primary);border:1px solid #cfe9d6;display:block}
-    /* table */
-    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-    .stat{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow)}
-    .stat .n{font-size:26px;font-weight:800;color:var(--primary)}
-    .stat .l{font-size:13px;color:var(--muted)}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
-    .toolbar input,.toolbar select{width:auto;flex:1;min-width:160px}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    th,td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}
-    th{background:#f6f8fb;color:var(--muted);font-size:13px;position:sticky;top:0}
-    tbody tr{cursor:pointer;transition:.12s}
-    tbody tr:hover{background:var(--soft)}
-    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
-    .b-new{background:#eff6ff;color:#1d4ed8}
-    .b-in-review{background:#fff7ed;color:#c2410c}
-    .b-approved{background:#eef7f0;color:#166534}
-    .b-rejected{background:#fff1f2;color:#9f1239}
-    .b-needs-info{background:#f5f3ff;color:#6d28d9}
-    .sent{color:#166534;font-weight:700}
-    .muted{color:var(--muted);font-size:12px}
-    /* modal */
-    .overlay{position:fixed;inset:0;background:rgba(16,24,40,.5);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;z-index:50}
-    .overlay.open{display:flex}
-    .modal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);width:min(860px,100%);padding:24px;margin:auto}
-    .modal .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
-    .modal h2{margin:0;color:var(--primary)}
-    .x{background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 8px}
-    .kv{display:grid;grid-template-columns:200px 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
-    .kv .k,.kv .v{padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px}
-    .kv .k{background:#f6f8fb;font-weight:700;color:var(--muted)}
-    .kv .v{word-break:break-word}
-    .kv >div:nth-last-child(-n+2){border-bottom:0}
-    .files a{display:inline-block;margin:4px 6px 0 0;padding:6px 12px;background:var(--soft);color:var(--primary);border-radius:10px;text-decoration:none;font-size:13px;font-weight:700}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .section-title{font-size:15px;color:var(--primary);font-weight:800;margin:18px 0 4px;border-top:1px solid var(--line);padding-top:16px}
-    @media(max-width:640px){.kv{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
-    /* IT evaluation form (admin fills sections 4-6) */
-    .criteria-table{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:6px}
-    .criteria-table th{color:var(--muted);text-align:right;font-size:12px;padding:0 8px;white-space:nowrap}
-    .criteria-table td{background:#fbfcfe;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;vertical-align:middle}
-    .criteria-table td:first-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
-    .criteria-table td:last-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
-    .criterion-title{font-weight:700;font-size:13px}
-    .criterion-desc{color:var(--muted);font-size:11px;margin-top:2px}
-    .weight{font-weight:800;color:var(--primary);white-space:nowrap}
-    .score-select{min-width:92px;width:auto}
-    .weighted-score{font-weight:800;text-align:center;min-width:52px}
-    .ev-panel{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px}
-    .ev-score{font-size:34px;font-weight:900;color:var(--primary);line-height:1.1}
-    .ev-score small{font-size:14px;color:var(--muted)}
-    .ev-badge{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:800;font-size:12px;margin-top:6px}
-    .ev-badge.critical{background:#ecfdf3;color:#05603a}
-    .ev-badge.high{background:#eff6ff;color:#1d4ed8}
-    .ev-badge.medium{background:#fff7ed;color:#c2410c}
-    .ev-badge.low{background:#f8fafc;color:#475467}
-    .ev-badge.rejected{background:#fff1f2;color:#be123c}
-    .ev-lines{display:grid;gap:2px;margin-top:12px;font-size:13px}
-    .ev-lines >div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
-    .ev-lines >div:last-child{border-bottom:0}
-    .ev-decision{margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fbfcfe;font-weight:700;font-size:13px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة تحكم — تقييم طلبات المشاريع التقنية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --saudi:#006c35; --saudi-dark:#004c25; --saudi-darker:#00351a; --saudi-light:#e6f6ee;
+    --gold:#c99a2e; --gold-light:#e8c873;
+    --bg:#f4f7fb; --paper:#fbfaf6; --paper-2:#f1ede1;
+    --ink:#172033; --ink-soft:#566274; --line:#dfe6d8; --white:#fff;
+    --green:#1f7a44; --green-bg:#e6f6ee; --amber:#a8741e; --amber-bg:#fbf0dd; --red:#b42318; --red-bg:#fbeae6;
+    --radius:16px; --shadow-1:0 4px 14px rgba(0,76,37,.08); --shadow-2:0 20px 55px rgba(0,76,37,.16);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:linear-gradient(135deg,#f8f2e5 0%,#f7fbf8 38%,#eaf7ef 100%);
+    color:var(--ink); font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif; line-height:1.65; min-height:100vh;
+  }
+  .mono{font-family:'IBM Plex Mono','IBM Plex Sans Arabic',monospace}
+  a{color:var(--saudi-dark)}
+  .container{width:min(1200px,calc(100% - 32px));margin:22px auto}
+  .hidden{display:none !important}
+
+  /* top bar */
+  .topbar{
+    background:linear-gradient(135deg,rgba(0,108,53,.97),rgba(0,76,37,.96) 55%,var(--saudi-darker) 100%);
+    color:#fff;border-radius:20px;padding:20px 26px;box-shadow:var(--shadow-2);
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px;
+  }
+  .topbar h1{margin:0;font-size:21px}
+  .topbar .sub{margin:4px 0 0;font-size:13px;color:rgba(255,255,255,.82)}
+  .topbar .who{font-size:12.5px;color:#cfe8d8;font-family:'IBM Plex Mono',monospace}
+
+  button{border:0;padding:10px 18px;border-radius:12px;cursor:pointer;font-weight:700;font-family:inherit;font-size:13.5px;transition:.15s}
+  .btn-primary{background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));color:#fff;box-shadow:0 6px 16px rgba(0,108,53,.25)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#a77717);color:#fff}
+  .btn-ghost{background:#fff;color:var(--ink-soft);border:1.5px solid var(--line)}
+  .btn-light{background:rgba(255,255,255,.15);color:#fff}
+  button:hover{transform:translateY(-1px)}
+  button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+  .card{background:var(--paper);border:1px solid rgba(0,108,53,.13);border-radius:var(--radius);box-shadow:var(--shadow-1);padding:22px;margin-bottom:18px}
+  label{display:block;font-size:12px;font-weight:700;color:#465267;margin:0 0 6px}
+  input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid #d9e6dd;border-radius:12px;font-family:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  textarea{min-height:90px;resize:vertical;line-height:1.6}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--saudi);box-shadow:0 0 0 3px rgba(0,108,53,.14)}
+
+  /* login */
+  .login-wrap{min-height:78vh;display:flex;align-items:center;justify-content:center}
+  .login-card{width:min(410px,100%);text-align:center}
+  .login-card .logo{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px}
+  .login-card h2{margin:2px 0 4px;color:var(--saudi-dark)}
+  .login-card p{margin:0 0 14px;color:var(--ink-soft);font-size:13px}
+  .login-card label{text-align:right}
+  .msg{padding:10px 12px;border-radius:12px;font-size:13px;margin-top:12px;display:none;text-align:right}
+  .msg.err{background:var(--red-bg);color:var(--red);display:block}
+  .msg.ok{background:var(--green-bg);color:var(--green);display:block}
+
+  /* stats + table */
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .stat{flex:1;min-width:150px;background:var(--paper);border:1px solid rgba(0,108,53,.13);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow-1)}
+  .stat .n{font-size:28px;font-weight:800;color:var(--saudi-dark);font-family:'IBM Plex Mono',monospace}
+  .stat .l{font-size:12.5px;color:var(--ink-soft)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .toolbar input,.toolbar select{flex:1;min-width:170px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th{background:#f3f7f2;color:var(--ink-soft);font-size:12px;font-weight:700}
+  tbody tr{cursor:pointer;transition:.12s}
+  tbody tr:hover{background:var(--saudi-light)}
+  .badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:11.5px;font-weight:700}
+  .b-new{background:#eff6ff;color:#1d4ed8}
+  .b-evaluated{background:var(--green-bg);color:var(--green)}
+  .sent{color:var(--green);font-weight:700;font-size:11.5px}
+  .muted{color:var(--ink-soft);font-size:12px}
+  .empty{padding:40px;text-align:center;color:var(--ink-soft)}
+
+  /* detail */
+  .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .detail-head h2{margin:0;color:var(--saudi-dark);font-size:20px}
+  .kv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 22px;margin-top:6px}
+  .kv{display:flex;flex-direction:column;gap:2px}
+  .kv .k{font-size:11.5px;color:var(--ink-soft);font-weight:700}
+  .kv .v{font-size:14px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+  .kv.full{grid-column:1/-1}
+  .att-list{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  .att-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px}
+  .att-chip a{font-weight:700;text-decoration:none}
+
+  /* ===== ported evaluation components (from the applicant form) ===== */
+  .eval-head{border-top:4px solid;border-image:linear-gradient(90deg,var(--saudi),var(--gold),var(--saudi)) 1;padding-top:14px;margin-top:4px}
+  .eval-head h2{color:var(--saudi-dark);font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+  .eval-head h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(201,154,46,.16)}
+  .eval-head p{margin:0 0 4px;color:var(--ink-soft);font-size:13px}
+  .group-title{font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--saudi-dark);margin:22px 0 12px;display:flex;align-items:center;gap:10px;text-transform:uppercase}
+  .group-title::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--gold) 0 6px,transparent 6px 11px);opacity:.6}
+  .criterion{border:1.5px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:13px;background:#fff}
+  .criterion:focus-within{border-color:var(--saudi);box-shadow:0 0 0 3px rgba(0,108,53,.08)}
+  .criterion-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+  .criterion-title{font-size:14px;font-weight:700;color:var(--ink)}
+  .criterion-title small{display:block;font-weight:400;color:var(--ink-soft);font-size:12px;margin-top:3px}
+  .seg{display:flex;flex-wrap:wrap;gap:8px}
+  .seg label{flex:1 1 auto;min-width:max-content}
+  .seg input{display:none}
+  .seg .seg-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+  .seg input:checked + .seg-btn{background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));border-color:var(--saudi-dark);color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(0,108,53,.25)}
+  .seg .seg-btn .pts{font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.8}
+  .yn{display:flex;gap:8px}
+  .yn label{flex:1}
+  .yn input{display:none}
+  .yn .yn-btn{display:block;text-align:center;padding:9px;border:1.5px solid var(--line);border-radius:12px;font-size:13px;background:#fff;color:var(--ink-soft);cursor:pointer;transition:all .15s;font-weight:600}
+  .yn input:checked + .yn-btn.yes{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+  .yn input:checked + .yn-btn.no{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
+  .axis-total{margin-top:6px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));color:#fff;padding:13px 18px;border-radius:14px;box-shadow:0 8px 20px rgba(0,108,53,.2)}
+  .axis-total .lbl{font-size:13px;color:rgba(255,255,255,.85)}
+  .axis-total .val{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:700}
+  .gate-item{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;background:#fff}
+  .gate-item .gi-text{font-size:13.5px;color:var(--ink);max-width:70%}
+  .gate-banner{display:flex;align-items:center;gap:12px;padding:15px 18px;border-radius:14px;font-weight:700;font-size:14px;margin-top:14px;border:1.5px solid transparent}
+  .gate-banner.ok{background:var(--green-bg);color:var(--green);border-color:#bfe3cf}
+  .gate-banner.bad{background:var(--red-bg);color:var(--red);border-color:#f0c4ba}
+  .gate-banner.neutral{background:var(--paper-2);color:var(--ink-soft);border-color:var(--line)}
+  .result-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;margin-bottom:8px}
+  .result-score-card{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(0,108,53,.97),rgba(0,76,37,.96) 55%,var(--saudi-darker) 100%);color:#fff;border-radius:16px;padding:26px;box-shadow:var(--shadow-2)}
+  .result-score-card .rsc-label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px;font-family:'IBM Plex Mono',monospace;font-weight:700}
+  .result-score-card .rsc-num{font-family:'IBM Plex Mono',monospace;font-size:58px;font-weight:700;line-height:1}
+  .result-score-card .rsc-num span{font-size:22px;color:#cfe8d8;font-weight:400}
+  .result-score-card .rsc-priority{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:7px 16px;border-radius:999px;font-weight:700;font-size:13.5px}
+  .result-breakdown{background:#fff;border:1.5px solid rgba(0,108,53,.16);border-radius:16px;padding:20px;box-shadow:var(--shadow-1)}
+  .result-breakdown h4{margin:0 0 14px;font-size:13px;color:var(--ink-soft);text-transform:uppercase;font-weight:700}
+  .bd-row{margin-bottom:13px}
+  .bd-row .bd-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .bd-row .bd-top b{color:var(--ink)}
+  .bd-row .bd-top span{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft)}
+  .bd-bar{height:9px;background:var(--paper-2);border-radius:999px;overflow:hidden}
+  .bd-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--saudi),var(--gold));transition:width .4s}
+  .applic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
+  .applic-card{border:1.5px solid var(--line);border-radius:13px;padding:13px;text-align:center;font-size:12.5px;cursor:pointer;background:#fff;transition:all .15s;font-weight:600}
+  .applic-card input{display:none}
+  .applic-card.checked{border-color:var(--saudi-dark);background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));color:#fff;font-weight:700;box-shadow:0 6px 16px rgba(0,108,53,.25)}
+  .signoff-table{width:100%;border-collapse:collapse;margin-top:8px}
+  .signoff-table th{font-size:11.5px;text-transform:uppercase;color:var(--ink-soft);text-align:right;padding:8px 10px;border-bottom:2px solid var(--line);font-weight:700}
+  .signoff-table td{padding:8px 10px;border-bottom:1px solid var(--line)}
+  .signoff-table input{padding:7px 10px;font-size:13px}
+  .section-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--saudi-light);border:1px solid rgba(0,108,53,.2);color:var(--saudi-dark);font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap}
+
+  .save-bar{position:sticky;bottom:0;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 -6px 20px rgba(0,76,37,.06);margin-top:6px}
+  .save-bar .chk{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink)}
+  .save-bar .chk input{width:auto}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--saudi),var(--saudi-dark));color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;box-shadow:var(--shadow-2);opacity:0;pointer-events:none;transition:all .3s;z-index:100;font-weight:600}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:linear-gradient(135deg,var(--red),#8f1d13)}
+
+  @media (max-width:820px){
+    .kv-grid{grid-template-columns:1fr}
+    .result-hero{grid-template-columns:1fr}
+    .applic-grid{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
 </head>
 <body>
-<div class="container">
 
-  <!-- ============ LOGIN VIEW ============ -->
-  <div id="loginView" class="login-wrap">
-    <div class="card login-card">
-      <div class="logo">🔐</div>
-      <h2>لوحة تحكم الطلبات</h2>
-      <form id="loginForm">
-        <label>البريد الإلكتروني</label>
-        <input type="email" id="email" autocomplete="username" placeholder="sami@gmail.com" required />
-        <label>كلمة المرور</label>
-        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required />
-        <div id="loginMsg" class="msg"></div>
-        <button class="primary" type="submit" style="width:100%;margin-top:16px">تسجيل الدخول</button>
-      </form>
+<!-- ================= LOGIN ================= -->
+<div class="container login-wrap" id="loginView">
+  <div class="card login-card">
+    <div class="logo">🔐</div>
+    <h2>لوحة تحكم تقنية المعلومات</h2>
+    <p>تسجيل الدخول لإدارة وتقييم الطلبات</p>
+    <form id="loginForm">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="loginEmail" placeholder="admin@example.com" dir="ltr" style="text-align:right" autocomplete="username">
+      <label style="margin-top:12px">كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:16px">دخول</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD (LIST) ================= -->
+<div class="container hidden" id="listView">
+  <div class="topbar">
+    <div>
+      <h1>لوحة تحكم — طلبات المشاريع التطويرية</h1>
+      <p class="sub">استعراض الطلبات، تعبئة التقييم النقاطي، واعتماد القرار.</p>
+    </div>
+    <div style="text-align:left">
+      <div class="who" id="whoami">—</div>
+      <button class="btn-light" id="btnLogout" style="margin-top:8px">تسجيل الخروج</button>
     </div>
   </div>
 
-  <!-- ============ DASHBOARD VIEW ============ -->
-  <div id="dashView" style="display:none">
-    <div class="hero">
-      <div>
-        <h1>لوحة تحكم طلبات المشاريع التقنية</h1>
-        <p>عرض ومراجعة الطلبات وإرسال النتيجة النهائية لمقدّم الطلب</p>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span id="who" style="opacity:.9;font-size:13px"></span>
-        <button class="ghost" id="refreshBtn">↻ تحديث</button>
-        <button class="ghost" id="logoutBtn">تسجيل الخروج</button>
-      </div>
+  <div class="stats" id="stats"></div>
+
+  <div class="card">
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="بحث بالاسم، المشروع، الإدارة، الرقم المرجعي...">
+      <select id="filterStatus">
+        <option value="">كل الحالات</option>
+        <option value="new">جديد (لم يُقيَّم)</option>
+        <option value="evaluated">تم التقييم</option>
+      </select>
+      <button class="btn-ghost" id="btnRefresh">تحديث</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>الرقم المرجعي</th><th>المشروع</th><th>الإدارة</th><th>مقدم الطلب</th>
+            <th>تاريخ التقديم</th><th>النقاط</th><th>الحالة</th><th>الإشعار</th>
+          </tr>
+        </thead>
+        <tbody id="rowsBody"></tbody>
+      </table>
+    </div>
+    <div class="empty hidden" id="emptyMsg">لا توجد طلبات مطابقة.</div>
+  </div>
+</div>
+
+<!-- ================= DETAIL / EVALUATION ================= -->
+<div class="container hidden" id="detailView">
+  <div class="topbar">
+    <div>
+      <h1 id="dTitle">تفاصيل الطلب</h1>
+      <p class="sub" id="dSub">—</p>
+    </div>
+    <button class="btn-light" id="btnBack">→ رجوع للقائمة</button>
+  </div>
+
+  <!-- applicant submitted data -->
+  <div class="card">
+    <div class="detail-head"><h2>بيانات الطلب (من مقدم الطلب)</h2><span class="section-badge" id="dRef">—</span></div>
+    <div class="kv-grid" id="applicantData"></div>
+  </div>
+
+  <div class="card">
+    <div class="detail-head"><h2>المرفقات</h2></div>
+    <div class="att-list" id="attList"><div class="muted">لا توجد مرفقات.</div></div>
+  </div>
+
+  <!-- ===== Evaluation: gate ===== -->
+  <div class="card">
+    <div class="eval-head detail-head"><div><h2>بوابة اكتمال الطلب</h2><p>شروط إلزامية قبل قبول الطلب للتقييم النقاطي.</p></div><span class="section-badge" id="gateBadge">0 / 6</span></div>
+    <div id="gateList"></div>
+    <div class="gate-banner neutral" id="gateBanner"><span class="icon">●</span><span id="gateBannerText">أكمل تعبئة جميع البنود لعرض نتيجة البوابة</span></div>
+  </div>
+
+  <!-- ===== Evaluation: detailed scoring ===== -->
+  <div class="card" id="evalForm">
+    <div class="eval-head detail-head"><div><h2>التقييم التفصيلي</h2><p>الأثر التشغيلي، المواءمة الاستراتيجية، الجاهزية الفنية، والتأثير والمخاطر.</p></div><span class="section-badge mono" id="detailTotalBadge">0.0 / 100</span></div>
+
+    <div class="group-title">تصنيف الطلب (تقييم تقنية المعلومات)</div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">تصنيف الطلب</div></div>
+      <select id="q_techClass">
+        <option value="">اختر التصنيف</option>
+        <option value="تعديل على نظام قائم">تعديل على نظام قائم</option>
+        <option value="متطلب جديد في نظام قائم">متطلب جديد في نظام قائم</option>
+        <option value="نظام جديد">نظام جديد</option>
+        <option value="تكامل مع أنظمة أخرى">تكامل مع أنظمة أخرى</option>
+      </select>
     </div>
 
-    <div class="stats" id="stats"></div>
+    <div class="group-title">المحور 1 — الأثر التشغيلي <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 30)</span></div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">نطاق الاستفادة من الطلب</div></div>
+      <div class="seg">
+        <label><input type="radio" name="op_scope" value="5"><span class="seg-btn">إدارة واحدة <span class="pts">(5)</span></span></label>
+        <label><input type="radio" name="op_scope" value="8"><span class="seg-btn">عدة إدارات <span class="pts">(8)</span></span></label>
+        <label><input type="radio" name="op_scope" value="10"><span class="seg-btn">على مستوى الجهة <span class="pts">(10)</span></span></label>
+      </div>
+    </div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">عدد المستفيدين</div></div>
+      <div class="seg">
+        <label><input type="radio" name="op_users" value="3"><span class="seg-btn">أقل من 20 <span class="pts">(3)</span></span></label>
+        <label><input type="radio" name="op_users" value="6"><span class="seg-btn">20–100 <span class="pts">(6)</span></span></label>
+        <label><input type="radio" name="op_users" value="10"><span class="seg-btn">أكثر من 100 / خارجيون <span class="pts">(10)</span></span></label>
+      </div>
+    </div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">درجة تحسين الخدمة / العملية</div></div>
+      <div class="seg">
+        <label><input type="radio" name="op_improve" value="5"><span class="seg-btn">تحسين خدمة داخل إدارة <span class="pts">(5)</span></span></label>
+        <label><input type="radio" name="op_improve" value="10"><span class="seg-btn">تحسين عمليات مشتركة <span class="pts">(10)</span></span></label>
+        <label><input type="radio" name="op_improve" value="15"><span class="seg-btn">تحسين عملية رئيسية بمستوى الجهة <span class="pts">(15)</span></span></label>
+      </div>
+    </div>
+    <div class="axis-total"><span class="lbl">إجمالي الأثر التشغيلي</span><span class="val"><span id="opRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 35</span></span></div>
 
-    <div class="card">
-      <div class="toolbar">
-        <input type="search" id="search" placeholder="بحث بالاسم، المشروع، البريد..." />
-        <select id="statusFilter">
-          <option value="">كل الحالات</option>
-          <option value="new">جديد</option>
-          <option value="in-review">قيد المراجعة</option>
-          <option value="approved">تمت الموافقة</option>
-          <option value="rejected">مرفوض</option>
-          <option value="needs-info">بحاجة إلى استكمال</option>
-        </select>
+    <div class="group-title">المحور 2 — المواءمة الاستراتيجية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 20)</span></div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">ارتباط الطلب بالخطة التشغيلية للإدارة</div></div>
+      <div class="seg">
+        <label><input type="radio" name="st_plan" value="0"><span class="seg-btn">غير مرتبط <span class="pts">(0)</span></span></label>
+        <label><input type="radio" name="st_plan" value="3"><span class="seg-btn">مرتبط جزئياً <span class="pts">(3)</span></span></label>
+        <label><input type="radio" name="st_plan" value="5"><span class="seg-btn">مرتبط بالكامل <span class="pts">(5)</span></span></label>
       </div>
-      <div style="overflow:auto;max-height:70vh">
-        <table>
-          <thead>
-            <tr>
-              <th>المشروع</th><th>مقدّم الطلب</th><th>النوع</th>
-              <th>التقييم</th><th>الحالة</th><th>النتيجة</th><th>التاريخ</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
+    </div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">دعم هدف استراتيجي أو مبادرة واحدة</div></div>
+      <div class="yn"><label><input type="radio" name="st_one" value="10"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="st_one" value="0"><span class="yn-btn no">لا</span></label></div>
+    </div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">دعم عدة أهداف أو مبادرات استراتيجية</div></div>
+      <div class="yn"><label><input type="radio" name="st_multi" value="10"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="st_multi" value="0"><span class="yn-btn no">لا</span></label></div>
+    </div>
+    <div class="axis-total"><span class="lbl">إجمالي المواءمة الاستراتيجية</span><span class="val"><span id="stRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 25</span></span></div>
+
+    <div class="group-title">المحور 3 — الجاهزية والجدوى الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 25)</span></div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">أ) جاهزية البنية التحتية</div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">البنية التحتية متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra1" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra1" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">الأنظمة الداعمة متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra2" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra2" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">الموارد التقنية متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra3" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra3" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:16px 0 8px">ب) الجدوى والتوافق الفني</div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يتوافق مع المعمارية التقنية المعتمدة</div></div><div class="yn"><label><input type="radio" name="tc_f1" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f1" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">لا يتعارض مع الأنظمة الحالية</div></div><div class="yn"><label><input type="radio" name="tc_f2" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f2" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن تنفيذه باستخدام التقنيات المعتمدة</div></div><div class="yn"><label><input type="radio" name="tc_f3" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f3" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">البيانات اللازمة متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_f4" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f4" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن التكامل مع الأنظمة الأخرى</div></div><div class="yn"><label><input type="radio" name="tc_f5" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f5" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يتوافق مع سياسات الأمن السيبراني وحوكمة البيانات</div></div><div class="yn"><label><input type="radio" name="tc_f6" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f6" value="0"><span class="yn-btn no">لا</span></label></div></div>
+    <div class="axis-total"><span class="lbl">إجمالي الجاهزية الفنية</span><span class="val"><span id="tcRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 24</span></span></div>
+
+    <div class="group-title">المحور 4 — التأثير على الأنظمة / المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 25)</span></div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">(ج) التأثير على الأنظمة الأخرى</div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">تأثير الطلب على الأنظمة الحالية<small>الدرجة الخام = الحد الأقصى − مستوى التأثير</small></div></div>
+      <div class="seg">
+        <label><input type="radio" name="rk_impact" value="8"><span class="seg-btn">لا يوجد <span class="pts">(0)</span></span></label>
+        <label><input type="radio" name="rk_impact" value="6"><span class="seg-btn">محدود <span class="pts">(2)</span></span></label>
+        <label><input type="radio" name="rk_impact" value="3"><span class="seg-btn">متوسط <span class="pts">(5)</span></span></label>
+        <label><input type="radio" name="rk_impact" value="0"><span class="seg-btn">مرتفع <span class="pts">(8)</span></span></label>
       </div>
-      <div id="empty" class="muted" style="text-align:center;padding:26px;display:none">لا توجد طلبات مطابقة.</div>
+    </div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:16px 0 8px">(د) المخاطر الفنية</div>
+    <div class="criterion">
+      <div class="criterion-top"><div class="criterion-title">المخاطر التقنية والتشغيلية<small>الدرجة الخام = الحد الأقصى − مستوى الخطورة</small></div></div>
+      <div class="seg">
+        <label><input type="radio" name="rk_level" value="8"><span class="seg-btn">منخفضة <span class="pts">(2)</span></span></label>
+        <label><input type="radio" name="rk_level" value="3"><span class="seg-btn">متوسطة <span class="pts">(5)</span></span></label>
+        <label><input type="radio" name="rk_level" value="0"><span class="seg-btn">مرتفعة <span class="pts">(8)</span></span></label>
+      </div>
+    </div>
+    <div class="axis-total"><span class="lbl">إجمالي التأثير والمخاطر (ج + د)</span><span class="val"><span id="rkRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 16</span></span></div>
+  </div>
+
+  <!-- ===== Evaluation: result & decision ===== -->
+  <div class="card">
+    <div class="eval-head detail-head"><div><h2>النتيجة والقرار</h2><p>ملخص النقاط المرجّحة، الأولوية، قرار قابلية التطبيق، والاعتماد.</p></div><span class="section-badge" id="resultGateStatus">—</span></div>
+    <div class="result-hero">
+      <div class="result-score-card">
+        <div class="rsc-label">إجمالي النقاط المرجّحة</div>
+        <div class="rsc-num"><span id="resultScoreNum">0.0</span><span>/ 100</span></div>
+        <div class="rsc-priority" id="resultPriorityPill">الأولوية: —</div>
+      </div>
+      <div class="result-breakdown"><h4>تفصيل النقاط حسب المحور</h4><div id="breakdownList"></div></div>
+    </div>
+
+    <div class="group-title">قرار قابلية التطبيق</div>
+    <div class="applic-grid" id="applicGrid">
+      <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق">قابل للتطبيق</label>
+      <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق مع متطلبات إضافية">قابل للتطبيق مع متطلبات إضافية</label>
+      <label class="applic-card"><input type="radio" name="applicability" value="غير قابل للتطبيق حالياً">غير قابل للتطبيق حالياً</label>
+      <label class="applic-card"><input type="radio" name="applicability" value="غير قابل للتطبيق">غير قابل للتطبيق</label>
+    </div>
+
+    <div class="group-title">ملاحظات وتوصية اللجنة</div>
+    <textarea id="committeeNotes" placeholder="اكتب ملاحظات اللجنة وتوصيتها النهائية..."></textarea>
+
+    <div class="group-title">الاعتماد</div>
+    <table class="signoff-table">
+      <thead><tr><th>الجهة</th><th>الاسم</th><th>التوقيع</th><th>التاريخ</th></tr></thead>
+      <tbody id="signoffBody"></tbody>
+    </table>
+  </div>
+
+  <div class="save-bar">
+    <label class="chk"><input type="checkbox" id="sendEmail" checked> إرسال نتيجة التقييم إلى بريد مقدم الطلب</label>
+    <div style="display:flex;gap:10px">
+      <button class="btn-ghost" id="btnBack2">إلغاء</button>
+      <button class="btn-primary" id="btnSave">حفظ التقييم واعتماده</button>
     </div>
   </div>
 </div>
 
-<!-- ============ DETAILS / EDIT MODAL ============ -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="head">
-      <h2 id="mTitle">تفاصيل الطلب</h2>
-      <button class="x" id="closeModal">✕</button>
-    </div>
-    <div id="mBody"></div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
-<script src="../eval-core.js"></script>
 <script>
-const API = 'api.php';
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-let CURRENT = null; // request data currently open in the modal
+(function(){
+  const $  = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const API = 'api.php';
+  let currentFile = null;   // rel path of open request json
+  let allItems = [];
 
-async function api(action, {method='GET', body=null}={}){
-  const opts = {method, credentials:'same-origin'};
-  if(body){ opts.body = new URLSearchParams(body); }
-  const url = method==='GET' ? `${API}?action=${action}` : API;
-  if(method!=='GET' && body){ body.action = action; opts.body = new URLSearchParams(body); }
-  const res = await fetch(url, opts);
-  let json;
-  try{ json = await res.json(); }catch{ throw new Error('استجابة غير صالحة من الخادم'); }
-  if(!json.ok) throw new Error(json.error || 'خطأ غير معروف');
-  return json;
-}
+  // ---------- helpers ----------
+  async function api(action, {method='GET', body=null, query=null}={}){
+    let url = API + '?action=' + encodeURIComponent(action);
+    if(query){ for(const [k,v] of Object.entries(query)) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v); }
+    const res = await fetch(url, {method, body, credentials:'same-origin'});
+    const data = await res.json();
+    return {res, data};
+  }
+  function toast(msg, isErr){
+    const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (isErr?' err':'');
+    setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function show(view){ ['loginView','listView','detailView'].forEach(v=> $('#'+v).classList.toggle('hidden', v!==view)); }
 
-const STATUS_LABELS = {
-  'new':'جديد','in-review':'قيد المراجعة','approved':'تمت الموافقة',
-  'rejected':'مرفوض','needs-info':'بحاجة إلى استكمال'
-};
-const esc = s => (s??'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtDate = s => { if(!s) return '—'; const d=new Date(s); return isNaN(d)?s:d.toLocaleDateString('ar-EG')+' '+d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}); };
-
-let ALL = [];
-
-// ---------- auth ----------
-async function checkSession(){
-  try{
-    const r = await api('me');
-    if(r.authenticated){ showDash(r.email); return; }
-  }catch{}
-  showLogin();
-}
-function showLogin(){ $('#loginView').style.display='flex'; $('#dashView').style.display='none'; }
-function showDash(email){
-  $('#loginView').style.display='none'; $('#dashView').style.display='block';
-  $('#who').textContent = email || '';
-  loadList();
-}
-
-$('#loginForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const msg = $('#loginMsg'); msg.className='msg';
-  try{
-    const r = await api('login', {method:'POST', body:{email:$('#email').value.trim(), password:$('#password').value}});
-    showDash(r.email);
-  }catch(err){ msg.className='msg err'; msg.textContent = err.message; }
-});
-
-$('#logoutBtn').addEventListener('click', async ()=>{ try{await api('logout',{method:'POST',body:{}});}catch{} showLogin(); });
-$('#refreshBtn').addEventListener('click', loadList);
-
-// ---------- list ----------
-async function loadList(){
-  try{
-    const r = await api('list');
-    ALL = r.items;
-    renderStats();
-    renderRows();
-  }catch(err){ alert(err.message); if(/Unauthorized/i.test(err.message)) showLogin(); }
-}
-
-function renderStats(){
-  const by = k => ALL.filter(x=>x.adminStatus===k).length;
-  const cards = [
-    ['إجمالي الطلبات', ALL.length],
-    ['جديد', by('new')],
-    ['قيد المراجعة', by('in-review')],
-    ['تمت الموافقة', by('approved')],
-    ['تم إرسال النتيجة', ALL.filter(x=>x.resultSentAt).length],
-  ];
-  $('#stats').innerHTML = cards.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
-}
-
-function renderRows(){
-  const q = $('#search').value.trim().toLowerCase();
-  const sf = $('#statusFilter').value;
-  const list = ALL.filter(x=>{
-    if(sf && x.adminStatus!==sf) return false;
-    if(!q) return true;
-    return [x.projectName,x.requesterName,x.requesterEmail,x.requestType].join(' ').toLowerCase().includes(q);
+  // ================= AUTH =================
+  async function checkAuth(){
+    const {data} = await api('me');
+    if(data.authenticated){ $('#whoami').textContent = data.email; loadList(); show('listView'); }
+    else show('loginView');
+  }
+  $('#loginForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append('email', $('#loginEmail').value.trim());
+    fd.append('password', $('#loginPass').value);
+    const {res, data} = await api('login', {method:'POST', body:fd});
+    const msg = $('#loginMsg');
+    if(res.ok && data.ok){ msg.className='msg ok'; msg.textContent='تم الدخول...'; $('#whoami').textContent=data.email; loadList(); show('listView'); }
+    else { msg.className='msg err'; msg.textContent = data.error || 'فشل تسجيل الدخول'; }
   });
-  $('#empty').style.display = list.length ? 'none' : 'block';
-  $('#rows').innerHTML = list.map(x=>{
-    const st = x.adminStatus||'new';
-    return `<tr data-path="${esc(x.path)}">
-      <td><strong>${esc(x.projectName)||'—'}</strong><div class="muted">${esc(x.path)}</div></td>
-      <td>${esc(x.requesterName)||'—'}<div class="muted">${esc(x.requesterEmail)}</div></td>
-      <td>${esc(x.requestType)||'—'}</td>
-      <td>${x.totalScore??'—'}${x.priority?`<div class="muted">${esc(x.priority)}</div>`:''}</td>
-      <td><span class="badge b-${st}">${STATUS_LABELS[st]||st}</span></td>
-      <td>${x.resultSentAt?`<span class="sent">✓ أُرسلت</span><div class="muted">${fmtDate(x.resultSentAt)}</div>`:'<span class="muted">—</span>'}</td>
-      <td class="muted">${fmtDate(x.savedAt)}</td>
-    </tr>`;
-  }).join('');
-  $('#rows').querySelectorAll('tr').forEach(tr=>tr.addEventListener('click',()=>openDetails(tr.dataset.path)));
-}
-$('#search').addEventListener('input', renderRows);
-$('#statusFilter').addEventListener('change', renderRows);
+  $('#btnLogout').addEventListener('click', async ()=>{ await api('logout',{method:'POST',body:new FormData()}); show('loginView'); });
 
-// ---------- details / edit ----------
-// Applicant-provided fields shown read-only. The IT evaluation fields
-// (technical assessment, timings, decision) are edited in the form below.
-const FIELD_LABELS = {
-  projectName:'اسم المشروع', requestingDepartment:'الإدارة الطالبة', businessOwner:'مالك العمل',
-  requesterName:'مقدّم الطلب', requesterEmail:'البريد الإلكتروني', requestType:'نوع الطلب',
-  affectedSystems:'الأنظمة المتأثرة', requestDate:'تاريخ الطلب', confidentiality:'السرية',
-  requestDescription:'وصف الطلب', currentProblem:'المشكلة الحالية', expectedImpact:'الأثر المتوقع',
-  savedAt:'تاريخ الحفظ'
-};
+  // ================= LIST =================
+  const statusLabel = s => ({new:'جديد', evaluated:'تم التقييم'}[s] || s);
+  async function loadList(){
+    const {data} = await api('list');
+    if(!data.ok){ toast(data.error||'تعذّر جلب الطلبات', true); return; }
+    allItems = data.items || [];
+    renderStats(); renderRows();
+  }
+  function renderStats(){
+    const total = allItems.length;
+    const evaluated = allItems.filter(i=>i.adminStatus==='evaluated').length;
+    const pending = total - evaluated;
+    const sent = allItems.filter(i=>i.resultSentAt).length;
+    $('#stats').innerHTML = [
+      ['إجمالي الطلبات', total],['بانتظار التقييم', pending],['تم تقييمها', evaluated],['أُرسل الإشعار', sent]
+    ].map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  }
+  function renderRows(){
+    const q = $('#search').value.trim().toLowerCase();
+    const fs = $('#filterStatus').value;
+    const rows = allItems.filter(i=>{
+      if(fs && i.adminStatus!==fs) return false;
+      if(!q) return true;
+      return [i.reference,i.projectName,i.department,i.applicantName,i.applicantEmail].join(' ').toLowerCase().includes(q);
+    });
+    $('#emptyMsg').classList.toggle('hidden', rows.length>0);
+    $('#rowsBody').innerHTML = rows.map(i=>`
+      <tr data-file="${esc(i.file)}">
+        <td class="mono">${esc(i.reference)||'—'}</td>
+        <td><b>${esc(i.projectName)||'—'}</b></td>
+        <td>${esc(i.department)||'—'}</td>
+        <td>${esc(i.applicantName)||'—'}<div class="muted">${esc(i.applicantEmail)}</div></td>
+        <td>${esc(i.savedAt? i.savedAt.slice(0,10):'—')}</td>
+        <td class="mono">${i.totalScore!=null? i.totalScore+' /100':'—'}</td>
+        <td><span class="badge b-${i.adminStatus==='evaluated'?'evaluated':'new'}">${statusLabel(i.adminStatus)}</span></td>
+        <td>${i.resultSentAt?'<span class="sent">✓ أُرسل</span>':'<span class="muted">—</span>'}</td>
+      </tr>`).join('');
+    $$('#rowsBody tr').forEach(tr=> tr.addEventListener('click', ()=> openDetail(tr.dataset.file)));
+  }
+  $('#search').addEventListener('input', renderRows);
+  $('#filterStatus').addEventListener('change', renderRows);
+  $('#btnRefresh').addEventListener('click', loadList);
 
-async function openDetails(path){
-  $('#mBody').innerHTML = '<div class="muted" style="padding:20px;text-align:center">جارٍ التحميل…</div>';
-  $('#overlay').classList.add('open');
-  try{
-    const r = await api('get&path='+encodeURIComponent(path));
-    renderDetails(path, r.data, r.attachments);
-  }catch(err){ $('#mBody').innerHTML = `<div class="msg err" style="display:block">${esc(err.message)}</div>`; }
-}
+  // ================= DETAIL =================
+  const APPLICANT_LABELS = {
+    reference:'الرقم المرجعي', projectName:'اسم المشروع / الطلب', department:'الإدارة الطالبة',
+    applicantName:'مقدم الطلب', applicantEmail:'البريد الإلكتروني', submitDate:'تاريخ التقديم',
+    requestType:'نوع الطلب', goal:'الهدف من الطلب', strategicAlign:'المواءمة مع الأهداف الاستراتيجية',
+    businessOwnerDetail:'مالك الأعمال (Business Owner)', supportTeamDetail:'الفريق الداعم',
+    readyToParticipateDetail:'الاستعداد للمشاركة', attestation:'إقرار صحة البيانات', savedAt:'تاريخ الاستلام'
+  };
+  const APPLICANT_ORDER = ['reference','projectName','department','applicantName','applicantEmail','submitDate','requestType','goal','strategicAlign','businessOwnerDetail','supportTeamDetail','readyToParticipateDetail','attestation','savedAt'];
 
-function renderDetails(path, d, attachments){
-  CURRENT = d;
-  $('#mTitle').textContent = d.projectName || 'تفاصيل الطلب';
+  async function openDetail(file){
+    const {data} = await api('get', {query:{file}});
+    if(!data.ok){ toast(data.error||'تعذّر فتح الطلب', true); return; }
+    currentFile = file;
+    const d = data.data;
+    $('#dTitle').textContent = d.projectName || 'تفاصيل الطلب';
+    $('#dSub').textContent = (d.applicantName||'') + ' — ' + (d.department||'');
+    $('#dRef').textContent = d.reference || '—';
 
-  // applicant-provided fields (read-only)
-  const shown = Object.keys(FIELD_LABELS).filter(k=>d[k]!==undefined && d[k]!=='' );
-  const kv = shown.map(k=>`<div class="k">${FIELD_LABELS[k]}</div><div class="v">${esc(k==='savedAt'?fmtDate(d[k]):(typeof d[k]==='boolean'?(d[k]?'نعم':'لا'):d[k]))}</div>`).join('');
+    // applicant data grid
+    $('#applicantData').innerHTML = APPLICANT_ORDER.filter(k=>k in d).map(k=>{
+      let v = d[k];
+      if(k==='attestation') v = v ? 'نعم، أقرّ بصحة واكتمال البيانات' : 'لا';
+      if((k==='savedAt'||k==='submitDate') && v) v = String(v).slice(0,10);
+      const full = ['goal','strategicAlign','businessOwnerDetail','supportTeamDetail','readyToParticipateDetail'].includes(k);
+      return `<div class="kv ${full?'full':''}"><span class="k">${esc(APPLICANT_LABELS[k]||k)}</span><span class="v">${esc(v)||'—'}</span></div>`;
+    }).join('');
 
-  const docs = [
-    ['doc_as_is','إجراءات الوضع الحالي As-Is'],['doc_to_be','إجراءات الوضع المستهدف To-Be'],
-    ['doc_forms','النماذج والتقارير ذات العلاقة'],['doc_data','بيانات أو عينات داعمة'],
-    ['doc_approval','إقرار الإدارة الطالبة بدقة المعلومات']
+    // attachments
+    const atts = Array.isArray(d.attachments)? d.attachments : [];
+    $('#attList').innerHTML = atts.length ? atts.map(name=>{
+      const url = API + '?action=download&file=' + encodeURIComponent(file) + '&name=' + encodeURIComponent(name);
+      return `<div class="att-chip"><span>📎 ${esc(name)}</span><a href="${url}" target="_blank">تحميل ↓</a></div>`;
+    }).join('') : '<div class="muted">لا توجد مرفقات.</div>';
+
+    resetEvaluation();
+    if(d.evaluation) populateEvaluation(d.evaluation);
+    evalGate(); recalcScores();
+    show('detailView'); window.scrollTo({top:0});
+  }
+  $('#btnBack').addEventListener('click', ()=>{ loadList(); show('listView'); });
+  $('#btnBack2').addEventListener('click', ()=>{ loadList(); show('listView'); });
+
+  // ================= EVALUATION (ported scoring) =================
+  const WEIGHTS = {op:30, st:20, tc:25, rk:25};
+  const MAXRAW  = {op:35, st:25, tc:24, rk:16};
+  const DETAIL_GROUPS = ['op_scope','op_users','op_improve','st_plan','st_one','st_multi','tc_infra1','tc_infra2','tc_infra3','tc_f1','tc_f2','tc_f3','tc_f4','tc_f5','tc_f6','rk_impact','rk_level'];
+
+  // gate
+  const gateItems = [
+    "إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة",
+    "وجود مالك أعمال (Business Owner) محدد",
+    "توفر فريق داعم من الإدارة الطالبة",
+    "الاستعداد للمشاركة في التحليل والاختبار والتشغيل",
+    "توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)",
+    "توفر النماذج والتقارير والوثائق الداعمة ذات العلاقة",
   ];
-  const docRows = docs.map(([k,l])=>`<div class="k">${l}</div><div class="v">${d[k]?'✓ نعم':'—'}</div>`).join('');
-
-  const files = (attachments&&attachments.length)
-    ? `<div class="section-title">المرفقات</div><div class="files">
-        ${attachments.map(f=>`<a href="../requests/${path.split('/').map(encodeURIComponent).join('/')}/${encodeURIComponent(f)}" target="_blank">📎 ${esc(f)}</a>`).join('')}
-       </div>`
-    : '';
-
-  const st = d.adminStatus || 'new';
-  const opt = v => `<option value="${v}"${st===v?' selected':''}>${STATUS_LABELS[v]}</option>`;
-  const critHead = `<thead><tr><th>المعيار</th><th>الوزن</th><th>التقييم</th><th>النتيجة</th></tr></thead>`;
-
-  $('#mBody').innerHTML = `
-    <div class="muted">${esc(path)}</div>
-    <div class="kv">${kv}</div>
-
-    <div class="section-title">جاهزية الوثائق (من مقدّم الطلب)</div>
-    <div class="kv">${docRows}</div>
-    ${files}
-
-    <div class="section-title">التقييم الذاتي للإدارة الطالبة (للاطلاع)</div>
-    <table class="criteria-table">${critHead}<tbody id="adminBusinessCriteria"></tbody></table>
-
-    <div class="section-title">تقييم تقنية المعلومات — Technical Assessment</div>
-    <div class="row2">
-      <div>
-        <label>نتيجة قابلية التطبيق الفنية</label>
-        <select id="technicalApplicability" onchange="calculateAll()">
-          <option value="">اختر</option>
-          <option value="applicable">قابل للتطبيق</option>
-          <option value="conditional">قابل للتطبيق مع متطلبات إضافية</option>
-          <option value="not_now">غير قابل للتطبيق حالياً</option>
-          <option value="not_applicable">غير قابل للتطبيق</option>
-        </select>
-      </div>
-      <div>
-        <label>التصنيف الفني</label>
-        <select id="technicalType">
-          <option value="update">متطلب جديد / تعديل على نظام قائم</option>
-          <option value="new">نظام جديد</option>
-          <option value="integration">تكامل مع أنظمة أخرى</option>
-          <option value="reports">لوحة مؤشرات / تقارير</option>
-          <option value="refactor">تحسين بنية أو أداء</option>
-        </select>
-      </div>
-    </div>
-    <table class="criteria-table" style="margin-top:12px">${critHead}<tbody id="adminTechnicalCriteria"></tbody></table>
-
-    <div class="ev-panel">
-      <div class="ev-score"><span id="aTotal">0</span><small> / 100</small></div>
-      <div id="aBadge" class="ev-badge rejected">لم يتم التقييم</div>
-      <div class="ev-lines">
-        <div><span>تقييم الأعمال</span><span><span id="aBusiness">0</span> / 60</span></div>
-        <div><span>التقييم الفني</span><span><span id="aTechnical">0</span> / 40</span></div>
-        <div><span>قابلية التطبيق</span><span id="aApplicable">غير محدد</span></div>
-        <div><span>القرار المقترح</span><span id="aDecision">غير محدد</span></div>
-      </div>
-      <div class="ev-decision" id="aDecisionBox">يتم احتساب القرار بعد تعبئة التقييم واختيار قابلية التطبيق.</div>
-    </div>
-
-    <div class="section-title">التقدير الزمني والمخاطر</div>
-    <div class="row2">
-      <div><label>مدة التحليل المتوقعة</label><input id="analysisDuration" value="${esc(d.analysisDuration||'')}" placeholder="مثال: 5 أيام عمل" /></div>
-      <div><label>مدة التطوير المتوقعة</label><input id="developmentDuration" value="${esc(d.developmentDuration||'')}" placeholder="مثال: 15 يوم عمل" /></div>
-      <div><label>مدة الاختبار المتوقعة</label><input id="testingDuration" value="${esc(d.testingDuration||'')}" placeholder="مثال: 5 أيام عمل" /></div>
-      <div><label>مدة الإطلاق المتوقعة</label><input id="launchDuration" value="${esc(d.launchDuration||'')}" placeholder="مثال: يومان" /></div>
-    </div>
-    <label>المخاطر المحتملة</label>
-    <textarea id="risks" placeholder="مخاطر تقنية، تشغيلية، أمنية، تكاملية...">${esc(d.risks||'')}</textarea>
-    <label>المتطلبات الإضافية</label>
-    <textarea id="additionalRequirements" placeholder="بيانات، موافقات، تراخيص، موارد، تكاملات...">${esc(d.additionalRequirements||'')}</textarea>
-
-    <div class="section-title">القرار والتوصية النهائية</div>
-    <div class="row2">
-      <div>
-        <label>القرار النهائي المقترح</label>
-        <select id="finalDecision">
-          <option>يحدد تلقائياً بعد التقييم</option>
-          <option>مقبول للتنفيذ</option>
-          <option>مقبول بشروط</option>
-          <option>مؤجل</option>
-          <option>مرفوض</option>
-        </select>
-      </div>
-      <div>
-        <label>المسار المقترح للتنفيذ</label>
-        <select id="executionPath">
-          <option value="inline">ضمن خطة المشاريع التقنية</option>
-          <option value="fast">مسار سريع</option>
-          <option value="refactor">تحسين على نظام قائم</option>
-          <option value="separate">طلب توريد / ميزانية مستقل</option>
-          <option value="return">يعاد للإدارة الطالبة للاستكمال</option>
-        </select>
-      </div>
-    </div>
-    <label>ملاحظات تقنية المعلومات</label>
-    <textarea id="itNotes" placeholder="التوصية، القيود، الملاحظات الفنية...">${esc(d.itNotes||'')}</textarea>
-    <label>اعتماد / اسم المقيّم</label>
-    <input id="reviewerName" value="${esc(d.reviewerName||'')}" placeholder="اسم مسؤول التقييم" />
-
-    <div class="section-title">إرسال النتيجة لمقدّم الطلب</div>
-    <div class="row2">
-      <div>
-        <label>حالة الطلب</label>
-        <select id="fStatus">${opt('new')}${opt('in-review')}${opt('approved')}${opt('rejected')}${opt('needs-info')}</select>
-      </div>
-      <div>
-        <label>المرسل إليه</label>
-        <input value="${esc(d.requesterEmail||'')}" disabled />
-      </div>
-    </div>
-    <label>النتيجة النهائية</label>
-    <textarea id="fResult" placeholder="اكتب النتيجة النهائية للطلب...">${esc(d.finalResult||'')}</textarea>
-    <label>ملاحظات إضافية (اختياري)</label>
-    <textarea id="fMessage" placeholder="ملاحظات ترسل مع النتيجة...">${esc(d.adminMessage||'')}</textarea>
-    <div id="saveMsg" class="msg"></div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-      <button class="secondary" id="saveOnly">حفظ فقط</button>
-      <button class="primary" id="saveSend">حفظ وإرسال النتيجة لمقدّم الطلب 📧</button>
-    </div>
-    ${d.resultSentAt?`<div class="muted" style="margin-top:8px">آخر إرسال: ${fmtDate(d.resultSentAt)}</div>`:''}`;
-
-  // criteria tables: business is read-only (applicant self-assessment), technical is editable
-  renderCriteria('adminBusinessCriteria', BUSINESS_CRITERIA, d);
-  renderCriteria('adminTechnicalCriteria', TECHNICAL_CRITERIA, d);
-  $$('#adminBusinessCriteria select').forEach(s=>s.disabled=true);
-
-  if(d.technicalApplicability) $('#technicalApplicability').value = d.technicalApplicability;
-  if(d.technicalType) $('#technicalType').value = d.technicalType;
-  if(d.executionPath) $('#executionPath').value = d.executionPath;
-  const fd = $('#finalDecision');
-  fd.value = d.finalDecision || 'يحدد تلقائياً بعد التقييم';
-  fd.dataset.auto = (!d.finalDecision || d.finalDecision === 'يحدد تلقائياً بعد التقييم') ? 'true' : 'false';
-
-  calculateAll();
-
-  $('#saveOnly').addEventListener('click', ()=>saveDecision(path,false));
-  $('#saveSend').addEventListener('click', ()=>saveDecision(path,true));
-}
-
-// Full evaluation: business (from applicant's saved scores) + technical (admin input).
-function calculateAll(){
-  const business = calculateGroup(BUSINESS_CRITERIA);
-  const technical = calculateGroup(TECHNICAL_CRITERIA);
-  const total = business + technical;
-  const applicability = ($('#technicalApplicability')||{}).value || '';
-  const result = classifyPriority(total, applicability);
-
-  $('#aBusiness').textContent = business.toFixed(1);
-  $('#aTechnical').textContent = technical.toFixed(1);
-  $('#aTotal').textContent = total.toFixed(1);
-  const badge = $('#aBadge'); badge.textContent = result.label; badge.className = 'ev-badge ' + result.cls;
-  $('#aApplicable').textContent = getApplicabilityText(applicability);
-  $('#aDecision').textContent = result.decision;
-  $('#aDecisionBox').textContent = result.message;
-
-  const fd = $('#finalDecision');
-  if(fd && (fd.value === 'يحدد تلقائياً بعد التقييم' || fd.dataset.auto === 'true')){
-    fd.dataset.auto = 'true';
-    const opts = Array.from(fd.options).map(o=>o.value);
-    if(opts.includes(result.decision)) fd.value = result.decision;
+  const gateList = $('#gateList');
+  gateItems.forEach((txt,i)=>{
+    const row = document.createElement('div');
+    row.className='gate-item';
+    row.innerHTML = `<span class="gi-text">${txt}</span>
+      <div class="yn" style="max-width:160px">
+        <label><input type="radio" name="gate_${i}" value="نعم"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="gate_${i}" value="لا"><span class="yn-btn no">لا</span></label>
+      </div>`;
+    gateList.appendChild(row);
+  });
+  function evalGate(){
+    let answered=0, noCount=0;
+    gateItems.forEach((_,i)=>{ const sel=document.querySelector(`input[name="gate_${i}"]:checked`); if(sel){answered++; if(sel.value==='لا')noCount++;} });
+    $('#gateBadge').textContent = `${answered} / ${gateItems.length}`;
+    const banner=$('#gateBanner'), txt=$('#gateBannerText'); banner.classList.remove('ok','bad','neutral');
+    let status='pending';
+    if(answered<gateItems.length){ banner.classList.add('neutral'); txt.textContent='أكمل تعبئة جميع البنود لعرض نتيجة البوابة'; }
+    else if(noCount>0){ banner.classList.add('bad'); txt.textContent=`غير مكتمل — يوجد ${noCount} ${noCount===1?'بند':'بنود'} غير متوفر. يُعاد الطلب لمقدّمه.`; status='bad'; }
+    else { banner.classList.add('ok'); txt.textContent='مكتمل — الطلب جاهز للتقييم النقاطي.'; status='ok'; }
+    $('#resultGateStatus').textContent = status==='ok'?'البوابة: مكتملة':status==='bad'?'البوابة: غير مكتملة':'البوابة: قيد التعبئة';
+    return status;
   }
 
-  return {
-    businessScore: Number(business.toFixed(2)),
-    technicalScore: Number(technical.toFixed(2)),
-    totalScore: Number(total.toFixed(2)),
-    priority: result.label,
-    suggestedDecision: result.decision,
-    applicability: getApplicabilityText(applicability)
-  };
-}
+  function sumGroup(names){ return names.reduce((a,n)=>{ const el=document.querySelector(`input[name="${n}"]:checked`); return a+(el?Number(el.value):0); },0); }
+  function recalcScores(){
+    const opRaw=sumGroup(['op_scope','op_users','op_improve']);
+    const stRaw=sumGroup(['st_plan','st_one','st_multi']);
+    const tcRaw=sumGroup(['tc_infra1','tc_infra2','tc_infra3','tc_f1','tc_f2','tc_f3','tc_f4','tc_f5','tc_f6']);
+    const rkRaw=sumGroup(['rk_impact','rk_level']);
+    $('#opRawDisplay').textContent=opRaw; $('#stRawDisplay').textContent=stRaw; $('#tcRawDisplay').textContent=tcRaw; $('#rkRawDisplay').textContent=rkRaw;
+    const opW=(opRaw/MAXRAW.op)*WEIGHTS.op, stW=(stRaw/MAXRAW.st)*WEIGHTS.st, tcW=(tcRaw/MAXRAW.tc)*WEIGHTS.tc, rkW=(rkRaw/MAXRAW.rk)*WEIGHTS.rk;
+    const total=Math.round((opW+stW+tcW+rkW)*10)/10;
+    $('#detailTotalBadge').textContent=`${total} / 100`;
+    $('#resultScoreNum').textContent=total.toFixed(1);
+    let priority='منخفضة', c='red';
+    if(total>=80){priority='عالية';c='green';} else if(total>=60){priority='متوسطة';c='amber';}
+    const pill=$('#resultPriorityPill'); pill.textContent=`الأولوية: ${priority}`;
+    pill.style.background = c==='green'?'rgba(47,125,82,.22)':c==='amber'?'rgba(168,116,30,.22)':'rgba(179,64,47,.22)';
+    pill.style.color = c==='green'?'#bdeed0':c==='amber'?'#f3d99c':'#f3bfb2';
+    const bd=$('#breakdownList'); bd.innerHTML='';
+    [['الأثر التشغيلي',opW,WEIGHTS.op],['المواءمة الاستراتيجية',stW,WEIGHTS.st],['الجاهزية والجدوى الفنية',tcW,WEIGHTS.tc],['التأثير والمخاطر',rkW,WEIGHTS.rk]].forEach(([l,v,mx])=>{
+      const pct=mx?(v/mx)*100:0; const r=document.createElement('div'); r.className='bd-row';
+      r.innerHTML=`<div class="bd-top"><b>${l}</b><span>${v.toFixed(1)} / ${mx}</span></div><div class="bd-bar"><div class="bd-fill" style="width:${pct}%"></div></div>`;
+      bd.appendChild(r);
+    });
+    return {opRaw,stRaw,tcRaw,rkRaw,opW,stW,tcW,rkW,total,priority};
+  }
 
-async function saveDecision(path, send){
-  const msg = $('#saveMsg'); msg.className='msg';
-  const btns = [$('#saveOnly'),$('#saveSend')]; btns.forEach(b=>b.disabled=true);
-  try{
-    const val = id => { const el = $(id); return el ? el.value : ''; };
-    const fields = {
-      technicalApplicability: val('#technicalApplicability'),
-      technicalType: val('#technicalType'),
-      analysisDuration: val('#analysisDuration'),
-      developmentDuration: val('#developmentDuration'),
-      testingDuration: val('#testingDuration'),
-      launchDuration: val('#launchDuration'),
-      risks: val('#risks'),
-      additionalRequirements: val('#additionalRequirements'),
-      finalDecision: val('#finalDecision'),
-      executionPath: val('#executionPath'),
-      itNotes: val('#itNotes'),
-      reviewerName: val('#reviewerName'),
-      evaluationResult: calculateAll()
+  // signoff table
+  const signers = ['الإدارة الطالبة','تقنية المعلومات','اللجنة المختصة / الجهة المخوّلة بالاعتماد'];
+  const tbody = $('#signoffBody');
+  signers.forEach((s,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="font-size:13px;font-weight:600">${s}</td>
+      <td><input type="text" id="sign_name_${i}" placeholder="الاسم"></td>
+      <td><input type="text" id="sign_sig_${i}" placeholder="التوقيع"></td>
+      <td><input type="date" id="sign_date_${i}"></td>`;
+    tbody.appendChild(tr);
+  });
+
+  // applicability visual
+  $$('#applicGrid input').forEach(el=> el.addEventListener('change', ()=>{
+    $$('.applic-card').forEach(c=>c.classList.remove('checked'));
+    el.closest('.applic-card').classList.add('checked');
+  }));
+
+  // live recalc on any eval change
+  $('#detailView').addEventListener('change', e=>{
+    if(e.target.matches('.seg input, .yn input')) recalcScores();
+    if(e.target.name && e.target.name.startsWith('gate_')) evalGate();
+  });
+
+  // reset / populate / collect
+  function resetEvaluation(){
+    $$('#detailView input[type=radio]').forEach(el=> el.checked=false);
+    $$('.applic-card').forEach(c=>c.classList.remove('checked'));
+    $('#q_techClass').value='';
+    $('#committeeNotes').value='';
+    signers.forEach((_,i)=>{ ['name','sig'].forEach(f=>{const el=$('#sign_'+f+'_'+i); if(el)el.value='';}); const dt=$('#sign_date_'+i); if(dt)dt.value=''; });
+    $('#sendEmail').checked = true;
+  }
+  function setRadio(name, val){ const el=document.querySelector(`input[name="${name}"][value="${val}"]`); if(el){ el.checked=true; } }
+  function populateEvaluation(ev){
+    if(ev.techClass) $('#q_techClass').value = ev.techClass;
+    if(ev.detail) DETAIL_GROUPS.forEach(g=>{ if(ev.detail[g]!=null && ev.detail[g]!=='') setRadio(g, ev.detail[g]); });
+    if(ev.gate && ev.gate.answers){ Object.entries(ev.gate.answers).forEach(([k,v])=>{ if(v) setRadio(k, v); }); }
+    if(ev.applicability){ const el=document.querySelector(`input[name="applicability"][value="${ev.applicability}"]`); if(el){ el.checked=true; el.closest('.applic-card').classList.add('checked'); } }
+    if(ev.committeeNotes!=null) $('#committeeNotes').value = ev.committeeNotes;
+    if(Array.isArray(ev.signoff)) ev.signoff.forEach((s,i)=>{ const n=$('#sign_name_'+i), g=$('#sign_sig_'+i), dt=$('#sign_date_'+i); if(n)n.value=s.name||''; if(g)g.value=s.sig||''; if(dt)dt.value=s.date||''; });
+  }
+  function collectEvaluation(){
+    const scores = recalcScores();
+    const detail = {}; DETAIL_GROUPS.forEach(g=>{ const el=document.querySelector(`input[name="${g}"]:checked`); detail[g] = el? Number(el.value) : null; });
+    const gateAns = {}; gateItems.forEach((_,i)=>{ const el=document.querySelector(`input[name="gate_${i}"]:checked`); gateAns['gate_'+i] = el? el.value : ''; });
+    const applicEl = document.querySelector('input[name="applicability"]:checked');
+    const signoff = signers.map((party,i)=>({ party, name:($('#sign_name_'+i)?.value||'').trim(), sig:($('#sign_sig_'+i)?.value||'').trim(), date:$('#sign_date_'+i)?.value||'' }));
+    return {
+      techClass: $('#q_techClass').value,
+      detail,
+      gate: { answers: gateAns, status: evalGate() },
+      ...scores,
+      applicability: applicEl? applicEl.value : '',
+      committeeNotes: $('#committeeNotes').value.trim(),
+      signoff,
+      evaluatedBy: $('#whoami').textContent || ''
     };
-    TECHNICAL_CRITERIA.forEach(it=>{ const el = $(`[name="${it.id}"]`); if(el) fields[it.id] = el.value; });
+  }
 
-    const r = await api('update', {method:'POST', body:{
-      path,
-      adminStatus: $('#fStatus').value,
-      finalResult: $('#fResult').value,
-      adminMessage: $('#fMessage').value,
-      sendEmail: send?'1':'0',
-      fields: JSON.stringify(fields)
-    }});
-    if(send && !r.emailSent){
-      msg.className='msg err';
-      msg.textContent = 'تم الحفظ، لكن فشل إرسال البريد: ' + (r.emailError||'خطأ غير معروف');
-    }else{
-      msg.className='msg ok';
-      msg.textContent = send ? '✓ تم الحفظ وإرسال النتيجة إلى مقدّم الطلب.' : '✓ تم الحفظ.';
-    }
-    await loadList();
-  }catch(err){ msg.className='msg err'; msg.textContent = err.message; }
-  finally{ btns.forEach(b=>b.disabled=false); }
-}
+  // save
+  $('#btnSave').addEventListener('click', async ()=>{
+    if(!currentFile) return;
+    const ev = collectEvaluation();
+    if(!ev.applicability){ toast('يرجى اختيار قرار قابلية التطبيق', true); return; }
+    const btn=$('#btnSave'); btn.disabled=true; const orig=btn.textContent; btn.textContent='جارٍ الحفظ...';
+    const fd=new FormData();
+    fd.append('file', currentFile);
+    fd.append('evaluation', JSON.stringify(ev));
+    fd.append('sendEmail', $('#sendEmail').checked ? '1':'0');
+    const {res,data}=await api('save',{method:'POST',body:fd});
+    btn.disabled=false; btn.textContent=orig;
+    if(!res.ok || !data.ok){ toast(data.error||'تعذّر الحفظ', true); return; }
+    if($('#sendEmail').checked && !data.emailSent){ toast('تم الحفظ، لكن تعذّر إرسال الإشعار: '+(data.emailError||''), true); }
+    else if(data.emailSent){ toast('تم حفظ التقييم وإرسال الإشعار للمتقدّم ✓'); }
+    else { toast('تم حفظ التقييم ✓'); }
+    loadList(); show('listView'); window.scrollTo({top:0});
+  });
 
-$('#closeModal').addEventListener('click', ()=>$('#overlay').classList.remove('open'));
-$('#overlay').addEventListener('click', e=>{ if(e.target===$('#overlay')) $('#overlay').classList.remove('open'); });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') $('#overlay').classList.remove('open'); });
-
-checkSession();
+  // ---------- init ----------
+  checkAuth();
+})();
 </script>
 </body>
 </html>

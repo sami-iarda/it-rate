@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة تحكم طلبات المشاريع التقنية</title>
+  <style>
+    :root{
+      --bg:#f6f8fb; --card:#ffffff; --text:#172033; --muted:#667085;
+      --line:#e6eaf0; --primary:#14532d; --primary-2:#166534; --soft:#eef7f0;
+      --shadow:0 12px 30px rgba(16,24,40,.08); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Tahoma","Arial",sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+    .container{width:min(1180px,calc(100% - 32px));margin:24px auto}
+    .hero{background:linear-gradient(135deg,#123c2c 0%,#1f7a47 100%);color:#fff;padding:24px 28px;border-radius:24px;box-shadow:var(--shadow);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .hero h1{margin:0 0 6px;font-size:24px}
+    .hero p{margin:0;opacity:.92;font-size:14px}
+    button{border:0;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;font-family:inherit;transition:.15s ease}
+    button.primary{background:var(--primary);color:#fff}
+    button.secondary{background:#fff;color:var(--primary);border:1px solid var(--line)}
+    button.ghost{background:rgba(255,255,255,.15);color:#fff}
+    button.danger{background:#fff1f2;color:#9f1239;border:1px solid #ffe4e6}
+    button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(16,24,40,.08)}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+    .card h2{margin:0 0 14px;font-size:19px;color:var(--primary)}
+    label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px;font-weight:700}
+    input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:#fff;color:var(--text)}
+    textarea{min-height:90px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-2);box-shadow:0 0 0 3px var(--soft)}
+    /* login */
+    .login-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
+    .login-card{width:min(420px,100%)}
+    .login-card .logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#123c2c,#1f7a47);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px}
+    .login-card h2{text-align:center}
+    .msg{padding:10px 12px;border-radius:12px;font-size:13px;margin-top:12px;display:none}
+    .msg.err{background:#fff1f2;color:#9f1239;border:1px solid #ffe4e6;display:block}
+    .msg.ok{background:var(--soft);color:var(--primary);border:1px solid #cfe9d6;display:block}
+    /* table */
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .stat{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow)}
+    .stat .n{font-size:26px;font-weight:800;color:var(--primary)}
+    .stat .l{font-size:13px;color:var(--muted)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+    .toolbar input,.toolbar select{width:auto;flex:1;min-width:160px}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}
+    th{background:#f6f8fb;color:var(--muted);font-size:13px;position:sticky;top:0}
+    tbody tr{cursor:pointer;transition:.12s}
+    tbody tr:hover{background:var(--soft)}
+    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+    .b-new{background:#eff6ff;color:#1d4ed8}
+    .b-in-review{background:#fff7ed;color:#c2410c}
+    .b-approved{background:#eef7f0;color:#166534}
+    .b-rejected{background:#fff1f2;color:#9f1239}
+    .b-needs-info{background:#f5f3ff;color:#6d28d9}
+    .sent{color:#166534;font-weight:700}
+    .muted{color:var(--muted);font-size:12px}
+    /* modal */
+    .overlay{position:fixed;inset:0;background:rgba(16,24,40,.5);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;z-index:50}
+    .overlay.open{display:flex}
+    .modal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);width:min(860px,100%);padding:24px;margin:auto}
+    .modal .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+    .modal h2{margin:0;color:var(--primary)}
+    .x{background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 8px}
+    .kv{display:grid;grid-template-columns:200px 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
+    .kv .k,.kv .v{padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px}
+    .kv .k{background:#f6f8fb;font-weight:700;color:var(--muted)}
+    .kv .v{word-break:break-word}
+    .kv >div:nth-last-child(-n+2){border-bottom:0}
+    .files a{display:inline-block;margin:4px 6px 0 0;padding:6px 12px;background:var(--soft);color:var(--primary);border-radius:10px;text-decoration:none;font-size:13px;font-weight:700}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .section-title{font-size:15px;color:var(--primary);font-weight:800;margin:18px 0 4px;border-top:1px solid var(--line);padding-top:16px}
+    @media(max-width:640px){.kv{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+    /* IT evaluation form (admin fills sections 4-6) */
+    .criteria-table{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:6px}
+    .criteria-table th{color:var(--muted);text-align:right;font-size:12px;padding:0 8px;white-space:nowrap}
+    .criteria-table td{background:#fbfcfe;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;vertical-align:middle}
+    .criteria-table td:first-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
+    .criteria-table td:last-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+    .criterion-title{font-weight:700;font-size:13px}
+    .criterion-desc{color:var(--muted);font-size:11px;margin-top:2px}
+    .weight{font-weight:800;color:var(--primary);white-space:nowrap}
+    .score-select{min-width:92px;width:auto}
+    .weighted-score{font-weight:800;text-align:center;min-width:52px}
+    .ev-panel{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px}
+    .ev-score{font-size:34px;font-weight:900;color:var(--primary);line-height:1.1}
+    .ev-score small{font-size:14px;color:var(--muted)}
+    .ev-badge{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:800;font-size:12px;margin-top:6px}
+    .ev-badge.critical{background:#ecfdf3;color:#05603a}
+    .ev-badge.high{background:#eff6ff;color:#1d4ed8}
+    .ev-badge.medium{background:#fff7ed;color:#c2410c}
+    .ev-badge.low{background:#f8fafc;color:#475467}
+    .ev-badge.rejected{background:#fff1f2;color:#be123c}
+    .ev-lines{display:grid;gap:2px;margin-top:12px;font-size:13px}
+    .ev-lines >div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+    .ev-lines >div:last-child{border-bottom:0}
+    .ev-decision{margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fbfcfe;font-weight:700;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ============ LOGIN VIEW ============ -->
+  <div id="loginView" class="login-wrap">
+    <div class="card login-card">
+      <div class="logo">🔐</div>
+      <h2>لوحة تحكم الطلبات</h2>
+      <form id="loginForm">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="email" autocomplete="username" placeholder="sami@gmail.com" required />
+        <label>كلمة المرور</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required />
+        <div id="loginMsg" class="msg"></div>
+        <button class="primary" type="submit" style="width:100%;margin-top:16px">تسجيل الدخول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD VIEW ============ -->
+  <div id="dashView" style="display:none">
+    <div class="hero">
+      <div>
+        <h1>لوحة تحكم طلبات المشاريع التقنية</h1>
+        <p>عرض ومراجعة الطلبات وإرسال النتيجة النهائية لمقدّم الطلب</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span id="who" style="opacity:.9;font-size:13px"></span>
+        <button class="ghost" id="refreshBtn">↻ تحديث</button>
+        <button class="ghost" id="logoutBtn">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="بحث بالاسم، المشروع، البريد..." />
+        <select id="statusFilter">
+          <option value="">كل الحالات</option>
+          <option value="new">جديد</option>
+          <option value="in-review">قيد المراجعة</option>
+          <option value="approved">تمت الموافقة</option>
+          <option value="rejected">مرفوض</option>
+          <option value="needs-info">بحاجة إلى استكمال</option>
+        </select>
+      </div>
+      <div style="overflow:auto;max-height:70vh">
+        <table>
+          <thead>
+            <tr>
+              <th>المشروع</th><th>مقدّم الطلب</th><th>النوع</th>
+              <th>التقييم</th><th>الحالة</th><th>النتيجة</th><th>التاريخ</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div id="empty" class="muted" style="text-align:center;padding:26px;display:none">لا توجد طلبات مطابقة.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DETAILS / EDIT MODAL ============ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="head">
+      <h2 id="mTitle">تفاصيل الطلب</h2>
+      <button class="x" id="closeModal">✕</button>
+    </div>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script src="../eval-core.js"></script>
+<script>
+const API = 'api.php';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+let CURRENT = null; // request data currently open in the modal
+
+async function api(action, {method='GET', body=null}={}){
+  const opts = {method, credentials:'same-origin'};
+  if(body){ opts.body = new URLSearchParams(body); }
+  const url = method==='GET' ? `${API}?action=${action}` : API;
+  if(method!=='GET' && body){ body.action = action; opts.body = new URLSearchParams(body); }
+  const res = await fetch(url, opts);
+  let json;
+  try{ json = await res.json(); }catch{ throw new Error('استجابة غير صالحة من الخادم'); }
+  if(!json.ok) throw new Error(json.error || 'خطأ غير معروف');
+  return json;
+}
+
+const STATUS_LABELS = {
+  'new':'جديد','in-review':'قيد المراجعة','approved':'تمت الموافقة',
+  'rejected':'مرفوض','needs-info':'بحاجة إلى استكمال'
+};
+const esc = s => (s??'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate = s => { if(!s) return '—'; const d=new Date(s); return isNaN(d)?s:d.toLocaleDateString('ar-EG')+' '+d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}); };
+
+let ALL = [];
+
+// ---------- auth ----------
+async function checkSession(){
+  try{
+    const r = await api('me');
+    if(r.authenticated){ showDash(r.email); return; }
+  }catch{}
+  showLogin();
+}
+function showLogin(){ $('#loginView').style.display='flex'; $('#dashView').style.display='none'; }
+function showDash(email){
+  $('#loginView').style.display='none'; $('#dashView').style.display='block';
+  $('#who').textContent = email || '';
+  loadList();
+}
+
+$('#loginForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const msg = $('#loginMsg'); msg.className='msg';
+  try{
+    const r = await api('login', {method:'POST', body:{email:$('#email').value.trim(), password:$('#password').value}});
+    showDash(r.email);
+  }catch(err){ msg.className='msg err'; msg.textContent = err.message; }
+});
+
+$('#logoutBtn').addEventListener('click', async ()=>{ try{await api('logout',{method:'POST',body:{}});}catch{} showLogin(); });
+$('#refreshBtn').addEventListener('click', loadList);
+
+// ---------- list ----------
+async function loadList(){
+  try{
+    const r = await api('list');
+    ALL = r.items;
+    renderStats();
+    renderRows();
+  }catch(err){ alert(err.message); if(/Unauthorized/i.test(err.message)) showLogin(); }
+}
+
+function renderStats(){
+  const by = k => ALL.filter(x=>x.adminStatus===k).length;
+  const cards = [
+    ['إجمالي الطلبات', ALL.length],
+    ['جديد', by('new')],
+    ['قيد المراجعة', by('in-review')],
+    ['تمت الموافقة', by('approved')],
+    ['تم إرسال النتيجة', ALL.filter(x=>x.resultSentAt).length],
+  ];
+  $('#stats').innerHTML = cards.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+function renderRows(){
+  const q = $('#search').value.trim().toLowerCase();
+  const sf = $('#statusFilter').value;
+  const list = ALL.filter(x=>{
+    if(sf && x.adminStatus!==sf) return false;
+    if(!q) return true;
+    return [x.projectName,x.requesterName,x.requesterEmail,x.requestType].join(' ').toLowerCase().includes(q);
+  });
+  $('#empty').style.display = list.length ? 'none' : 'block';
+  $('#rows').innerHTML = list.map(x=>{
+    const st = x.adminStatus||'new';
+    return `<tr data-path="${esc(x.path)}">
+      <td><strong>${esc(x.projectName)||'—'}</strong><div class="muted">${esc(x.path)}</div></td>
+      <td>${esc(x.requesterName)||'—'}<div class="muted">${esc(x.requesterEmail)}</div></td>
+      <td>${esc(x.requestType)||'—'}</td>
+      <td>${x.totalScore??'—'}${x.priority?`<div class="muted">${esc(x.priority)}</div>`:''}</td>
+      <td><span class="badge b-${st}">${STATUS_LABELS[st]||st}</span></td>
+      <td>${x.resultSentAt?`<span class="sent">✓ أُرسلت</span><div class="muted">${fmtDate(x.resultSentAt)}</div>`:'<span class="muted">—</span>'}</td>
+      <td class="muted">${fmtDate(x.savedAt)}</td>
+    </tr>`;
+  }).join('');
+  $('#rows').querySelectorAll('tr').forEach(tr=>tr.addEventListener('click',()=>openDetails(tr.dataset.path)));
+}
+$('#search').addEventListener('input', renderRows);
+$('#statusFilter').addEventListener('change', renderRows);
+
+// ---------- details / edit ----------
+// Applicant-provided fields shown read-only. The IT evaluation fields
+// (technical assessment, timings, decision) are edited in the form below.
+const FIELD_LABELS = {
+  projectName:'اسم المشروع', requestingDepartment:'الإدارة الطالبة', businessOwner:'مالك العمل',
+  requesterName:'مقدّم الطلب', requesterEmail:'البريد الإلكتروني', requestType:'نوع الطلب',
+  affectedSystems:'الأنظمة المتأثرة', requestDate:'تاريخ الطلب', confidentiality:'السرية',
+  requestDescription:'وصف الطلب', currentProblem:'المشكلة الحالية', expectedImpact:'الأثر المتوقع',
+  savedAt:'تاريخ الحفظ'
+};
+
+async function openDetails(path){
+  $('#mBody').innerHTML = '<div class="muted" style="padding:20px;text-align:center">جارٍ التحميل…</div>';
+  $('#overlay').classList.add('open');
+  try{
+    const r = await api('get&path='+encodeURIComponent(path));
+    renderDetails(path, r.data, r.attachments);
+  }catch(err){ $('#mBody').innerHTML = `<div class="msg err" style="display:block">${esc(err.message)}</div>`; }
+}
+
+function renderDetails(path, d, attachments){
+  CURRENT = d;
+  $('#mTitle').textContent = d.projectName || 'تفاصيل الطلب';
+
+  // applicant-provided fields (read-only)
+  const shown = Object.keys(FIELD_LABELS).filter(k=>d[k]!==undefined && d[k]!=='' );
+  const kv = shown.map(k=>`<div class="k">${FIELD_LABELS[k]}</div><div class="v">${esc(k==='savedAt'?fmtDate(d[k]):(typeof d[k]==='boolean'?(d[k]?'نعم':'لا'):d[k]))}</div>`).join('');
+
+  const docs = [
+    ['doc_as_is','إجراءات الوضع الحالي As-Is'],['doc_to_be','إجراءات الوضع المستهدف To-Be'],
+    ['doc_forms','النماذج والتقارير ذات العلاقة'],['doc_data','بيانات أو عينات داعمة'],
+    ['doc_approval','إقرار الإدارة الطالبة بدقة المعلومات']
+  ];
+  const docRows = docs.map(([k,l])=>`<div class="k">${l}</div><div class="v">${d[k]?'✓ نعم':'—'}</div>`).join('');
+
+  const files = (attachments&&attachments.length)
+    ? `<div class="section-title">المرفقات</div><div class="files">
+        ${attachments.map(f=>`<a href="../requests/${path.split('/').map(encodeURIComponent).join('/')}/${encodeURIComponent(f)}" target="_blank">📎 ${esc(f)}</a>`).join('')}
+       </div>`
+    : '';
+
+  const st = d.adminStatus || 'new';
+  const opt = v => `<option value="${v}"${st===v?' selected':''}>${STATUS_LABELS[v]}</option>`;
+  const critHead = `<thead><tr><th>المعيار</th><th>الوزن</th><th>التقييم</th><th>النتيجة</th></tr></thead>`;
+
+  $('#mBody').innerHTML = `
+    <div class="muted">${esc(path)}</div>
+    <div class="kv">${kv}</div>
+
+    <div class="section-title">جاهزية الوثائق (من مقدّم الطلب)</div>
+    <div class="kv">${docRows}</div>
+    ${files}
+
+    <div class="section-title">التقييم الذاتي للإدارة الطالبة (للاطلاع)</div>
+    <table class="criteria-table">${critHead}<tbody id="adminBusinessCriteria"></tbody></table>
+
+    <div class="section-title">تقييم تقنية المعلومات — Technical Assessment</div>
+    <div class="row2">
+      <div>
+        <label>نتيجة قابلية التطبيق الفنية</label>
+        <select id="technicalApplicability" onchange="calculateAll()">
+          <option value="">اختر</option>
+          <option value="applicable">قابل للتطبيق</option>
+          <option value="conditional">قابل للتطبيق مع متطلبات إضافية</option>
+          <option value="not_now">غير قابل للتطبيق حالياً</option>
+          <option value="not_applicable">غير قابل للتطبيق</option>
+        </select>
+      </div>
+      <div>
+        <label>التصنيف الفني</label>
+        <select id="technicalType">
+          <option value="update">متطلب جديد / تعديل على نظام قائم</option>
+          <option value="new">نظام جديد</option>
+          <option value="integration">تكامل مع أنظمة أخرى</option>
+          <option value="reports">لوحة مؤشرات / تقارير</option>
+          <option value="refactor">تحسين بنية أو أداء</option>
+        </select>
+      </div>
+    </div>
+    <table class="criteria-table" style="margin-top:12px">${critHead}<tbody id="adminTechnicalCriteria"></tbody></table>
+
+    <div class="ev-panel">
+      <div class="ev-score"><span id="aTotal">0</span><small> / 100</small></div>
+      <div id="aBadge" class="ev-badge rejected">لم يتم التقييم</div>
+      <div class="ev-lines">
+        <div><span>تقييم الأعمال</span><span><span id="aBusiness">0</span> / 60</span></div>
+        <div><span>التقييم الفني</span><span><span id="aTechnical">0</span> / 40</span></div>
+        <div><span>قابلية التطبيق</span><span id="aApplicable">غير محدد</span></div>
+        <div><span>القرار المقترح</span><span id="aDecision">غير محدد</span></div>
+      </div>
+      <div class="ev-decision" id="aDecisionBox">يتم احتساب القرار بعد تعبئة التقييم واختيار قابلية التطبيق.</div>
+    </div>
+
+    <div class="section-title">التقدير الزمني والمخاطر</div>
+    <div class="row2">
+      <div><label>مدة التحليل المتوقعة</label><input id="analysisDuration" value="${esc(d.analysisDuration||'')}" placeholder="مثال: 5 أيام عمل" /></div>
+      <div><label>مدة التطوير المتوقعة</label><input id="developmentDuration" value="${esc(d.developmentDuration||'')}" placeholder="مثال: 15 يوم عمل" /></div>
+      <div><label>مدة الاختبار المتوقعة</label><input id="testingDuration" value="${esc(d.testingDuration||'')}" placeholder="مثال: 5 أيام عمل" /></div>
+      <div><label>مدة الإطلاق المتوقعة</label><input id="launchDuration" value="${esc(d.launchDuration||'')}" placeholder="مثال: يومان" /></div>
+    </div>
+    <label>المخاطر المحتملة</label>
+    <textarea id="risks" placeholder="مخاطر تقنية، تشغيلية، أمنية، تكاملية...">${esc(d.risks||'')}</textarea>
+    <label>المتطلبات الإضافية</label>
+    <textarea id="additionalRequirements" placeholder="بيانات، موافقات، تراخيص، موارد، تكاملات...">${esc(d.additionalRequirements||'')}</textarea>
+
+    <div class="section-title">القرار والتوصية النهائية</div>
+    <div class="row2">
+      <div>
+        <label>القرار النهائي المقترح</label>
+        <select id="finalDecision">
+          <option>يحدد تلقائياً بعد التقييم</option>
+          <option>مقبول للتنفيذ</option>
+          <option>مقبول بشروط</option>
+          <option>مؤجل</option>
+          <option>مرفوض</option>
+        </select>
+      </div>
+      <div>
+        <label>المسار المقترح للتنفيذ</label>
+        <select id="executionPath">
+          <option value="inline">ضمن خطة المشاريع التقنية</option>
+          <option value="fast">مسار سريع</option>
+          <option value="refactor">تحسين على نظام قائم</option>
+          <option value="separate">طلب توريد / ميزانية مستقل</option>
+          <option value="return">يعاد للإدارة الطالبة للاستكمال</option>
+        </select>
+      </div>
+    </div>
+    <label>ملاحظات تقنية المعلومات</label>
+    <textarea id="itNotes" placeholder="التوصية، القيود، الملاحظات الفنية...">${esc(d.itNotes||'')}</textarea>
+    <label>اعتماد / اسم المقيّم</label>
+    <input id="reviewerName" value="${esc(d.reviewerName||'')}" placeholder="اسم مسؤول التقييم" />
+
+    <div class="section-title">إرسال النتيجة لمقدّم الطلب</div>
+    <div class="row2">
+      <div>
+        <label>حالة الطلب</label>
+        <select id="fStatus">${opt('new')}${opt('in-review')}${opt('approved')}${opt('rejected')}${opt('needs-info')}</select>
+      </div>
+      <div>
+        <label>المرسل إليه</label>
+        <input value="${esc(d.requesterEmail||'')}" disabled />
+      </div>
+    </div>
+    <label>النتيجة النهائية</label>
+    <textarea id="fResult" placeholder="اكتب النتيجة النهائية للطلب...">${esc(d.finalResult||'')}</textarea>
+    <label>ملاحظات إضافية (اختياري)</label>
+    <textarea id="fMessage" placeholder="ملاحظات ترسل مع النتيجة...">${esc(d.adminMessage||'')}</textarea>
+    <div id="saveMsg" class="msg"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="secondary" id="saveOnly">حفظ فقط</button>
+      <button class="primary" id="saveSend">حفظ وإرسال النتيجة لمقدّم الطلب 📧</button>
+    </div>
+    ${d.resultSentAt?`<div class="muted" style="margin-top:8px">آخر إرسال: ${fmtDate(d.resultSentAt)}</div>`:''}`;
+
+  // criteria tables: business is read-only (applicant self-assessment), technical is editable
+  renderCriteria('adminBusinessCriteria', BUSINESS_CRITERIA, d);
+  renderCriteria('adminTechnicalCriteria', TECHNICAL_CRITERIA, d);
+  $$('#adminBusinessCriteria select').forEach(s=>s.disabled=true);
+
+  if(d.technicalApplicability) $('#technicalApplicability').value = d.technicalApplicability;
+  if(d.technicalType) $('#technicalType').value = d.technicalType;
+  if(d.executionPath) $('#executionPath').value = d.executionPath;
+  const fd = $('#finalDecision');
+  fd.value = d.finalDecision || 'يحدد تلقائياً بعد التقييم';
+  fd.dataset.auto = (!d.finalDecision || d.finalDecision === 'يحدد تلقائياً بعد التقييم') ? 'true' : 'false';
+
+  calculateAll();
+
+  $('#saveOnly').addEventListener('click', ()=>saveDecision(path,false));
+  $('#saveSend').addEventListener('click', ()=>saveDecision(path,true));
+}
+
+// Full evaluation: business (from applicant's saved scores) + technical (admin input).
+function calculateAll(){
+  const business = calculateGroup(BUSINESS_CRITERIA);
+  const technical = calculateGroup(TECHNICAL_CRITERIA);
+  const total = business + technical;
+  const applicability = ($('#technicalApplicability')||{}).value || '';
+  const result = classifyPriority(total, applicability);
+
+  $('#aBusiness').textContent = business.toFixed(1);
+  $('#aTechnical').textContent = technical.toFixed(1);
+  $('#aTotal').textContent = total.toFixed(1);
+  const badge = $('#aBadge'); badge.textContent = result.label; badge.className = 'ev-badge ' + result.cls;
+  $('#aApplicable').textContent = getApplicabilityText(applicability);
+  $('#aDecision').textContent = result.decision;
+  $('#aDecisionBox').textContent = result.message;
+
+  const fd = $('#finalDecision');
+  if(fd && (fd.value === 'يحدد تلقائياً بعد التقييم' || fd.dataset.auto === 'true')){
+    fd.dataset.auto = 'true';
+    const opts = Array.from(fd.options).map(o=>o.value);
+    if(opts.includes(result.decision)) fd.value = result.decision;
+  }
+
+  return {
+    businessScore: Number(business.toFixed(2)),
+    technicalScore: Number(technical.toFixed(2)),
+    totalScore: Number(total.toFixed(2)),
+    priority: result.label,
+    suggestedDecision: result.decision,
+    applicability: getApplicabilityText(applicability)
+  };
+}
+
+async function saveDecision(path, send){
+  const msg = $('#saveMsg'); msg.className='msg';
+  const btns = [$('#saveOnly'),$('#saveSend')]; btns.forEach(b=>b.disabled=true);
+  try{
+    const val = id => { const el = $(id); return el ? el.value : ''; };
+    const fields = {
+      technicalApplicability: val('#technicalApplicability'),
+      technicalType: val('#technicalType'),
+      analysisDuration: val('#analysisDuration'),
+      developmentDuration: val('#developmentDuration'),
+      testingDuration: val('#testingDuration'),
+      launchDuration: val('#launchDuration'),
+      risks: val('#risks'),
+      additionalRequirements: val('#additionalRequirements'),
+      finalDecision: val('#finalDecision'),
+      executionPath: val('#executionPath'),
+      itNotes: val('#itNotes'),
+      reviewerName: val('#reviewerName'),
+      evaluationResult: calculateAll()
+    };
+    TECHNICAL_CRITERIA.forEach(it=>{ const el = $(`[name="${it.id}"]`); if(el) fields[it.id] = el.value; });
+
+    const r = await api('update', {method:'POST', body:{
+      path,
+      adminStatus: $('#fStatus').value,
+      finalResult: $('#fResult').value,
+      adminMessage: $('#fMessage').value,
+      sendEmail: send?'1':'0',
+      fields: JSON.stringify(fields)
+    }});
+    if(send && !r.emailSent){
+      msg.className='msg err';
+      msg.textContent = 'تم الحفظ، لكن فشل إرسال البريد: ' + (r.emailError||'خطأ غير معروف');
+    }else{
+      msg.className='msg ok';
+      msg.textContent = send ? '✓ تم الحفظ وإرسال النتيجة إلى مقدّم الطلب.' : '✓ تم الحفظ.';
+    }
+    await loadList();
+  }catch(err){ msg.className='msg err'; msg.textContent = err.message; }
+  finally{ btns.forEach(b=>b.disabled=false); }
+}
+
+$('#closeModal').addEventListener('click', ()=>$('#overlay').classList.remove('open'));
+$('#overlay').addEventListener('click', e=>{ if(e.target===$('#overlay')) $('#overlay').classList.remove('open'); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') $('#overlay').classList.remove('open'); });
+
+checkSession();
+</script>
+</body>
+</html>

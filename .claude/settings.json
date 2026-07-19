@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l submit.php)",
+      "Bash(php -S 127.0.0.1:8099)",
+      "Bash(echo \"test attachment content\")",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F 'payload={\"projectName\":\"نظام تجريبي\",\"department\":\"الموارد البشرية\",\"applicantName\":\"أحمد علي\",\"applicantEmail\":\"ahmed@example.com\",\"requestType\":\"نظام جديد\",\"goal\":\"هدف تجريبي\"}' -F attachments[]=@/tmp/testdoc.txt)",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F 'payload={\"projectName\":\"نظام ثانٍ\",\"department\":\"الموارد البشرية\",\"applicantName\":\"أحمد علي\",\"applicantEmail\":\"ahmed@example.com\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F 'payload={\"projectName\":\"x\",\"department\":\"y\",\"applicantName\":\"z\"}')",
+      "Bash(cd \"c:/xampp/htdocs/laravel/projects/iarda/it-rate\" && echo \"=== server log ===\" && cat /tmp/phpserver.log && echo \"=== tree ===\" && find requests -type f 2>/dev/null)",
+      "Read(//tmp/**)",
+      "Bash(rm -rf requests/2026/07)",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F \"payload=</tmp/p1.json\" -F 'attachments[]=@/tmp/testdoc.txt')",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F \"payload=</tmp/p2.json\")",
+      "Bash(curl -s -i -X POST http://127.0.0.1:8099/submit.php -F \"payload=</tmp/p1.json\" -F 'attachments[]=@/tmp/testdoc.txt')",
+      "Bash(cd \"c:/xampp/htdocs/laravel/projects/iarda/it-rate\" && php -S 127.0.0.1:8099 router.php 2>/tmp/phpserver.log)",
+      "Bash(taskkill //F //IM php.exe)",
+      "Bash(curl -s -X POST http://127.0.0.1:8099/submit.php -F \"payload=</tmp/p3.json\")",
+      "Bash(php -d display_errors=1 -d error_reporting=32767 -d log_errors=1 -d error_log=/tmp/phperr.log -S 127.0.0.1:8099)",
+      "Bash(curl -s -H \"Expect:\" -X POST \"http://localhost/laravel/projects/iarda/it-rate/_dbg.php\" -F \"payload=</tmp/p2.json\" -F 'attachments[]=@/tmp/testdoc.txt')",
+      "Bash(curl --version)",
+      "Bash(curl -s -X POST \"http://localhost/laravel/projects/iarda/it-rate/_dbg.php\" --form-string \"x=1\" -F 'f=@/tmp/testdoc.txt')",
+      "Bash(curl -v -X POST \"http://localhost/laravel/projects/iarda/it-rate/_dbg.php\" --form-string \"x=1\" -F 'f=@/tmp/testdoc.txt')",
+      "Bash(curl -s -i -X POST \"http://localhost/laravel/projects/iarda/it-rate/submit.php\" -F \"payload=</tmp/p2.json\" -F 'attachments[]=@up.txt')",
+      "Bash(curl -s -X POST \"http://localhost/laravel/projects/iarda/it-rate/submit.php\" -F \"payload=</tmp/p1.json\" -F 'attachments[]=@up.txt')",
+      "Bash(curl -s -X POST \"http://localhost/laravel/projects/iarda/it-rate/submit.php\" -F \"payload=</tmp/p2.json\")",
+      "Bash(rm -f _dbg.php up.txt)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
+  }
+}

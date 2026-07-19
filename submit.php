@@ -1,11 +1,37 @@
 <?php
-// submit.php
+// submit.php — receives an applicant request (steps 1 & 2 only),
+// stores it as JSON + attachments, and notifies the applicant and IT owner.
 declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
+// ---- Config -----------------------------------------------------------------
+const IT_OWNER_EMAIL = 'it@gmail.com';          // IT owner (receives full details)
+const IT_OWNER_NAME  = 'إدارة تقنية المعلومات';
+const MAIL_FROM      = 'no-reply@iarda.gov.sa';
+const MAIL_FROM_NAME = 'نظام طلبات المشاريع التقنية';
+
+/**
+ * Local SMTP settings (MailHog: 127.0.0.1:1025, no auth, no TLS).
+ * View captured mail at http://127.0.0.1:8025
+ * Swap these for a real SMTP host/port/credentials in production.
+ */
+function makeMailer(): PHPMailer {
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host        = '127.0.0.1';
+    $mail->Port        = 1025;
+    $mail->SMTPAuth    = false;
+    $mail->SMTPSecure  = '';
+    $mail->SMTPAutoTLS = false;
+    $mail->CharSet     = 'UTF-8';
+    $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+    return $mail;
+}
+// -----------------------------------------------------------------------------
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -19,82 +45,90 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     fail('Method not allowed', 405);
 }
 
-// ---- 1. Read the JSON payload (sent as a form field named "payload") ----
-$raw = $_POST['payload'] ?? '';
+// ---- 1. Read the JSON payload (form field named "payload") -------------------
+$raw  = $_POST['payload'] ?? '';
 $data = json_decode($raw, true);
 if (!is_array($data)) {
     fail('Invalid or missing payload');
 }
 
-// Basic required-field validation
-foreach (['projectName', 'requestType', 'requesterName', 'requesterEmail'] as $req) {
+// Required fields for an applicant submission
+foreach (['projectName', 'department', 'applicantName', 'applicantEmail'] as $req) {
     if (empty($data[$req])) {
         fail("Missing required field: $req");
     }
 }
+if (!filter_var($data['applicantEmail'], FILTER_VALIDATE_EMAIL)) {
+    fail('Invalid applicant email');
+}
 
-// ---- 2. Build the folder path: [YEAR]/[MONTH]/[requestType]/[requesterName]/[SEQ] ----
+// ---- 2. Build folder path: requests/[YEAR]/[MONTH]/[DEPARTMENT] --------------
 $baseDir = __DIR__ . '/requests';
 
-// Sanitize path segments so they can't escape the base dir
+// Sanitize a path segment so it can't escape the base dir
 function segment(string $s): string {
     $s = trim($s);
-    // keep Arabic + word chars, replace the rest with underscore
-    $s = preg_replace('/[^\p{Arabic}\w\-]+/u', '_', $s);
+    $s = preg_replace('/[^\p{Arabic}\w\-]+/u', '_', $s); // keep Arabic + word chars + dash
     $s = trim($s, '_');
     return $s === '' ? 'unknown' : $s;
+}
+
+// Next global serial for a given day (01, 02, ...), stored in a locked counter file.
+function nextDailySerial(string $baseDir, string $dayKey): string {
+    $dir = "$baseDir/.serials";
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+    $fp = fopen("$dir/$dayKey.seq", 'c+');
+    if ($fp === false) {
+        return '01';
+    }
+    flock($fp, LOCK_EX);
+    $next = ((int)trim((string)fread($fp, 32))) + 1;
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, (string)$next);
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    return str_pad((string)$next, 2, '0', STR_PAD_LEFT);
 }
 
 $now   = new DateTime('now');
 $year  = $now->format('Y');
 $month = $now->format('m');
-$type  = segment((string)$data['requestType']);
-$name  = segment((string)$data['requesterName']);
+$dept  = segment((string)$data['department']);
+$name  = segment((string)$data['applicantName']);
 
-$parent = "$baseDir/$year/$month/$type/$name";
-if (!is_dir($parent) && !mkdir($parent, 0775, true) && !is_dir($parent)) {
+$deptDir = "$baseDir/$year/$month/$dept";
+if (!is_dir($deptDir) && !mkdir($deptDir, 0775, true) && !is_dir($deptDir)) {
     fail('Could not create request directory', 500);
 }
 
-// ---- 3. Determine next sequence number (01, 02, ...) ----
+// ---- 3. Next sequence number for this applicant (01, 02, ...) ----------------
 $seq = 1;
-foreach (glob("$parent/*", GLOB_ONLYDIR) ?: [] as $existing) {
-    $base = basename($existing);
-    if (ctype_digit($base)) {
-        $seq = max($seq, ((int)$base) + 1);
+foreach (glob("$deptDir/*.json") ?: [] as $existing) {
+    $base = basename($existing, '.json');
+    if (preg_match('/^' . preg_quote($name, '/') . '_(\d+)$/u', $base, $m)) {
+        $seq = max($seq, ((int)$m[1]) + 1);
     }
 }
-$seqStr  = str_pad((string)$seq, 2, '0', STR_PAD_LEFT);
-$reqDir  = "$parent/$seqStr";
+$seqStr   = str_pad((string)$seq, 2, '0', STR_PAD_LEFT);
+$fileStem = "{$name}_{$seqStr}";
+$relPath  = "requests/$year/$month/$dept/$fileStem.json";
 
-if (!mkdir($reqDir, 0775, true) && !is_dir($reqDir)) {
-    fail('Could not create sequence directory', 500);
-}
+// Reference number: it-proj-[YEAR]-[MONTH]-[DAY]-[SERIAL] (serial resets daily)
+$day       = $now->format('d');
+$serial    = nextDailySerial($baseDir, "$year-$month-$day");
+$reference = "it-proj-$year-$month-$day-$serial";
 
-$relPath = "$year/$month/$type/$name/$seqStr";
-
-// ---- 4. Save the JSON file ----
-$data['savedAt']    = $now->format(DateTime::ATOM);
-$data['storagePath'] = $relPath;
-
-$jsonPath = "$reqDir/request.json";
-if (file_put_contents(
-        $jsonPath,
-        json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-    ) === false) {
-    fail('Could not write request.json', 500);
-}
-
-// ---- 5. Save uploaded files (input name="attachments[]") ----
+// ---- 4. Save uploaded attachments in the SAME folder ------------------------
 $savedFiles = [];
 if (!empty($_FILES['attachments']) && is_array($_FILES['attachments']['name'])) {
     $files   = $_FILES['attachments'];
     $count   = count($files['name']);
     $maxSize = 15 * 1024 * 1024; // 15 MB per file
-    $allowed = [
-        'pdf','doc','docx','xls','xlsx','csv','txt',
-        'png','jpg','jpeg','gif','zip','json'
-    ];
+    $allowed = ['pdf','doc','docx','xls','xlsx','csv','txt','png','jpg','jpeg','gif','zip','json'];
 
     for ($i = 0; $i < $count; $i++) {
         if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
@@ -111,13 +145,14 @@ if (!empty($_FILES['attachments']) && is_array($_FILES['attachments']['name'])) 
             fail('File type not allowed: ' . $orig);
         }
 
-        // safe, unique-ish filename, preserve original label
-        $safe = segment(pathinfo($orig, PATHINFO_FILENAME)) . '.' . $ext;
-        $dest = "$reqDir/$safe";
+        // prefix with the applicant stem so files stay grouped and never collide
+        $label = segment(pathinfo($orig, PATHINFO_FILENAME));
+        $safe  = "{$fileStem}_{$label}.{$ext}";
+        $dest  = "$deptDir/$safe";
         $n = 1;
         while (file_exists($dest)) {
-            $safe = segment(pathinfo($orig, PATHINFO_FILENAME)) . "_$n.$ext";
-            $dest = "$reqDir/$safe";
+            $safe = "{$fileStem}_{$label}_{$n}.{$ext}";
+            $dest = "$deptDir/$safe";
             $n++;
         }
 
@@ -128,56 +163,55 @@ if (!empty($_FILES['attachments']) && is_array($_FILES['attachments']['name'])) 
     }
 }
 
-// ---- 6. Send the two emails ----
-function makeMailer(): PHPMailer {
-    $mail = new PHPMailer(true);
-    // --- MailHog (local SMTP catcher) settings ---
-    // MailHog listens on 127.0.0.1:1025, requires no auth and no encryption.
-    // View captured mail at http://127.0.0.1:8025
-    $mail->isSMTP();
-    $mail->Host       = '127.0.0.1';
-    $mail->Port       = 1025;
-    $mail->SMTPAuth   = false;
-    $mail->SMTPSecure = '';            // no TLS/SSL for MailHog
-    $mail->SMTPAutoTLS = false;        // don't auto-upgrade to TLS
-    $mail->CharSet    = 'UTF-8';
-    $mail->setFrom('no-reply@iarda.gov.sa', 'IT Project Requests');
-    return $mail;
+// ---- 5. Save the JSON file ---------------------------------------------------
+$data['reference']   = $reference;
+$data['sequence']    = $seqStr;
+$data['savedAt']     = $now->format(DateTime::ATOM);
+$data['storagePath'] = $relPath;
+$data['attachments'] = array_map('basename', $savedFiles);
+
+$jsonPath = "$deptDir/$fileStem.json";
+if (file_put_contents($jsonPath, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) === false) {
+    fail('Could not write request file', 500);
 }
 
+// ---- 6. Send the two emails --------------------------------------------------
 $emailErrors = [];
 
-// (a) Thank-you email to the requester
+// (a) Acknowledgement to the applicant — "received and under process"
 try {
     $m = makeMailer();
-    $m->addAddress((string)$data['requesterEmail'], (string)$data['requesterName']);
+    $m->addAddress((string)$data['applicantEmail'], (string)$data['applicantName']);
     $m->isHTML(true);
     $m->Subject = 'تم استلام طلبك - ' . $data['projectName'];
     $m->Body = "
         <div dir='rtl' style='font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.9'>
-            <p>عزيزي/عزيزتي " . htmlspecialchars((string)$data['requesterName']) . "،</p>
+            <p>عزيزي/عزيزتي " . htmlspecialchars((string)$data['applicantName']) . "،</p>
             <p>نشكرك على تقديم طلبك <strong>«" . htmlspecialchars((string)$data['projectName']) . "»</strong>.</p>
-            <p>نود إعلامك بأنه قد تم <strong>استلام طلبك بنجاح</strong> وسيتم مراجعته من قبل إدارة تقنية المعلومات، وسنوافيك بالمستجدات.</p>
-            <p>نوع الطلب: " . htmlspecialchars((string)$data['requestType']) . "<br>
-               الرقم المرجعي: " . htmlspecialchars($relPath) . "</p>
+            <p>نود إعلامك بأنه قد تم <strong>استلام طلبك بنجاح</strong>، وهو الآن <strong>قيد المراجعة والمعالجة</strong>
+               من قبل إدارة تقنية المعلومات، وسنوافيك بالمستجدات في حينه.</p>
+            <p>الإدارة الطالبة: " . htmlspecialchars((string)$data['department']) . "<br>
+               الرقم المرجعي: " . htmlspecialchars($reference) . "</p>
             <p>مع خالص التقدير،<br>إدارة تقنية المعلومات</p>
         </div>";
-    $m->AltBody = "تم استلام طلبك: {$data['projectName']}. سيتم مراجعته والرد عليك.";
+    $m->AltBody = "تم استلام طلبك: {$data['projectName']}. طلبك الآن قيد المراجعة والمعالجة.";
     $m->send();
 } catch (Exception $e) {
-    $emailErrors[] = 'requester email: ' . $m->ErrorInfo;
+    $emailErrors[] = 'applicant email: ' . ($m->ErrorInfo ?? $e->getMessage());
 }
 
-// (b) Full-details email to admin, with JSON + attachments
+// (b) Full details to the IT owner, with JSON + attachments
 try {
     $m = makeMailer();
-    $m->addAddress('sami@gmail.com', 'Sami Mansour');
+    $m->addAddress(IT_OWNER_EMAIL, IT_OWNER_NAME);
+    $m->addReplyTo((string)$data['applicantEmail'], (string)$data['applicantName']);
     $m->isHTML(true);
     $m->Subject = 'طلب مشروع جديد - ' . $data['projectName'];
 
-    // Build an HTML table of all details
+    $skip = ['savedAt','storagePath','attachments','sequence'];
     $rows = '';
     foreach ($data as $k => $v) {
+        if (in_array($k, $skip, true)) continue;
         if (is_array($v)) $v = json_encode($v, JSON_UNESCAPED_UNICODE);
         if (is_bool($v))  $v = $v ? 'نعم' : 'لا';
         $rows .= '<tr>'
@@ -189,26 +223,27 @@ try {
     $m->Body = "
         <div dir='rtl' style='font-family:Tahoma,Arial,sans-serif;font-size:13px'>
             <h3>طلب مشروع تقني جديد</h3>
+            <p>الرقم المرجعي: <strong>$reference</strong></p>
             <p>مسار الحفظ: <strong>$relPath</strong></p>
             <table style='border-collapse:collapse;width:100%'>$rows</table>
         </div>";
     $m->AltBody = "طلب جديد: {$data['projectName']} — المسار: $relPath";
 
-    // Attach the JSON and any uploaded files
-    $m->addAttachment($jsonPath, 'request.json');
+    $m->addAttachment($jsonPath, "$fileStem.json");
     foreach ($savedFiles as $f) {
         $m->addAttachment($f, basename($f));
     }
     $m->send();
 } catch (Exception $e) {
-    $emailErrors[] = 'admin email: ' . $m->ErrorInfo;
+    $emailErrors[] = 'IT owner email: ' . ($m->ErrorInfo ?? $e->getMessage());
 }
 
-// ---- 7. Respond ----
+// ---- 7. Respond (request is already saved; email errors are non-fatal) -------
 echo json_encode([
     'ok'          => true,
+    'reference'   => $reference,
     'path'        => $relPath,
     'sequence'    => $seqStr,
     'files'       => array_map('basename', $savedFiles),
-    'emailErrors' => $emailErrors, // non-fatal; request is already saved
+    'emailErrors' => $emailErrors,
 ], JSON_UNESCAPED_UNICODE);
