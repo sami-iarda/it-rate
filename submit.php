@@ -10,7 +10,9 @@ use PHPMailer\PHPMailer\Exception;
 
 // ---- Config (values live in .env — see .env.example) -------------------------
 define('IT_OWNER_EMAIL', env_required('IT_OWNER_EMAIL')); // IT owner (receives full details)
+define('IT_OWNER_EMAIL_2', env_required('IT_OWNER_EMAIL_2')); // IT owner (receives full details)
 define('IT_OWNER_NAME',  (string)env('IT_OWNER_NAME', ''));
+
 // -----------------------------------------------------------------------------
 
 header('Content-Type: application/json; charset=utf-8');
@@ -184,6 +186,7 @@ try {
 try {
     $m = makeMailer();
     $m->addAddress(IT_OWNER_EMAIL, IT_OWNER_NAME);
+    $m->addAddress(IT_OWNER_EMAIL_2, IT_OWNER_NAME);
     $m->addReplyTo((string)$data['applicantEmail'], (string)$data['applicantName']);
     $m->isHTML(true);
     $m->Subject = 'طلب مشروع جديد - ' . $data['projectName'];

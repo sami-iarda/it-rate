@@ -1,4 +1,5 @@
 /requests/2026
 /requests/.serials
 .env
+.env.production
 /node_modules

@@ -11,8 +11,19 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 // ---- Admin credentials (values live in .env — see .env.example) --------------
-define('ADMIN_EMAIL',     env_required('ADMIN_EMAIL'));
-define('ADMIN_PASS_HASH', env_required('ADMIN_PASS_HASH'));
+/**
+ * Admin accounts, read from ADMIN_EMAIL/ADMIN_PASS_HASH plus the numbered
+ * pairs ADMIN_EMAIL_2/ADMIN_PASS_HASH_2, _3, … (stops at the first gap).
+ *
+ * @return array<string,string> lowercased email => bcrypt hash
+ */
+function adminUsers(): array {
+    $users = [strtolower(env_required('ADMIN_EMAIL')) => env_required('ADMIN_PASS_HASH')];
+    for ($i = 2; env("ADMIN_EMAIL_$i") !== null; $i++) {
+        $users[strtolower(env_required("ADMIN_EMAIL_$i"))] = env_required("ADMIN_PASS_HASH_$i");
+    }
+    return $users;
+}
 
 const REQUESTS_BASE = __DIR__ . '/../requests';
 
@@ -56,7 +67,8 @@ switch ($action) {
     case 'login': {
         $email = trim((string)($_POST['email'] ?? ''));
         $pass  = (string)($_POST['password'] ?? '');
-        if (strcasecmp($email, ADMIN_EMAIL) === 0 && password_verify($pass, ADMIN_PASS_HASH)) {
+        $hash  = adminUsers()[strtolower($email)] ?? null;
+        if ($hash !== null && password_verify($pass, $hash)) {
             session_regenerate_id(true);
             $_SESSION['admin'] = $email;
             out(['ok' => true, 'email' => $email]);
