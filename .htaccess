@@ -1,0 +1,4 @@
+# Block direct web access to dotfiles and config, since the project root is the docroot.
+<FilesMatch "^\.env|^\.env\..*|^composer\.(json|lock)$">
+    Require all denied
+</FilesMatch>

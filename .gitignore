@@ -1,2 +1,4 @@
 /requests/2026
 /requests/.serials
+.env
+/node_modules

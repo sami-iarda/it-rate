@@ -3,20 +3,18 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../mailer.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-// ---- Admin credentials -------------------------------------------------------
-const ADMIN_EMAIL     = 'abdulrahman.muhanna@iarda.gov.sa';
-const ADMIN_PASS_HASH = '$2y$12$n/CPY6SiZhFEuebVLTB94u.GWsykFscCmjCrN6xIniFjxPljtqTXG'; // bcrypt("123123123")
+// ---- Admin credentials (values live in .env — see .env.example) --------------
+define('ADMIN_EMAIL',     env_required('ADMIN_EMAIL'));
+define('ADMIN_PASS_HASH', env_required('ADMIN_PASS_HASH'));
 
 const REQUESTS_BASE = __DIR__ . '/../requests';
-const MAIL_FROM      = 'no-reply@iarda.gov.sa';
-const MAIL_FROM_NAME = 'إدارة تقنية المعلومات';
 
 function out(array $payload, int $code = 200): void {
     http_response_code($code);
@@ -48,20 +46,6 @@ function resolveReqFile(string $rel): string {
         fail('الطلب غير موجود', 404);
     }
     return $abs;
-}
-
-function makeMailer(): PHPMailer {
-    $mail = new PHPMailer(true);
-    // MailHog (local SMTP catcher): 127.0.0.1:1025, no auth/TLS. Viewer: http://127.0.0.1:8025
-    $mail->isSMTP();
-    $mail->Host        = '127.0.0.1';
-    $mail->Port        = 1025;
-    $mail->SMTPAuth    = false;
-    $mail->SMTPSecure  = '';
-    $mail->SMTPAutoTLS = false;
-    $mail->CharSet     = 'UTF-8';
-    $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
-    return $mail;
 }
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -179,7 +163,7 @@ switch ($action) {
                 $appl  = $eval['applicability'] ?? '';
                 $notes = $eval['committeeNotes']?? '';
                 try {
-                    $m = makeMailer();
+                    $m = makeMailer((string)env('ADMIN_MAIL_FROM_NAME', ''));
                     $m->addAddress($to, (string)($json['applicantName'] ?? ''));
                     $m->isHTML(true);
                     $m->Subject = 'نتيجة تقييم طلبك - ' . (string)($json['projectName'] ?? '');

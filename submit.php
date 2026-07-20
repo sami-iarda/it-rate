@@ -4,33 +4,13 @@
 declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/mailer.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// ---- Config -----------------------------------------------------------------
-const IT_OWNER_EMAIL = 'abdulrahman.muhanna@iarda.gov.sa';          // IT owner (receives full details)
-const IT_OWNER_NAME  = 'إدارة تقنية المعلومات';
-const MAIL_FROM      = 'no-reply@iarda.gov.sa';
-const MAIL_FROM_NAME = 'نظام طلبات المشاريع التقنية';
-
-/**
- * Local SMTP settings (MailHog: 127.0.0.1:1025, no auth, no TLS).
- * View captured mail at http://127.0.0.1:8025
- * Swap these for a real SMTP host/port/credentials in production.
- */
-function makeMailer(): PHPMailer {
-    $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->Host        = '127.0.0.1';
-    $mail->Port        = 1025;
-    $mail->SMTPAuth    = false;
-    $mail->SMTPSecure  = '';
-    $mail->SMTPAutoTLS = false;
-    $mail->CharSet     = 'UTF-8';
-    $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
-    return $mail;
-}
+// ---- Config (values live in .env — see .env.example) -------------------------
+define('IT_OWNER_EMAIL', env_required('IT_OWNER_EMAIL')); // IT owner (receives full details)
+define('IT_OWNER_NAME',  (string)env('IT_OWNER_NAME', ''));
 // -----------------------------------------------------------------------------
 
 header('Content-Type: application/json; charset=utf-8');
