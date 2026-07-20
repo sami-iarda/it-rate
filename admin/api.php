@@ -11,9 +11,8 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 // ---- Admin credentials -------------------------------------------------------
-// email: sami@gmail.com  /  password: 123123123
-const ADMIN_EMAIL     = 'sami@gmail.com';
-const ADMIN_PASS_HASH = '$2y$10$qK8REAY6n0Zem8aYzjm4y.QJmj4JCxyalUHpD3LS5qUSn8oXSMKwu'; // bcrypt("123123123")
+const ADMIN_EMAIL     = 'abdulrahman.muhanna@iarda.gov.sa';
+const ADMIN_PASS_HASH = '$2y$12$n/CPY6SiZhFEuebVLTB94u.GWsykFscCmjCrN6xIniFjxPljtqTXG'; // bcrypt("123123123")
 
 const REQUESTS_BASE = __DIR__ . '/../requests';
 const MAIL_FROM      = 'no-reply@iarda.gov.sa';
@@ -53,13 +52,20 @@ function resolveReqFile(string $rel): string {
 
 function makeMailer(): PHPMailer {
     $mail = new PHPMailer(true);
-    // MailHog (local SMTP catcher): 127.0.0.1:1025, no auth/TLS. Viewer: http://127.0.0.1:8025
-    $mail->isSMTP();
-    $mail->Host        = '127.0.0.1';
-    $mail->Port        = 1025;
-    $mail->SMTPAuth    = false;
-    $mail->SMTPSecure  = '';
-    $mail->SMTPAutoTLS = false;
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = "smtp.office365.com";                   //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = "no-reply@iarda.gov.sa";                //SMTP username
+    $mail->Password   = "ItHrA#u@!Pj9*alnn#";                   //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption
+    $mail->Port       = 587;
+
+    // $mail->isSMTP();
+    // $mail->Host        = '127.0.0.1';
+    // $mail->Port        = 1025;
+    // $mail->SMTPAuth    = false;
+    // $mail->SMTPSecure  = '';
+    // $mail->SMTPAutoTLS = false;
     $mail->CharSet     = 'UTF-8';
     $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
     return $mail;

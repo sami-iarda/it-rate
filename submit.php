@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // ---- Config -----------------------------------------------------------------
-const IT_OWNER_EMAIL = 'it@gmail.com';          // IT owner (receives full details)
+const IT_OWNER_EMAIL = 'abdulrahman.muhanna@iarda.gov.sa';          // IT owner (receives full details)
 const IT_OWNER_NAME  = 'إدارة تقنية المعلومات';
 const MAIL_FROM      = 'no-reply@iarda.gov.sa';
 const MAIL_FROM_NAME = 'نظام طلبات المشاريع التقنية';
@@ -21,12 +21,20 @@ const MAIL_FROM_NAME = 'نظام طلبات المشاريع التقنية';
  */
 function makeMailer(): PHPMailer {
     $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->Host        = '127.0.0.1';
-    $mail->Port        = 1025;
-    $mail->SMTPAuth    = false;
-    $mail->SMTPSecure  = '';
-    $mail->SMTPAutoTLS = false;
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = "smtp.office365.com";                   //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = "no-reply@iarda.gov.sa";                //SMTP username
+    $mail->Password   = "ItHrA#u@!Pj9*alnn#";                   //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption
+    $mail->Port       = 587;
+
+    // $mail->isSMTP();
+    // $mail->Host        = '127.0.0.1';
+    // $mail->Port        = 1025;
+    // $mail->SMTPAuth    = false;
+    // $mail->SMTPSecure  = '';
+    // $mail->SMTPAutoTLS = false;
     $mail->CharSet     = 'UTF-8';
     $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
     return $mail;
