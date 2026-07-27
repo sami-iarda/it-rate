@@ -232,6 +232,76 @@ switch ($action) {
         out(['ok' => true, 'emailSent' => $send && $emailError === null, 'emailError' => $emailError, 'data' => $json]);
     }
 
+    // -------------------------------------------------------------- reject
+    // Reject the request due to missing gate items and email the applicant.
+    case 'reject': {
+        requireAuth();
+        $file = resolveReqFile((string)($_POST['file'] ?? ''));
+        $json = json_decode((string)file_get_contents($file), true);
+        if (!is_array($json)) fail('ملف الطلب تالف', 500);
+
+        $evalRaw = (string)($_POST['evaluation'] ?? '');
+        $eval    = json_decode($evalRaw, true);
+        if (!is_array($eval)) fail('بيانات التقييم غير صالحة', 400);
+
+        $now  = (new DateTime('now'))->format(DateTime::ATOM);
+
+        $json['evaluation']  = $eval;
+        $json['adminStatus'] = 'rejected';
+        $json['rejectedAt']  = $now;
+
+        $emailError = null;
+        $to = (string)($json['applicantEmail'] ?? '');
+        if ($to === '') {
+            $emailError = 'لا يوجد بريد للمتقدّم';
+        } else {
+            try {
+                $m = makeMailer((string)env('ADMIN_MAIL_FROM_NAME', ''));
+                $m->addAddress($to, (string)($json['applicantName'] ?? ''));
+                $m->isHTML(true);
+                $m->Subject = 'تحديث بشأن طلبك - ' . (string)($json['projectName'] ?? '');
+                
+                $noItemsStr = "";
+                $gateItems = [
+                    "وضوح أهداف الإدارة الطالبة ومواءمتها مع الأهداف الاستراتيجية",
+                    "وجود مالك المشروع (Project Owner) محدد",
+                    "توفر فريق داعم من الإدارة الطالبة",
+                    "الاستعداد للمشاركة في مراحل تحليل المتطلبات والاختبارات والإطلاق",
+                    "توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)",
+                    "إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات والمعلومات المقدمة",
+                ];
+                if (isset($eval['gate']['answers'])) {
+                    foreach ($eval['gate']['answers'] as $k => $v) {
+                        if ($v === 'لا') {
+                            $idx = (int)str_replace('gate_', '', $k);
+                            $noItemsStr .= "<li>" . htmlspecialchars($gateItems[$idx] ?? $k) . "</li>";
+                        }
+                    }
+                }
+
+                $m->Body = "
+                    <div dir='rtl' style='font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.9'>
+                        <p>عزيزي/عزيزتي " . htmlspecialchars((string)($json['applicantName'] ?? '')) . "،</p>
+                        <p>نشكركم على تقديم طلب <strong>«" . htmlspecialchars((string)($json['projectName'] ?? '')) . "»</strong> (الرقم المرجعي: " . htmlspecialchars((string)($json['reference'] ?? '')) . ").</p>
+                        <p>يؤسفنا إبلاغكم بأنه تعذر قبول الطلب في المرحلة الحالية نظراً لعدم استيفاء بعض المتطلبات الأساسية في بوابة اكتمال الطلب:</p>
+                        <ul>$noItemsStr</ul>
+                        <p>يمكنكم إعادة تقديم الطلب بعد استكمال العناصر المذكورة أعلاه.</p>
+                        <p>مع خالص التقدير،<br>إدارة تقنية المعلومات</p>
+                    </div>";
+                $m->AltBody = "تحديث بشأن طلبك ({$json['projectName']}): الطلب مرفوض لعدم اكتمال المتطلبات الأساسية.";
+                $m->send();
+                $json['resultSentAt'] = $now;
+            } catch (Exception $e) {
+                $emailError = $m->ErrorInfo ?? $e->getMessage();
+            }
+        }
+
+        if (file_put_contents($file, json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) === false) {
+            fail('تعذّر حفظ الطلب', 500);
+        }
+        out(['ok' => true, 'emailSent' => $emailError === null, 'emailError' => $emailError, 'data' => $json]);
+    }
+
     default:
         fail('إجراء غير معروف', 404);
 }
