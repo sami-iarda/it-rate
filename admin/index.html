@@ -246,7 +246,7 @@
 
   <!-- ===== Evaluation: gate ===== -->
   <div class="card">
-    <div class="eval-head detail-head"><div><h2>بوابة اكتمال الطلب</h2><p>شروط إلزامية قبل قبول الطلب للتقييم النقاطي.</p></div><span class="section-badge" id="gateBadge">0 / 6</span></div>
+    <div class="eval-head detail-head"><div><h2>بوابة اكتمال الطلب</h2><p>شروط إلزامية يجب توفرها قبل قبول الطلب للتقييم النقاطي. إن كانت إجابة أي بند «لا»، يرفض الطلب.</p></div><span class="section-badge" id="gateBadge">0 / 6</span></div>
     <div id="gateList"></div>
     <div class="gate-banner neutral" id="gateBanner"><span class="icon">●</span><span id="gateBannerText">أكمل تعبئة جميع البنود لعرض نتيجة البوابة</span></div>
   </div>
@@ -285,12 +285,15 @@
       </div>
     </div>
     <div class="criterion">
-      <div class="criterion-top"><div class="criterion-title">درجة تحسين الخدمة / العملية</div></div>
+      <div class="criterion-top"><div class="criterion-title">آتمتة الخدمة / العملية</div></div>
       <div class="seg">
-        <label><input type="radio" name="op_improve" value="5"><span class="seg-btn">تحسين خدمة داخل إدارة <span class="pts">(5)</span></span></label>
-        <label><input type="radio" name="op_improve" value="10"><span class="seg-btn">تحسين عمليات مشتركة <span class="pts">(10)</span></span></label>
-        <label><input type="radio" name="op_improve" value="15"><span class="seg-btn">تحسين عملية رئيسية بمستوى الجهة <span class="pts">(15)</span></span></label>
+        <label><input type="radio" name="op_improve" value="5"><span class="seg-btn">آتمتة خدمة داخل إدارة <span class="pts">(5)</span></span></label>
+        <label><input type="radio" name="op_improve" value="10"><span class="seg-btn">آتمتة عمليات مشتركة <span class="pts">(10)</span></span></label>
+        <label><input type="radio" name="op_improve" value="15"><span class="seg-btn">آتمتة عملية رئيسية بمستوى الجهة <span class="pts">(15)</span></span></label>
       </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="automateNotes" placeholder="اكتب المبرر..."></textarea>
+
     </div>
     <div class="axis-total"><span class="lbl">إجمالي الأثر التشغيلي</span><span class="val"><span id="opRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 35</span></span></div>
 
@@ -299,53 +302,124 @@
       <div class="criterion-top"><div class="criterion-title">ارتباط الطلب بالخطة التشغيلية للإدارة</div></div>
       <div class="seg">
         <label><input type="radio" name="st_plan" value="0"><span class="seg-btn">غير مرتبط <span class="pts">(0)</span></span></label>
-        <label><input type="radio" name="st_plan" value="3"><span class="seg-btn">مرتبط جزئياً <span class="pts">(3)</span></span></label>
         <label><input type="radio" name="st_plan" value="5"><span class="seg-btn">مرتبط بالكامل <span class="pts">(5)</span></span></label>
       </div>
     </div>
     <div class="criterion">
       <div class="criterion-top"><div class="criterion-title">دعم هدف استراتيجي أو مبادرة واحدة</div></div>
-      <div class="yn"><label><input type="radio" name="st_one" value="10"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="st_one" value="0"><span class="yn-btn no">لا</span></label></div>
+      <div class="yn">
+        <label><input type="radio" name="st_one" value="10"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="st_one" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="group-title">المبرر</div>
+      <textarea id="stOneNotes" placeholder="اكتب المبرر..."></textarea>
     </div>
     <div class="criterion">
       <div class="criterion-top"><div class="criterion-title">دعم عدة أهداف أو مبادرات استراتيجية</div></div>
-      <div class="yn"><label><input type="radio" name="st_multi" value="10"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="st_multi" value="0"><span class="yn-btn no">لا</span></label></div>
+      <div class="yn">
+        <label><input type="radio" name="st_multi" value="10"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="st_multi" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="group-title">المبرر</div>
+      <textarea id="stMultiNotes" placeholder="اكتب المبرر..."></textarea>
     </div>
-    <div class="axis-total"><span class="lbl">إجمالي المواءمة الاستراتيجية</span><span class="val"><span id="stRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 25</span></span></div>
+    <div class="axis-total"><span class="lbl">إجمالي تقييم المواءمة الاستراتيجية</span><span class="val"><span id="stRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 25</span></span></div>
 
-    <div class="group-title">المحور 3 — الجاهزية والجدوى الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 25)</span></div>
+    <div class="group-title">المحور 3 — الجاهزية الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 24)</span></div>
     <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">أ) جاهزية البنية التحتية</div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">البنية التحتية متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra1" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra1" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">الأنظمة الداعمة متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra2" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra2" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">الموارد التقنية متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_infra3" value="4"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_infra3" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:16px 0 8px">ب) الجدوى والتوافق الفني</div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يتوافق مع المعمارية التقنية المعتمدة</div></div><div class="yn"><label><input type="radio" name="tc_f1" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f1" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">لا يتعارض مع الأنظمة الحالية</div></div><div class="yn"><label><input type="radio" name="tc_f2" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f2" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن تنفيذه باستخدام التقنيات المعتمدة</div></div><div class="yn"><label><input type="radio" name="tc_f3" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f3" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">البيانات اللازمة متوفرة</div></div><div class="yn"><label><input type="radio" name="tc_f4" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f4" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن التكامل مع الأنظمة الأخرى</div></div><div class="yn"><label><input type="radio" name="tc_f5" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f5" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يتوافق مع سياسات الأمن السيبراني وحوكمة البيانات</div></div><div class="yn"><label><input type="radio" name="tc_f6" value="2"><span class="yn-btn yes">نعم</span></label><label><input type="radio" name="tc_f6" value="0"><span class="yn-btn no">لا</span></label></div></div>
-    <div class="axis-total"><span class="lbl">إجمالي الجاهزية الفنية</span><span class="val"><span id="tcRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 24</span></span></div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">توفر البنية التحتية</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_infra1" value="4"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_infra1" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_infra1Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">توفر الأنظمة الداعمة (في حال الحاجة)</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_infra2" value="4"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_infra2" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_infra2Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">توفر الموارد التقنية</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_infra3" value="4"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_infra3" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_infra3Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:16px 0 8px">ب) التوافق الفني</div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يتوافق مع المعمارية التقنية</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_f1" value="2"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_f1" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_f1Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">لا يتعارض مع الأنظمة الحالية</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_f2" value="2"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_f2" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_f2Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن تنفيذه باستخدام الموارد التقنية المتوفرة</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_f3" value="2"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_f3" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_f3Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">البيانات اللازمة متوفرة</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_f4" value="2"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_f4" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_f4Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
+    <div class="criterion"><div class="criterion-top"><div class="criterion-title">يمكن التكامل مع الأنظمة الأخرى</div></div>
+      <div class="yn">
+        <label><input type="radio" name="tc_f5" value="2"><span class="yn-btn yes">نعم</span></label>
+        <label><input type="radio" name="tc_f5" value="0"><span class="yn-btn no">لا</span></label>
+      </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="tc_f5Notes" placeholder="اكتب المبرر..."></textarea>
+    </div>
 
-    <div class="group-title">المحور 4 — التأثير على الأنظمة / المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 25)</span></div>
-    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">(ج) التأثير على الأنظمة الأخرى</div>
+    <div class="axis-total"><span class="lbl">إجمالي تقييم الجاهزية الفنية</span><span class="val"><span id="tcRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 24</span></span></div>
+
+    <div class="group-title">المحور 4 —  التأثير على الأنظمة الأخرى / المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px">(وزن 25)</span></div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">(ج) التأثير على الأنظمة</div>
     <div class="criterion">
-      <div class="criterion-top"><div class="criterion-title">تأثير الطلب على الأنظمة الحالية<small>الدرجة الخام = الحد الأقصى − مستوى التأثير</small></div></div>
+      <div class="criterion-top"><div class="criterion-title">تأثير الطلب على الأنظمة الحالية<small>كلما زاد التأثير قلّت الدرجة</small></div></div>
       <div class="seg">
         <label><input type="radio" name="rk_impact" value="8"><span class="seg-btn">لا يوجد <span class="pts">(0)</span></span></label>
         <label><input type="radio" name="rk_impact" value="6"><span class="seg-btn">محدود <span class="pts">(2)</span></span></label>
         <label><input type="radio" name="rk_impact" value="3"><span class="seg-btn">متوسط <span class="pts">(5)</span></span></label>
         <label><input type="radio" name="rk_impact" value="0"><span class="seg-btn">مرتفع <span class="pts">(8)</span></span></label>
       </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="rk_impactNotes" placeholder="اكتب المبرر..."></textarea>
     </div>
+
     <div style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:16px 0 8px">(د) المخاطر الفنية</div>
     <div class="criterion">
-      <div class="criterion-top"><div class="criterion-title">المخاطر التقنية والتشغيلية<small>الدرجة الخام = الحد الأقصى − مستوى الخطورة</small></div></div>
+      <div class="criterion-top"><div class="criterion-title">المخاطر التقنية والتشغيلية<small>كلما زادت الخطورة قلّت الدرجة</small></div></div>
       <div class="seg">
-        <label><input type="radio" name="rk_level" value="8"><span class="seg-btn">منخفضة <span class="pts">(2)</span></span></label>
+        <label><input type="radio" name="rk_level" value="8"><span class="seg-btn">لا يوجد <span class="pts">(0)</span></span></label>
+        <label><input type="radio" name="rk_level" value="6"><span class="seg-btn">منخفضة <span class="pts">(2)</span></span></label>
         <label><input type="radio" name="rk_level" value="3"><span class="seg-btn">متوسطة <span class="pts">(5)</span></span></label>
         <label><input type="radio" name="rk_level" value="0"><span class="seg-btn">مرتفعة <span class="pts">(8)</span></span></label>
       </div>
+      <div class="criterion-top"><div class="criterion-title">المبرر</div></div>
+      <textarea id="rk_levelNotes" placeholder="اكتب المبرر..."></textarea>
     </div>
     <div class="axis-total"><span class="lbl">إجمالي التأثير والمخاطر (ج + د)</span><span class="val"><span id="rkRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc">/ 16</span></span></div>
   </div>
@@ -477,13 +551,23 @@
 
   // ================= DETAIL =================
   const APPLICANT_LABELS = {
-    reference:'الرقم المرجعي', projectName:'اسم المشروع / الطلب', department:'الإدارة الطالبة',
-    applicantName:'مقدم الطلب', applicantEmail:'البريد الإلكتروني', submitDate:'تاريخ التقديم',
-    requestType:'نوع الطلب', goal:'الهدف من الطلب', strategicAlign:'المواءمة مع الأهداف الاستراتيجية',
-    businessOwnerDetail:'مالك الأعمال (Business Owner)', supportTeamDetail:'الفريق الداعم',
-    readyToParticipateDetail:'الاستعداد للمشاركة', attestation:'إقرار صحة البيانات', savedAt:'تاريخ الاستلام'
-  };
-  const APPLICANT_ORDER = ['reference','projectName','department','applicantName','applicantEmail','submitDate','requestType','goal','strategicAlign','businessOwnerDetail','supportTeamDetail','readyToParticipateDetail','attestation','savedAt'];
+        reference:'الرقم المرجعي', projectName:'اسم المشروع / الطلب', department:'الإدارة الطالبة',
+        applicantName:'مقدم الطلب', applicantEmail:'البريد الإلكتروني', submitDate:'تاريخ التقديم',
+        requestType:'نوع الطلب',
+        hasSupportingDepartments:'هل يوجد إدارات أخرى داعمة أو مستفيدة؟',
+        supportingDepartments:'تفاصيل الإدارات الداعمة',
+        hasExternalBeneficiary:'هل يوجد مستفيد خارجي؟',
+        externalBeneficiaries:'تفاصيل المستفيدين الخارجيين',
+        beneficiariesCount:'عدد المستفيدين',
+        goal:'الهدف من الطلب', strategicAlign:'المواءمة مع الأهداف الاستراتيجية',
+        businessOwnerDetail:'مالك الأعمال (Business Owner)', supportTeamDetail:'الفريق الداعم',
+        readyToParticipateDetail:'الاستعداد للمشاركة', attestation:'إقرار صحة البيانات', savedAt:'تاريخ الاستلام'
+      };
+      const APPLICANT_ORDER = [
+        'reference','projectName','department','applicantName','applicantEmail','submitDate','requestType',
+        'hasSupportingDepartments','supportingDepartments','hasExternalBeneficiary','externalBeneficiaries','beneficiariesCount',
+        'goal','strategicAlign','businessOwnerDetail','supportTeamDetail','readyToParticipateDetail','attestation','savedAt'
+      ];
 
   async function openDetail(file){
     const {data} = await api('get', {query:{file}});
@@ -498,9 +582,18 @@
     $('#applicantData').innerHTML = APPLICANT_ORDER.filter(k=>k in d).map(k=>{
       let v = d[k];
       if(k==='attestation') v = v ? 'نعم، أقرّ بصحة واكتمال البيانات' : 'لا';
-      if((k==='savedAt'||k==='submitDate') && v) v = String(v).slice(0,10);
-      const full = ['goal','strategicAlign','businessOwnerDetail','supportTeamDetail','readyToParticipateDetail'].includes(k);
-      return `<div class="kv ${full?'full':''}"><span class="k">${esc(APPLICANT_LABELS[k]||k)}</span><span class="v">${esc(v)||'—'}</span></div>`;
+          if((k==='savedAt'||k==='submitDate') && v) v = String(v).slice(0,10);
+          const full = [
+            'supportingDepartments',
+            'externalBeneficiaries',
+            'beneficiariesCount',
+            'goal',
+            'strategicAlign',
+            'businessOwnerDetail',
+            'supportTeamDetail',
+            'readyToParticipateDetail'
+          ].includes(k);
+          return `<div class="kv ${full?'full':''}"><span class="k">${esc(APPLICANT_LABELS[k]||k)}</span><span class="v">${esc(v)||'—'}</span></div>`;
     }).join('');
 
     // attachments
@@ -521,16 +614,16 @@
   // ================= EVALUATION (ported scoring) =================
   const WEIGHTS = {op:30, st:20, tc:25, rk:25};
   const MAXRAW  = {op:35, st:25, tc:24, rk:16};
-  const DETAIL_GROUPS = ['op_scope','op_users','op_improve','st_plan','st_one','st_multi','tc_infra1','tc_infra2','tc_infra3','tc_f1','tc_f2','tc_f3','tc_f4','tc_f5','tc_f6','rk_impact','rk_level'];
+  const DETAIL_GROUPS = ['op_scope','op_users','op_improve','automateNotes','st_plan','st_one','stOneNotes','st_multi','stMultiNotes','tc_infra1','tc_infra1Notes','tc_infra2','tc_infra2Notes','tc_infra3','tc_infra3Notes','tc_f1','tc_f1Notes','tc_f2','tc_f2Notes','tc_f3','tc_f3Notes','tc_f4','tc_f4Notes','tc_f5','tc_f5Notes','rk_impact','rk_impactNotes','rk_level','rk_levelNotes'];
 
   // gate
   const gateItems = [
-    "إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة",
-    "وجود مالك أعمال (Business Owner) محدد",
+    "وضوح أهداف الإدارة الطالبة ومواءمتها مع الأهداف الاستراتيجية",
+    "وجود مالك المشروع (Project Owner) محدد",
     "توفر فريق داعم من الإدارة الطالبة",
-    "الاستعداد للمشاركة في التحليل والاختبار والتشغيل",
+    "الاستعداد للمشاركة في مراحل تحليل المتطلبات والاختبارات والإطلاق",
     "توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)",
-    "توفر النماذج والتقارير والوثائق الداعمة ذات العلاقة",
+    "إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات والمعلومات المقدمة",
   ];
   const gateList = $('#gateList');
   gateItems.forEach((txt,i)=>{
@@ -582,7 +675,7 @@
   }
 
   // signoff table
-  const signers = ['الإدارة الطالبة','تقنية المعلومات','اللجنة المختصة / الجهة المخوّلة بالاعتماد'];
+  const signers = ['الإدارة الطالبة','تقنية المعلومات'];
   const tbody = $('#signoffBody');
   signers.forEach((s,i)=>{
     const tr=document.createElement('tr');

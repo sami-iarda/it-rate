@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية</title>
+<title>استبيان تقييم طلبات المشاريع التقنية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -857,7 +857,7 @@
     <div class="lh-titles">
       <img src="./assets/images/logo.png" style="width: 200px;" alt="IARDA">
       <div>
-        <h1>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية</h1>
+        <h1>استبيان تقييم طلبات المشاريع التقنية</h1>
         <p>أداة موحّدة لتقييم طلبات التطوير البرمجي عبر بوابة اكتمال، تقييم أعمال وتقني وصفي، وتقييم نقاطي مرجّح يُحدّد الأولوية وقابلية التطبيق تلقائياً.</p>
       </div>
     </div>
@@ -876,7 +876,7 @@
 
   <!-- ===== SIDEBAR ===== -->
   <nav class="side-nav" id="sideNav">
-    <h4>أقسام النموذج</h4>
+    <h4>أقسام الاستبيان</h4>
     <div id="navItems"></div>
     <div class="side-score-card" style="display:none;">
       <div class="label">النقاط الإجمالية</div>
@@ -922,24 +922,67 @@
           <input type="date" id="f_submitDate">
         </div>
         <div class="field">
-          <label>نوع الطلب <span style="color:var(--red)">*</span></label>
-          <select id="f_reqType">
-            <option value="">اختر النوع</option>
-            <option value="تطوير على نظام قائم">تطوير على نظام قائم</option>
-            <option value="متطلب جديد في نظام قائم">متطلب جديد في نظام قائم</option>
-            <option value="نظام جديد">نظام جديد</option>
-            <option value="تكامل مع أنظمة أخرى">تكامل مع أنظمة أخرى</option>
-          </select>
-        </div>
+              <label>نوع الطلب <span style="color:var(--red)">*</span></label>
+              <select id="f_reqType">
+                <option value="">اختر النوع</option>
+                <option value="تطوير على نظام قائم">تطوير على نظام قائم</option>
+                <option value="متطلب جديد في نظام قائم">متطلب جديد في نظام قائم</option>
+                <option value="نظام جديد">نظام جديد</option>
+                <option value="تكامل مع أنظمة أخرى">تكامل مع أنظمة أخرى</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label>الإدارات الداعمة <span style="color:var(--red)">*</span></label>
+              <div class="hint">هل يوجد إدارات أخرى داعمة للطلب أو مستفيدة منه؟</div>
+              <div class="yn">
+                <label>
+                  <input type="radio" name="f_hasSupportingDepartments" value="نعم" class="conditional-trigger" data-target="supportingDepartmentsWrap">
+                  <span class="yn-btn yes">نعم</span>
+                </label>
+                <label>
+                  <input type="radio" name="f_hasSupportingDepartments" value="لا" class="conditional-trigger" data-target="supportingDepartmentsWrap">
+                  <span class="yn-btn no">لا</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field full conditional-field" id="supportingDepartmentsWrap" style="display:none;">
+              <textarea id="f_supportingDepartments" placeholder="اذكر أسماء الإدارات الداعمة، أدوارها، ومسؤوليات كل إدارة..."></textarea>
+            </div>
+
+            <div class="field full">
+              <label>مستفيد خارجي <span style="color:var(--red)">*</span></label>
+              <div class="hint">هل يوجد مستفيد خارجي للمشروع / الطلب؟</div>
+              <div class="yn">
+                <label>
+                  <input type="radio" name="f_hasExternalBeneficiary" value="نعم" class="conditional-trigger" data-target="externalBeneficiariesWrap">
+                  <span class="yn-btn yes">نعم</span>
+                </label>
+                <label>
+                  <input type="radio" name="f_hasExternalBeneficiary" value="لا" class="conditional-trigger" data-target="externalBeneficiariesWrap">
+                  <span class="yn-btn no">لا</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field full conditional-field" id="externalBeneficiariesWrap" style="display:none;">
+              <textarea id="f_externalBeneficiaries" placeholder="اذكر تفاصيل المستفيدين الخارجيين..."></textarea>
+            </div>
+
+            <div class="field full">
+              <label>عدد المستفيدين <span style="color:var(--red)">*</span></label>
+              <input type="text" id="f_beneficiariesCount" placeholder="مثال: 150 موظف، أو جميع موظفي الإدارة">
+            </div>
       </div>
     </section>
 
-    <!-- SECTION 1: التقييم الوصفي -->
+    <!-- SECTION 1: تفاصيل الطلب -->
     <section class="section" data-section="1">
       <div class="section-head">
         <div>
           <p class="eyebrow">القسم الثاني</p>
-          <h2>التقييم الوصفي</h2>
+          <h2>تفاصيل الطلب</h2>
           <p>تقييم الإدارة الطالبة (Business Assessment) ثم التقييم التقني الوصفي (Technical Assessment).</p>
         </div>
         <span class="section-badge">وصفي — بدون نقاط</span>
@@ -1024,7 +1067,7 @@
 
       <div class="group-title">5. الإقرار بدقة المعلومات</div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">إقرار رسمي من الإدارة الطالبة بصحة واكتمال البيانات المقدمة <span style="color:var(--red)">*</span></div></div>
+        <div class="criterion-top"><div class="criterion-title">أُقرّ أنا مقدم الطلب بصحة واكتمال البيانات والمعلومات المدوّنة في هذا النموذج، وأن جميع المعلومات الواردة فيه دقيقة وتعكس الواقع الفعلي للطلب المقدَّم، ويُعدّ هذا الإقرار موافقةً رسمية على تقديم الطلب. وللإدارة المختصة في حال ثبوت عدم دقة البيانات المقدَّمة اتخاذ الإجراءات اللازمة.<span style="color:var(--red)">*</span></div></div>
         <div class="yn yn-single">
           <label><input type="checkbox" id="ba_attest"><span class="yn-btn yes">نعم، أقرّ بصحة واكتمال البيانات</span></label>
         </div>
@@ -1275,7 +1318,7 @@
   </div>
 </div>
 
-<footer>نموذج تقييم وقبول طلبات المشاريع التطويرية البرمجية — جميع البيانات تُحفظ محلياً في هذه الجلسة فقط.</footer>
+<footer>استبيان تقييم طلبات المشاريع التقنية — جميع البيانات تُحفظ محلياً في هذه الجلسة فقط.</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -1286,7 +1329,7 @@
   // sections (gate / detailed scoring / decision) are for IT review.
   const SECTIONS = [
     {id:0, label:"بيانات الطلب"},
-    {id:1, label:"التقييم الوصفي"},
+    {id:1, label:"تفاصيل الطلب"},
   ];
 
   const WEIGHTS = { op:30, st:20, tc:25, rk:25 };
@@ -1570,30 +1613,52 @@
 
   // ---------- toast ----------
   function showToast(msg){
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+      }
+
+      // ---------- conditional section-0 textarea fields ----------
+      function toggleConditionalField(name){
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        if(!checked) return;
+        
+        const targetId = checked.dataset.target;
+        const wrap = document.getElementById(targetId);
+        if(!wrap) return;
+
+        const textarea = wrap.querySelector('textarea');
+        const show = checked.value === 'نعم';
+
+        wrap.style.display = show ? '' : 'none';
+        if(textarea){
+          textarea.required = show;
+          if(!show) textarea.value = '';
+        }
+      }
+
+      document.querySelectorAll('.conditional-trigger').forEach(el => {
+        el.addEventListener('change', () => {
+          toggleConditionalField(el.name);
+          persist();
+        });
+      });
 
   // ---------- reset ----------
   document.getElementById('btnReset').addEventListener('click', () => {
-    if(!confirm('سيتم مسح جميع البيانات المدخلة في هذه الجلسة. هل تريد المتابعة؟')) return;
-    document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(el => el.value = '');
-    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
-    document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
-    document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
-    document.querySelectorAll('.applic-card').forEach(c => c.classList.remove('checked'));
-    document.querySelectorAll('.reveal-box').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.file-list').forEach(l => l.innerHTML = '');
-    location.reload();
-    return;
-    evalGate();
-    recalcScores();
-    updateMeta();
-    goTo(0);
-    showToast('تمت إعادة تعيين النموذج');
-  });
+        if(!confirm('سيتم مسح جميع البيانات المدخلة في هذه الجلسة. هل تريد المتابعة؟')) return;
+        document.querySelectorAll('input[type=text], input[type=date], input[type=email], textarea').forEach(el => el.value = '');
+        document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+        document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
+        document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+        document.querySelectorAll('.applic-card').forEach(c => c.classList.remove('checked'));
+        document.querySelectorAll('.reveal-box').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.conditional-field').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('.file-list').forEach(l => l.innerHTML = '');
+        location.reload();
+        return;
+      });
 
   document.getElementById('btnPrint').addEventListener('click', () => window.print());
 
@@ -1602,23 +1667,28 @@
   const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
 
   function collectPayload(){
-    return {
-      // Step 1 — بيانات الطلب
-      projectName:    val('f_projectName'),
-      department:     val('f_dept'),
-      applicantName:  val('f_submitter'),
-      applicantEmail: val('f_email'),
-      submitDate:     val('f_submitDate'),
-      requestType:    val('f_reqType'),
-      // Step 2 — التقييم الوصفي
-      goal:            val('q_goal'),
-      strategicAlign:  val('q_strategicAlign'),
-      businessOwnerDetail:      val('ba_owner_detail_text'),
-      supportTeamDetail:        val('ba_team_detail_text'),
-      readyToParticipateDetail: val('ba_ready_detail_text'),
-      attestation: document.getElementById('ba_attest')?.checked || false,
-    };
-  }
+        return {
+          // Step 1 — بيانات الطلب
+          projectName:    val('f_projectName'),
+          department:     val('f_dept'),
+          applicantName:  val('f_submitter'),
+          applicantEmail: val('f_email'),
+          submitDate:     val('f_submitDate'),
+          requestType:    val('f_reqType'),
+          hasSupportingDepartments: radio('f_hasSupportingDepartments'),
+          supportingDepartments:    val('f_supportingDepartments'),
+          hasExternalBeneficiary:   radio('f_hasExternalBeneficiary'),
+          externalBeneficiaries:    val('f_externalBeneficiaries'),
+          beneficiariesCount:       val('f_beneficiariesCount'),
+          // Step 2 — تفاصيل الطلب
+          goal:            val('q_goal'),
+          strategicAlign:  val('q_strategicAlign'),
+          businessOwnerDetail:      val('ba_owner_detail_text'),
+          supportTeamDetail:        val('ba_team_detail_text'),
+          readyToParticipateDetail: val('ba_ready_detail_text'),
+          attestation: document.getElementById('ba_attest')?.checked || false,
+        };
+      }
 
   async function submitForm(){
     const payload = collectPayload();
@@ -1626,16 +1696,25 @@
     // ---- required-field validation ----
     const missing = [];
     if(!payload.projectName)   missing.push('اسم المشروع / الطلب');
-    if(!payload.department)    missing.push('الإدارة الطالبة');
-    if(!payload.applicantName) missing.push('مقدم الطلب');
-    if(!payload.applicantEmail)missing.push('البريد الإلكتروني');
-    if(!payload.submitDate)    missing.push('تاريخ التقديم');
-    if(!payload.requestType)   missing.push('نوع الطلب');
-    if(missing.length){
-      showToast('يرجى تعبئة: ' + missing.join('، '));
-      goTo(0);
-      return;
-    }
+        if(!payload.department)    missing.push('الإدارة الطالبة');
+        if(!payload.applicantName) missing.push('مقدم الطلب');
+        if(!payload.applicantEmail)missing.push('البريد الإلكتروني');
+        if(!payload.submitDate)    missing.push('تاريخ التقديم');
+        if(!payload.requestType)   missing.push('نوع الطلب');
+        if(!payload.hasSupportingDepartments) missing.push('الإدارات الداعمة');
+        if(payload.hasSupportingDepartments === 'نعم' && !payload.supportingDepartments){
+          missing.push('تفاصيل الإدارات الداعمة');
+        }
+        if(!payload.hasExternalBeneficiary) missing.push('مستفيد خارجي');
+        if(payload.hasExternalBeneficiary === 'نعم' && !payload.externalBeneficiaries){
+          missing.push('تفاصيل المستفيدين الخارجيين');
+        }
+        if(!payload.beneficiariesCount) missing.push('عدد المستفيدين');
+        if(missing.length){
+          showToast('يرجى تعبئة: ' + missing.join('، '));
+          goTo(0);
+          return;
+        }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.applicantEmail)){
       showToast('صيغة البريد الإلكتروني غير صحيحة');
       goTo(0);

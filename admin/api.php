@@ -99,19 +99,22 @@ switch ($action) {
             if (!is_array($json)) continue;
             $rel = str_replace('\\', '/', substr((string)realpath($file), strlen($base) + 1));
             $items[] = [
-                'file'           => $rel,
-                'reference'      => $json['reference']      ?? '',
-                'projectName'    => $json['projectName']    ?? '',
-                'department'     => $json['department']     ?? '',
-                'applicantName'  => $json['applicantName']  ?? '',
-                'applicantEmail' => $json['applicantEmail'] ?? '',
-                'requestType'    => $json['requestType']    ?? '',
-                'savedAt'        => $json['savedAt']        ?? '',
-                'adminStatus'    => $json['adminStatus']    ?? 'new',
-                'totalScore'     => $json['evaluation']['total']    ?? null,
-                'priority'       => $json['evaluation']['priority'] ?? '',
-                'resultSentAt'   => $json['resultSentAt']   ?? null,
-            ];
+                    'file'           => $rel,
+                    'reference'      => $json['reference']      ?? '',
+                    'projectName'    => $json['projectName']    ?? '',
+                    'department'     => $json['department']     ?? '',
+                    'applicantName'  => $json['applicantName']  ?? '',
+                    'applicantEmail' => $json['applicantEmail'] ?? '',
+                    'requestType'    => $json['requestType']    ?? '',
+                    'hasSupportingDepartments' => $json['hasSupportingDepartments'] ?? '',
+                    'hasExternalBeneficiary'   => $json['hasExternalBeneficiary']   ?? '',
+                    'beneficiariesCount'       => $json['beneficiariesCount']       ?? '',
+                    'savedAt'        => $json['savedAt']        ?? '',
+                    'adminStatus'    => $json['adminStatus']    ?? 'new',
+                    'totalScore'     => $json['evaluation']['total']    ?? null,
+                    'priority'       => $json['evaluation']['priority'] ?? '',
+                    'resultSentAt'   => $json['resultSentAt']   ?? null,
+                ];
         }
         usort($items, fn($a, $b) => strcmp((string)$b['savedAt'], (string)$a['savedAt'])); // newest first
         out(['ok' => true, 'items' => $items]);
@@ -174,6 +177,30 @@ switch ($action) {
                 $prio  = $eval['priority']      ?? '';
                 $appl  = $eval['applicability'] ?? '';
                 $notes = $eval['committeeNotes']?? '';
+
+                // Detailed notes/justifications
+                $detailNotes = '';
+                $noteLabels = [
+                    'automateNotes' => 'مبرر آتمتة الخدمة',
+                    'stOneNotes'    => 'مبرر دعم هدف استراتيجي واحد',
+                    'stMultiNotes'  => 'مبرر دعم عدة أهداف استراتيجية',
+                    'tc_infra1Notes'=> 'مبرر توفر البنية التحتية',
+                    'tc_infra2Notes'=> 'مبرر توفر الأنظمة الداعمة',
+                    'tc_infra3Notes'=> 'مبرر توفر الموارد التقنية',
+                    'tc_f1Notes'    => 'مبرر التوافق مع المعمارية',
+                    'tc_f2Notes'    => 'مبرر عدم التعارض مع الأنظمة',
+                    'tc_f3Notes'    => 'مبرر إمكانية التنفيذ بالموارد',
+                    'tc_f4Notes'    => 'مبرر توفر البيانات',
+                    'tc_f5Notes'    => 'مبرر إمكانية التكامل',
+                    'rk_impactNotes'=> 'مبرر التأثير على الأنظمة',
+                    'rk_levelNotes' => 'مبرر المخاطر التقنية'
+                ];
+                foreach ($noteLabels as $key => $label) {
+                    if (!empty($eval[$key])) {
+                        $detailNotes .= "<p><strong>$label:</strong><br>" . nl2br(htmlspecialchars((string)$eval[$key])) . "</p>";
+                    }
+                }
+
                 try {
                     $m = makeMailer((string)env('ADMIN_MAIL_FROM_NAME', ''));
                     $m->addAddress($to, (string)($json['applicantName'] ?? ''));
@@ -187,6 +214,7 @@ switch ($action) {
                             <p><strong>إجمالي النقاط المرجّحة:</strong> " . htmlspecialchars((string)$total) . " / 100<br>
                                <strong>الأولوية:</strong> " . htmlspecialchars((string)$prio) . "</p>
                             " . ($notes !== '' ? "<p><strong>ملاحظات وتوصية اللجنة:</strong><br>" . nl2br(htmlspecialchars((string)$notes)) . "</p>" : "") . "
+                            $detailNotes
                             <p>مع خالص التقدير،<br>إدارة تقنية المعلومات</p>
                         </div>";
                     $m->AltBody = "نتيجة تقييم طلبك ({$json['projectName']}): $appl — النقاط: $total/100 — الأولوية: $prio";

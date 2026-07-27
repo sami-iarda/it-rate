@@ -35,10 +35,26 @@ if (!is_array($data)) {
 }
 
 // Required fields for an applicant submission
-foreach (['projectName', 'department', 'applicantName', 'applicantEmail'] as $req) {
+foreach ([
+    'projectName',
+    'department',
+    'applicantName',
+    'applicantEmail',
+    'submitDate',
+    'requestType',
+    'hasSupportingDepartments',
+    'hasExternalBeneficiary',
+    'beneficiariesCount',
+] as $req) {
     if (empty($data[$req])) {
         fail("Missing required field: $req");
     }
+}
+if (($data['hasSupportingDepartments'] ?? '') === 'نعم' && empty($data['supportingDepartments'])) {
+    fail('Missing required field: supportingDepartments');
+}
+if (($data['hasExternalBeneficiary'] ?? '') === 'نعم' && empty($data['externalBeneficiaries'])) {
+    fail('Missing required field: externalBeneficiaries');
 }
 if (!filter_var($data['applicantEmail'], FILTER_VALIDATE_EMAIL)) {
     fail('Invalid applicant email');
@@ -191,15 +207,37 @@ try {
     $m->isHTML(true);
     $m->Subject = 'طلب مشروع جديد - ' . $data['projectName'];
 
+    $fieldLabels = [
+        'reference' => 'الرقم المرجعي',
+        'projectName' => 'اسم المشروع / الطلب',
+        'department' => 'الإدارة الطالبة',
+        'applicantName' => 'مقدم الطلب',
+        'applicantEmail' => 'البريد الإلكتروني لمقدم الطلب',
+        'submitDate' => 'تاريخ التقديم',
+        'requestType' => 'نوع الطلب',
+        'hasSupportingDepartments' => 'هل يوجد إدارات أخرى داعمة أو مستفيدة؟',
+        'supportingDepartments' => 'تفاصيل الإدارات الداعمة',
+        'hasExternalBeneficiary' => 'هل يوجد مستفيد خارجي؟',
+        'externalBeneficiaries' => 'تفاصيل المستفيدين الخارجيين',
+        'beneficiariesCount' => 'عدد المستفيدين',
+        'goal' => 'الهدف من الطلب',
+        'strategicAlign' => 'المواءمة مع الأهداف الاستراتيجية',
+        'businessOwnerDetail' => 'مالك الأعمال',
+        'supportTeamDetail' => 'الفريق الداعم',
+        'readyToParticipateDetail' => 'الاستعداد للمشاركة',
+        'attestation' => 'إقرار صحة واكتمال البيانات',
+    ];
+
     $skip = ['savedAt','storagePath','attachments','sequence'];
     $rows = '';
     foreach ($data as $k => $v) {
         if (in_array($k, $skip, true)) continue;
         if (is_array($v)) $v = json_encode($v, JSON_UNESCAPED_UNICODE);
         if (is_bool($v))  $v = $v ? 'نعم' : 'لا';
+        $label = $fieldLabels[$k] ?? $k;
         $rows .= '<tr>'
             . '<td style="border:1px solid #ddd;padding:6px;font-weight:bold;background:#f6f8fb">'
-            . htmlspecialchars((string)$k) . '</td>'
+            . htmlspecialchars((string)$label) . '</td>'
             . '<td style="border:1px solid #ddd;padding:6px">'
             . nl2br(htmlspecialchars((string)$v)) . '</td></tr>';
     }
