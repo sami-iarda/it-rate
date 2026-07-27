@@ -115,10 +115,10 @@ $seqStr   = str_pad((string)$seq, 2, '0', STR_PAD_LEFT);
 $fileStem = "{$name}_{$seqStr}";
 $relPath  = "requests/$year/$month/$dept/$fileStem.json";
 
-// Reference number: it-proj-[YEAR]-[MONTH]-[DAY]-[SERIAL] (serial resets daily)
+// Reference number: REQ-[YEAR]-[MONTH]-[DAY]-[SERIAL] (serial resets daily)
 $day       = $now->format('d');
 $serial    = nextDailySerial($baseDir, "$year-$month-$day");
-$reference = "it-proj-$year-$month-$day-$serial";
+$reference = "REQ-$year-$month-$day-$serial";
 
 // ---- 4. Save uploaded attachments in the SAME folder ------------------------
 $savedFiles = [];

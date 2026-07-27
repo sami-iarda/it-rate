@@ -862,8 +862,7 @@
       </div>
     </div>
     <div class="lh-meta">
-      رقم النموذج<br><b id="metaRef">REQ-000000</b><br><br>
-      آخر تحديث<br><b id="metaDate">—</b>
+      رقم الطلب<br><b id="metaRef">REQ-000000</b><br><br>
     </div>
   </div>
   <div class="progress-wrap">
@@ -1601,7 +1600,6 @@
   // ---------- meta header ----------
   function updateMeta(){
     document.getElementById('metaRef').textContent = '';
-    document.getElementById('metaDate').textContent = new Date().toLocaleDateString('ar-SA');
   }
 
   // ---------- persistence (in-memory only, per skill rules: no localStorage) ----------
