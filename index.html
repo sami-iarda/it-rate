@@ -1309,7 +1309,6 @@
       <button class="btn btn-ghost" id="btnPrev">→ السابق</button>
       <div style="display:flex; gap:10px;">
         <button class="btn btn-ghost" id="btnReset" title="مسح جميع البيانات">إعادة تعيين</button>
-        <button class="btn btn-ghost" id="btnPrint" title="طباعة / حفظ PDF">طباعة</button>
         <button class="btn btn-primary" id="btnNext">التالي ←</button>
       </div>
     </div>
@@ -1657,8 +1656,6 @@
         location.reload();
         return;
       });
-
-  document.getElementById('btnPrint').addEventListener('click', () => window.print());
 
   // ---------- submit (applicant) ----------
   const val   = id => (document.getElementById(id)?.value || '').trim();
