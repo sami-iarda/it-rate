@@ -604,6 +604,44 @@
     border:none;
     padding:0 2px;
   }
+
+  /* Validation Errors */
+  .field-error {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background-color: var(--red-bg);
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 600;
+    display: none; /* Hidden by default */
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(180, 35, 24, 0.2);
+    animation: slideDown 0.2s ease-out;
+    width: 100%;
+  }
+  .field-error.active {
+    display: flex;
+  }
+  .field-error::before {
+    content: "⚠";
+    font-size: 16px;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .field.has-error input, 
+  .field.has-error select, 
+  .field.has-error textarea,
+  .criterion.has-error input,
+  .criterion.has-error select,
+  .criterion.has-error textarea,
+  .criterion.has-error .file-drop {
+    border-color: var(--red) !important;
+    background-color: #fff9f8;
+  }
   .reveal-box.open{
     max-height:90px;
     opacity:1;
@@ -935,7 +973,7 @@
               <div class="hint">هل يوجد إدارات أخرى داعمة للطلب أو مستفيدة منه؟</div>
               <div class="yn">
                 <label>
-                  <input type="radio" name="f_hasSupportingDepartments" value="نعم" class="conditional-trigger" data-target="supportingDepartmentsWrap">
+                  <input type="radio" id="f_hasSupportingDepartments_yes" name="f_hasSupportingDepartments" value="نعم" class="conditional-trigger" data-target="supportingDepartmentsWrap">
                   <span class="yn-btn yes">نعم</span>
                 </label>
                 <label>
@@ -954,7 +992,7 @@
               <div class="hint">هل يوجد مستفيد خارجي للمشروع / الطلب؟</div>
               <div class="yn">
                 <label>
-                  <input type="radio" name="f_hasExternalBeneficiary" value="نعم" class="conditional-trigger" data-target="externalBeneficiariesWrap">
+                  <input type="radio" id="f_hasExternalBeneficiary_yes" name="f_hasExternalBeneficiary" value="نعم" class="conditional-trigger" data-target="externalBeneficiariesWrap">
                   <span class="yn-btn yes">نعم</span>
                 </label>
                 <label>
@@ -1013,7 +1051,7 @@
         <div class="criterion-top"><div class="criterion-title">الاستعداد للمشاركة في مراحل تحليل المتطلبات والاختبارات والإطلاق <span style="color:var(--red)">*</span></div></div>
         <div class="yn">
           <label>
-            <input type="radio" name="ba_ready_detail_text" value="نعم" class="conditional-trigger">
+            <input type="radio" id="ba_ready_yes" name="ba_ready_detail_text" value="نعم" class="conditional-trigger">
             <span class="yn-btn yes">نعم</span>
           </label>
           <label>
@@ -1670,6 +1708,50 @@
   const val   = id => (document.getElementById(id)?.value || '').trim();
   const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
 
+  function showError(elId, msg) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const container = el.closest('.field') || el.closest('.criterion');
+    if (!container) return;
+    
+    container.classList.add('has-error');
+    let errorDiv = container.querySelector('.field-error');
+    if (!errorDiv) {
+      errorDiv = document.createElement('div');
+      errorDiv.className = 'field-error';
+      container.appendChild(errorDiv);
+    }
+    errorDiv.textContent = msg;
+    errorDiv.classList.add('active');
+
+    // Remove error on input/change
+    const clearError = () => {
+      container.classList.remove('has-error');
+      errorDiv.classList.remove('active');
+      el.removeEventListener('input', clearError);
+      el.removeEventListener('change', clearError);
+    };
+    el.addEventListener('input', clearError);
+    el.addEventListener('change', clearError);
+
+    // Special handling for file inputs (custom event if needed, but 'change' usually works)
+    if (el.type === 'file') {
+      el.addEventListener('change', clearError);
+    }
+
+    // Also remove error when any radio in the same group is clicked
+    if (el.type === 'radio' && el.name) {
+      document.querySelectorAll(`input[name="${el.name}"]`).forEach(radio => {
+        radio.addEventListener('change', clearError);
+      });
+    }
+  }
+
+  function clearAllErrors() {
+    document.querySelectorAll('.field.has-error, .criterion.has-error').forEach(f => f.classList.remove('has-error'));
+    document.querySelectorAll('.field-error').forEach(e => e.classList.remove('active'));
+  }
+
   function collectPayload(){
         return {
           // Step 1 — بيانات الطلب
@@ -1695,54 +1777,70 @@
       }
 
   async function submitForm(){
+    clearAllErrors();
     const payload = collectPayload();
 
     // ---- required-field validation ----
-    const missing = [];
-    if(!payload.projectName)   missing.push('اسم المشروع / الطلب');
-        if(!payload.department)    missing.push('الإدارة الطالبة');
-        if(!payload.applicantName) missing.push('مقدم الطلب');
-        if(!payload.applicantEmail)missing.push('البريد الإلكتروني');
-        if(!payload.submitDate)    missing.push('تاريخ التقديم');
-        if(!payload.requestType)   missing.push('نوع الطلب');
-        if(!payload.hasSupportingDepartments) missing.push('الإدارات الداعمة');
-        if(payload.hasSupportingDepartments === 'نعم' && !payload.supportingDepartments){
-          missing.push('تفاصيل الإدارات الداعمة');
-        }
-        if(!payload.hasExternalBeneficiary) missing.push('مستفيد خارجي');
-        if(payload.hasExternalBeneficiary === 'نعم' && !payload.externalBeneficiaries){
-          missing.push('تفاصيل المستفيدين الخارجيين');
-        }
-        if(!payload.beneficiariesCount) missing.push('عدد المستفيدين');
-        if(missing.length){
-          showToast('يرجى تعبئة: ' + missing.join('، '));
-          goTo(0);
-          return;
-        }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.applicantEmail)){
-      showToast('صيغة البريد الإلكتروني غير صحيحة');
+    const errors0 = [];
+    if(!payload.projectName)    errors0.push({id:'f_projectName', msg:'هذا الحقل مطلوب'});
+    if(!payload.department)     errors0.push({id:'f_dept', msg:'هذا الحقل مطلوب'});
+    if(!payload.applicantName)  errors0.push({id:'f_submitter', msg:'هذا الحقل مطلوب'});
+    if(!payload.applicantEmail) errors0.push({id:'f_email', msg:'هذا الحقل مطلوب'});
+    else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.applicantEmail)){
+      errors0.push({id:'f_email', msg:'صيغة البريد الإلكتروني غير صحيحة'});
+    }
+    if(!payload.submitDate)     errors0.push({id:'f_submitDate', msg:'هذا الحقل مطلوب'});
+    if(!payload.requestType)    errors0.push({id:'f_reqType', msg:'هذا الحقل مطلوب'});
+    
+    if(!payload.hasSupportingDepartments) {
+       // Target the first radio in the group
+       errors0.push({id:'f_hasSupportingDepartments_yes', msg:'هذا الحقل مطلوب'});
+    }
+    if(payload.hasSupportingDepartments === 'نعم' && !payload.supportingDepartments){
+      errors0.push({id:'f_supportingDepartments', msg:'يرجى ذكر تفاصيل الإدارات الداعمة'});
+    }
+    if(!payload.hasExternalBeneficiary) {
+       errors0.push({id:'f_hasExternalBeneficiary_yes', msg:'هذا الحقل مطلوب'});
+    }
+    if(payload.hasExternalBeneficiary === 'نعم' && !payload.externalBeneficiaries){
+      errors0.push({id:'f_externalBeneficiaries', msg:'يرجى ذكر تفاصيل المستفيدين الخارجيين'});
+    }
+    if(!payload.beneficiariesCount) errors0.push({id:'f_beneficiariesCount', msg:'هذا الحقل مطلوب'});
+
+    if(errors0.length){
+      errors0.forEach(err => showError(err.id, err.msg));
       goTo(0);
+      showToast('يرجى تصحيح الأخطاء في القسم الأول');
+      const firstErr = document.querySelector('.section.active .field.has-error');
+      if(firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
 
     // ---- required step-2 fields ----
     const has = key => (UPLOADS[key] || []).length > 0;
-    const missing2 = [];
-    if(!payload.goal)                     missing2.push('الهدف من الطلب');
-    if(!payload.strategicAlign)           missing2.push('المواءمة مع الأهداف الاستراتيجية');
-    if(!payload.businessOwnerDetail)      missing2.push('وجود مالك أعمال (Business Owner)');
-    if(!payload.supportTeamDetail)        missing2.push('توفر فريق داعم من الإدارة الطالبة');
-    if(!payload.readyToParticipateDetail) missing2.push('الاستعداد للمشاركة في التحليل والاختبار والتشغيل');
-    if(!has('ba_asis_file'))              missing2.push('الإجراءات الحالية (As-Is)');
-    if(!has('ba_tobe_file'))              missing2.push('الإجراءات المستهدفة (To-Be)');
-    if(missing2.length){
-      showToast('يرجى استكمال: ' + missing2.join('، '));
+    const errors1 = [];
+    if(!payload.goal)                errors1.push({id:'q_goal', msg:'هذا الحقل مطلوب'});
+    if(!payload.strategicAlign)      errors1.push({id:'q_strategicAlign', msg:'هذا الحقل مطلوب'});
+    if(!payload.businessOwnerDetail) errors1.push({id:'ba_owner_detail_text', msg:'هذا الحقل مطلوب'});
+    if(!payload.supportTeamDetail)   errors1.push({id:'ba_team_detail_text', msg:'هذا الحقل مطلوب'});
+    if(!payload.readyToParticipateDetail) errors1.push({id:'ba_ready_yes', msg:'هذا الحقل مطلوب'});
+    
+    if(!has('ba_asis_file'))  errors1.push({id:'ba_asis_file', msg:'يرجى إرفاق ملف الإجراءات الحالية'});
+    if(!has('ba_tobe_file'))  errors1.push({id:'ba_tobe_file', msg:'يرجى إرفاق ملف الإجراءات المستهدفة'});
+
+    if(errors1.length){
+      errors1.forEach(err => showError(err.id, err.msg));
       goTo(1);
+      showToast('يرجى تصحيح الأخطاء في القسم الثاني');
+      const firstErr = document.querySelector('.section.active .field.has-error, .section.active .criterion.has-error');
+      if(firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
+
     if(!payload.attestation){
-      showToast('يجب الإقرار بصحة واكتمال البيانات المقدمة');
+      showError('ba_attest', 'يجب الإقرار بصحة واكتمال البيانات المقدمة');
       goTo(1);
+      showToast('يرجى تصحيح الأخطاء في القسم الثاني');
       return;
     }
 
