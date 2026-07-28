@@ -986,7 +986,7 @@
         <span class="section-badge">معلومات وصفية</span>
       </div>
 
-      <div class="group-title">أولاً — تقييم الإدارة الطالبة</div>
+      <div class="group-title">1. أهداف الإدارة الطالبة</div>
 
       <div class="field full" style="margin-bottom:16px;">
         <label> الهدف من الطلب <span style="color:var(--red)">*</span></label>
@@ -1000,13 +1000,13 @@
         <textarea id="q_strategicAlign" name="q_strategicAlign" placeholder="اذكر الركائز والأهداف الاستراتيجية المرتبطة بالطلب..."></textarea>
       </div>
 
-      <div class="group-title" style="margin-top:8px;">جاهزية الإدارة المعنية</div>
+      <div class="group-title" style="margin-top:8px;">2. جاهزية الإدارة الطالبة</div>
       <div class="criterion">
         <div class="criterion-top"><div class="criterion-title">مسؤول المشروع (Project Manager) <span style="color:var(--red)">*</span></div></div>
         <input type="text" id="ba_owner_detail_text" class="req-detail" placeholder="اسم مدير المشروع / تفاصيل إضافية">
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">توفر فريق داعم من الإدارة الطالبة <span style="color:var(--red)">*</span></div></div>
+        <div class="criterion-top"><div class="criterion-title">أعضاء الفريق من الإدارة الطالبة <span style="color:var(--red)">*</span></div></div>
         <textarea id="ba_team_detail_text" class="req-detail" placeholder="تفاصيل أعضاء الفريق (الأسماء / الأدوار)"></textarea>
       </div>
       <div class="criterion">
@@ -1735,8 +1735,6 @@
     if(!payload.readyToParticipateDetail) missing2.push('الاستعداد للمشاركة في التحليل والاختبار والتشغيل');
     if(!has('ba_asis_file'))              missing2.push('الإجراءات الحالية (As-Is)');
     if(!has('ba_tobe_file'))              missing2.push('الإجراءات المستهدفة (To-Be)');
-    if(!has('ba_forms_file'))             missing2.push('النماذج والتقارير ذات العلاقة');
-    if(!has('ba_docs_file'))              missing2.push('أي وثائق داعمة للطلب');
     if(missing2.length){
       showToast('يرجى استكمال: ' + missing2.join('، '));
       goTo(1);
