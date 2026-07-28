@@ -79,7 +79,7 @@ function nextDailySerial(string $baseDir, string $dayKey): string {
     }
     $fp = fopen("$dir/$dayKey.seq", 'c+');
     if ($fp === false) {
-        return '01';
+        return '001';
     }
     flock($fp, LOCK_EX);
     $next = ((int)trim((string)fread($fp, 32))) + 1;
@@ -89,7 +89,7 @@ function nextDailySerial(string $baseDir, string $dayKey): string {
     fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
-    return str_pad((string)$next, 2, '0', STR_PAD_LEFT);
+    return str_pad((string)$next, 3, '0', STR_PAD_LEFT);
 }
 
 $now   = new DateTime('now');
@@ -111,14 +111,14 @@ foreach (glob("$deptDir/*.json") ?: [] as $existing) {
         $seq = max($seq, ((int)$m[1]) + 1);
     }
 }
-$seqStr   = str_pad((string)$seq, 2, '0', STR_PAD_LEFT);
+$seqStr   = str_pad((string)$seq, 3, '0', STR_PAD_LEFT);
 $fileStem = "{$name}_{$seqStr}";
 $relPath  = "requests/$year/$month/$dept/$fileStem.json";
 
 // Reference number: REQ-[YEAR]-[MONTH]-[DAY]-[SERIAL] (serial resets daily)
 $day       = $now->format('d');
-$serial    = nextDailySerial($baseDir, "$year-$month-$day");
-$reference = "REQ-$year-$month-$day-$serial";
+$serial    = nextDailySerial($baseDir, "$year-$month");
+$reference = "REQ-$year-$month-$serial";
 
 // ---- 4. Save uploaded attachments in the SAME folder ------------------------
 $savedFiles = [];

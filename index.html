@@ -60,7 +60,7 @@
     z-index:0;
   }
 
-  .mono{font-family:'IBM Plex Mono','IBM Plex Sans Arabic',monospace;}
+  .mono{font-family:'IBM Plex Sans Arabic',monospace;}
 
   /* ============ Header / official letterhead strip ============ */
   .letterhead{
@@ -116,7 +116,7 @@
     margin-top:2px;
   }
   .lh-titles .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:11.5px;
     letter-spacing:.14em;
     color:var(--gold-light);
@@ -154,7 +154,7 @@
   .lh-meta{
     text-align:left;
     direction:ltr;
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:11px;
     color:#cfe8d8;
     background:rgba(255,255,255,.10);
@@ -198,7 +198,7 @@
     text-overflow:ellipsis;
   }
   .progress-step .num{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-weight:700;
     margin-left:5px;
     opacity:.8;
@@ -282,7 +282,7 @@
     font-weight:700;
   }
   .side-score-card .score-num{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:34px;
     font-weight:700;
     color:var(--saudi-dark);
@@ -334,7 +334,7 @@
     border-bottom:1px solid var(--line);
   }
   .section-head .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:11px;
     letter-spacing:.12em;
     color:var(--gold);
@@ -365,7 +365,7 @@
     max-width:620px;
   }
   .section-badge{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:11px;
     background:var(--saudi-light);
     border:1px solid rgba(0,108,53,.2);
@@ -453,7 +453,7 @@
     margin-top:3px;
   }
   .criterion-points{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:12px;
     color:var(--saudi-dark);
     background:var(--saudi-light);
@@ -498,7 +498,7 @@
     box-shadow:0 4px 12px rgba(0,108,53,.25);
   }
   .seg .seg-btn .pts{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:11px;
     opacity:.8;
   }
@@ -647,7 +647,7 @@
   }
   .axis-total .lbl{font-size:13px; color:rgba(255,255,255,.85);}
   .axis-total .val{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:20px;
     font-weight:700;
   }
@@ -709,11 +709,11 @@
   }
   .result-score-card .rsc-label{
     font-size:12px; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--gold-light); margin-bottom:10px; font-family:'IBM Plex Mono',monospace;
+    color:var(--gold-light); margin-bottom:10px; font-family:'IBM Plex Sans Arabic',monospace;
     font-weight:700;
   }
   .result-score-card .rsc-num{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:'IBM Plex Sans Arabic',monospace;
     font-size:64px;
     font-weight:700;
     line-height:1;
@@ -744,7 +744,7 @@
   .bd-row:last-child{margin-bottom:0;}
   .bd-row .bd-top{display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;}
   .bd-row .bd-top b{color:var(--ink);}
-  .bd-row .bd-top span{font-family:'IBM Plex Mono',monospace; color:var(--ink-soft);}
+  .bd-row .bd-top span{font-family:'IBM Plex Sans Arabic',monospace; color:var(--ink-soft);}
   .bd-bar{height:9px; background:var(--paper-2); border-radius:999px; overflow:hidden;}
   .bd-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--saudi), var(--gold)); transition:width .4s ease;}
 
@@ -858,7 +858,6 @@
       <img src="./assets/images/logo.png" style="width: 200px;" alt="IARDA">
       <div>
         <h1>استبيان تقييم طلبات المشاريع التقنية</h1>
-        <p>أداة موحّدة لتقييم طلبات التطوير البرمجي عبر بوابة اكتمال، تقييم أعمال وتقني وصفي، وتقييم نقاطي مرجّح يُحدّد الأولوية وقابلية التطبيق تلقائياً.</p>
       </div>
     </div>
     <div class="lh-meta">
@@ -982,44 +981,54 @@
         <div>
           <p class="eyebrow">القسم الثاني</p>
           <h2>تفاصيل الطلب</h2>
-          <p>تقييم الإدارة الطالبة (Business Assessment) ثم التقييم التقني الوصفي (Technical Assessment).</p>
+          <p>المتطلبات التفصيلية للطلب.</p>
         </div>
-        <span class="section-badge">وصفي — بدون نقاط</span>
+        <span class="section-badge">معلومات وصفية</span>
       </div>
 
       <div class="group-title">أولاً — تقييم الإدارة الطالبة</div>
 
       <div class="field full" style="margin-bottom:16px;">
-        <label>1. الهدف من الطلب <span style="color:var(--red)">*</span></label>
+        <label> الهدف من الطلب <span style="color:var(--red)">*</span></label>
         <div class="hint">توضيح المشكلة الحالية أو الحاجة التشغيلية والأثر المتوقع من تنفيذ الطلب.</div>
         <textarea id="q_goal" placeholder="اكتب وصفاً موجزاً..."></textarea>
       </div>
 
       <div class="field full" style="margin-bottom:20px;">
-        <label>2. المواءمة مع الأهداف الاستراتيجية <span style="color:var(--red)">*</span></label>
-        <div class="hint">مدى ارتباط الطلب بالركائز أو الأهداف الاستراتيجية المعتمدة في الجهة.</div>
-        <textarea id="q_strategicAlign" placeholder="اكتب وصفاً موجزاً..."></textarea>
+        <label> المواءمة مع الأهداف الاستراتيجية <span style="color:var(--red)">*</span></label>
+        <div class="hint">مدى ارتباط الطلب بالركائز والأهداف الاستراتيجية المعتمدة.</div>
+        <textarea id="q_strategicAlign" name="q_strategicAlign" placeholder="اذكر الركائز والأهداف الاستراتيجية المرتبطة بالطلب..."></textarea>
       </div>
 
-      <div class="group-title" style="margin-top:8px;">3. جاهزية الإدارة المعنية</div>
+      <div class="group-title" style="margin-top:8px;">جاهزية الإدارة المعنية</div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">مالك المشروع (Business Owner) <span style="color:var(--red)">*</span></div></div>
-        <input type="text" id="ba_owner_detail_text" class="req-detail" placeholder="اسم مالك الأعمال / تفاصيل إضافية">
+        <div class="criterion-top"><div class="criterion-title">مسؤول المشروع (Project Manager) <span style="color:var(--red)">*</span></div></div>
+        <input type="text" id="ba_owner_detail_text" class="req-detail" placeholder="اسم مدير المشروع / تفاصيل إضافية">
       </div>
       <div class="criterion">
         <div class="criterion-top"><div class="criterion-title">توفر فريق داعم من الإدارة الطالبة <span style="color:var(--red)">*</span></div></div>
-        <input type="text" id="ba_team_detail_text" class="req-detail" placeholder="تفاصيل الفريق الداعم (الأسماء / الأدوار)">
+        <textarea id="ba_team_detail_text" class="req-detail" placeholder="تفاصيل أعضاء الفريق (الأسماء / الأدوار)"></textarea>
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">الاستعداد للمشاركة في التحليل والاختبار والتشغيل <span style="color:var(--red)">*</span></div></div>
-        <input type="text" id="ba_ready_detail_text" class="req-detail" placeholder="تفاصيل الاستعداد للمشاركة">
+        <div class="criterion-top"><div class="criterion-title">الاستعداد للمشاركة في مراحل تحليل المتطلبات والاختبارات والإطلاق <span style="color:var(--red)">*</span></div></div>
+        <div class="yn">
+          <label>
+            <input type="radio" name="ba_ready_detail_text" value="نعم" class="conditional-trigger">
+            <span class="yn-btn yes">نعم</span>
+          </label>
+          <label>
+            <input type="radio" name="ba_ready_detail_text" value="لا" class="conditional-trigger">
+            <span class="yn-btn no">لا</span>
+          </label>
+        </div>
+        <!--<input type="text" id="ba_ready_detail_text" class="req-detail" placeholder="تفاصيل الاستعداد للمشاركة">-->
       </div>
 
 
-      <div class="group-title">4. آلية العمل والوثائق الداعمة</div>
+      <div class="group-title">آلية العمل والوثائق الداعمة</div>
       <div class="criterion">
         <div class="criterion-top"><div class="criterion-title">الإجراءات الحالية (As-Is) <span style="color:var(--red)">*</span></div></div>
-        <div class="hint">ارفق مستنداً يوضّح خطوات وإجراءات العمل المتّبعة حالياً قبل التطوير المطلوب (الوضع الراهن).</div>
+        <div class="hint">ارفق مخطط عمل يوضّح خطوات وإجراءات العمل المتّبعة حالياً بشكل مفصل (الوضع الراهن).</div>
         <div class="file-upload" data-target="ba_asis_file">
           <input type="file" id="ba_asis_file" class="file-input" multiple>
           <label for="ba_asis_file" class="file-drop">
@@ -1031,7 +1040,7 @@
       </div>
       <div class="criterion">
         <div class="criterion-top"><div class="criterion-title">الإجراءات المستهدفة (To-Be) <span style="color:var(--red)">*</span></div></div>
-        <div class="hint">ارفق مستنداً يوضّح خطوات وإجراءات العمل المستهدفة بعد تنفيذ الطلب (الوضع المأمول).</div>
+        <div class="hint">ارفق مخطط عمل يوضّح خطوات وإجراءات العمل المستهدف تنفيذه (الوضع المأمول).</div>
         <div class="file-upload" data-target="ba_tobe_file">
           <input type="file" id="ba_tobe_file" class="file-input" multiple>
           <label for="ba_tobe_file" class="file-drop">
@@ -1042,7 +1051,7 @@
         </div>
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">النماذج والتقارير ذات العلاقة <span style="color:var(--red)">*</span></div></div>
+        <div class="criterion-top"><div class="criterion-title">النماذج والتقارير ذات العلاقة </div></div>
         <div class="file-upload" data-target="ba_forms_file">
           <input type="file" id="ba_forms_file" class="file-input" multiple>
           <label for="ba_forms_file" class="file-drop">
@@ -1053,7 +1062,7 @@
         </div>
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">أي وثائق داعمة للطلب <span style="color:var(--red)">*</span></div></div>
+        <div class="criterion-top"><div class="criterion-title">أي وثائق داعمة للطلب </div></div>
         <div class="file-upload" data-target="ba_docs_file">
           <input type="file" id="ba_docs_file" class="file-input" multiple>
           <label for="ba_docs_file" class="file-drop">
@@ -1064,7 +1073,7 @@
         </div>
       </div>
 
-      <div class="group-title">5. الإقرار بدقة المعلومات</div>
+      <div class="group-title">الإقرار بدقة المعلومات</div>
       <div class="criterion">
         <div class="criterion-top"><div class="criterion-title">أُقرّ أنا مقدم الطلب بصحة واكتمال البيانات والمعلومات المدوّنة في هذا النموذج، وأن جميع المعلومات الواردة فيه دقيقة وتعكس الواقع الفعلي للطلب المقدَّم، ويُعدّ هذا الإقرار موافقةً رسمية على تقديم الطلب. وللإدارة المختصة في حال ثبوت عدم دقة البيانات المقدَّمة اتخاذ الإجراءات اللازمة.<span style="color:var(--red)">*</span></div></div>
         <div class="yn yn-single">
@@ -1114,7 +1123,7 @@
         </select>
       </div>
 
-      <div class="group-title">المحور 1 — الأثر التشغيلي <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 30)</span></div>
+      <div class="group-title">المحور الأول — الأثر التشغيلي <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 35)</span></div>
 
       <div class="criterion">
         <div class="criterion-top">
@@ -1154,10 +1163,10 @@
         <span class="val"><span id="opRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 35</span></span>
       </div>
 
-      <div class="group-title">المحور 2 — المواءمة الاستراتيجية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 20)</span></div>
+      <div class="group-title">المحور الثاني — المواءمة الاستراتيجية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
 
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">ارتباط الطلب بالخطة التشغيلية للإدارة</div></div>
+        <div class="criterion-top"><div class="criterion-title">ارتباط الطلب بالأهداف الاستراتيجية المعتمدة</div></div>
         <div class="seg" data-group="st_plan" data-max="5">
           <label><input type="radio" name="st_plan" value="0"><span class="seg-btn">غير مرتبط <span class="pts">(0)</span></span></label>
           <label><input type="radio" name="st_plan" value="3"><span class="seg-btn">مرتبط جزئياً <span class="pts">(3)</span></span></label>
@@ -1165,14 +1174,14 @@
         </div>
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">دعم هدف استراتيجي أو مبادرة واحدة</div></div>
+        <div class="criterion-top"><div class="criterion-title">دعم هدف استراتيجي / مبادرة واحدة</div></div>
         <div class="yn">
           <label><input type="radio" name="st_one" value="10"><span class="yn-btn yes">نعم</span></label>
           <label><input type="radio" name="st_one" value="0"><span class="yn-btn no">لا</span></label>
         </div>
       </div>
       <div class="criterion">
-        <div class="criterion-top"><div class="criterion-title">دعم عدة أهداف أو مبادرات استراتيجية</div></div>
+        <div class="criterion-top"><div class="criterion-title">دعم عدة أهداف / مبادرات استراتيجية</div></div>
         <div class="yn">
           <label><input type="radio" name="st_multi" value="10"><span class="yn-btn yes">نعم</span></label>
           <label><input type="radio" name="st_multi" value="0"><span class="yn-btn no">لا</span></label>
@@ -1184,7 +1193,7 @@
         <span class="val"><span id="stRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 25</span></span>
       </div>
 
-      <div class="group-title">المحور 3 — الجاهزية والجدوى الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
+      <div class="group-title">المحور الثالثة — الجاهزية الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
 
       <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">أ) جاهزية البنية التحتية</div>
       <div class="criterion">
@@ -1231,7 +1240,7 @@
         <span class="val"><span id="tcRawDisplay">0</span> <span style="font-size:13px;color:#9fb3cc;">/ 24</span></span>
       </div>
 
-      <div class="group-title">المحور 4 — (ج) التأثير على الأنظمة الأخرى / (د) المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 25)</span></div>
+      <div class="group-title">المحور الرابع — (ج) التأثير على الأنظمة الأخرى / (د) المخاطر الفنية <span style="font-weight:400;text-transform:none;font-size:11.5px;">(وزن 16)</span></div>
 
       <div style="font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">(ج) التأثير على الأنظمة الأخرى</div>
       <div class="criterion">
@@ -1680,7 +1689,7 @@
           strategicAlign:  val('q_strategicAlign'),
           businessOwnerDetail:      val('ba_owner_detail_text'),
           supportTeamDetail:        val('ba_team_detail_text'),
-          readyToParticipateDetail: val('ba_ready_detail_text'),
+          readyToParticipateDetail: radio('ba_ready_detail_text'),
           attestation: document.getElementById('ba_attest')?.checked || false,
         };
       }

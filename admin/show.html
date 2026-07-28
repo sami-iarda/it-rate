@@ -485,7 +485,7 @@
         <div>
           <p class="eyebrow">القسم الرابع</p>
           <h2>النتيجة والقرار</h2>
-          <p>ملخص النقاط المرجّحة، الأولوية، قرار قابلية التطبيق، والاعتماد.</p>
+          <p>ملخص النقاط المرجّحة، الأولوية المحسوبة تلقائياً.</p>
         </div>
         <span class="section-badge" id="resultGateStatus">—</span>
       </div>
@@ -500,6 +500,7 @@
       </div>
 
       <div class="group-title">قرار قابلية التطبيق</div>
+      <p>يحدد هذا القرار استناداً لنتيجة محوري "الجاهزية والتوافق الفني" و"المخاطر"، وليس بدلالة النقاط الإجمالية وحدها.</p>
       <div class="applic-grid" id="applicGrid">
         <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق">قابل للتطبيق</label>
         <label class="applic-card"><input type="radio" name="applicability" value="قابل للتطبيق مع متطلبات إضافية">قابل للتطبيق مع متطلبات إضافية</label>
@@ -507,18 +508,14 @@
         <label class="applic-card"><input type="radio" name="applicability" value="غير قابل للتطبيق">غير قابل للتطبيق</label>
       </div>
 
-      <div class="group-title">ملاحظات وتوصية اللجنة</div>
-      <textarea id="committeeNotes" placeholder="اكتب ملاحظات اللجنة وتوصيتها النهائية..."></textarea>
+      <div class="group-title">ملاحظات وتوصية المقيم</div>
+      <textarea id="committeeNotes" placeholder="ملاحظات المقيّم..."></textarea>
 
       <div class="group-title">الاعتماد</div>
       <table class="signoff-table">
-        <thead><tr><th>الجهة</th><th>الاسم</th><th>التوقيع</th><th>التاريخ</th></tr></thead>
+        <thead><tr><th>الأدوار</th><th>الاسم</th><th>التاريخ</th></tr></thead>
         <tbody id="signoffBody"></tbody>
       </table>
-
-      <div class="save-bar" style="position:static; border:none; box-shadow:none; padding:0; background:none;">
-        <label class="chk"><input type="checkbox" id="sendEmail" checked> إرسال نتيجة التقييم إلى بريد مقدم الطلب</label>
-      </div>
     </section>
 
     <!-- NAV BUTTONS -->
@@ -691,7 +688,7 @@
 
   const gateItems = [
     "وضوح أهداف الإدارة الطالبة ومواءمتها مع الأهداف الاستراتيجية",
-    "وجود مالك المشروع (Project Owner) محدد",
+    "وجود مسؤول المشروع (Project Project) محدد",
     "توفر فريق داعم من الإدارة الطالبة",
     "الاستعداد للمشاركة في مراحل تحليل المتطلبات والاختبارات والإطلاق",
     "توضيح الإجراءات الحالية (As-Is) والمستهدفة (To-Be)",
@@ -754,13 +751,12 @@
     return {opRaw,stRaw,tcRaw,rkRaw,opW,stW,tcW,rkW,total,priority};
   }
 
-  const signers = ['الإدارة الطالبة','تقنية المعلومات'];
+  const signers = ['مقيّم تقنية المعلومات','مراجع تقنية المعلومات'];
   const tbody = $('#signoffBody');
   signers.forEach((s,i)=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`<td style="font-size:13px;font-weight:600">${s}</td>
       <td><input type="text" id="sign_name_${i}" placeholder="الاسم"></td>
-      <td><input type="text" id="sign_sig_${i}" placeholder="التوقيع"></td>
       <td><input type="date" id="sign_date_${i}"></td>`;
     tbody.appendChild(tr);
   });
@@ -781,7 +777,6 @@
     $('#q_techClass').value='';
     $('#committeeNotes').value='';
     signers.forEach((_,i)=>{ ['name','sig'].forEach(f=>{const el=$('#sign_'+f+'_'+i); if(el)el.value='';}); const dt=$('#sign_date_'+i); if(dt)dt.value=''; });
-    $('#sendEmail').checked = true;
   }
   function setRadio(name, val){ const el=document.querySelector(`input[name="${name}"][value="${val}"]`); if(el){ el.checked=true; } }
   function populateEvaluation(ev){
@@ -790,7 +785,7 @@
     if(ev.gate && ev.gate.answers){ Object.entries(ev.gate.answers).forEach(([k,v])=>{ if(v) setRadio(k, v); }); }
     if(ev.applicability){ const el=document.querySelector(`input[name="applicability"][value="${ev.applicability}"]`); if(el){ el.checked=true; el.closest('.applic-card').classList.add('checked'); } }
     if(ev.committeeNotes!=null) $('#committeeNotes').value = ev.committeeNotes;
-    if(Array.isArray(ev.signoff)) ev.signoff.forEach((s,i)=>{ const n=$('#sign_name_'+i), g=$('#sign_sig_'+i), dt=$('#sign_date_'+i); if(n)n.value=s.name||''; if(g)g.value=s.sig||''; if(dt)dt.value=s.date||''; });
+    if(Array.isArray(ev.signoff)) ev.signoff.forEach((s,i)=>{ const n=$('#sign_name_'+i), dt=$('#sign_date_'+i); if(n)n.value=s.name||''; if(dt)dt.value=s.date||''; });
   }
 
   function collectEvaluation(){
@@ -798,7 +793,7 @@
     const detail = {}; DETAIL_GROUPS.forEach(g=>{ const el=document.querySelector(`input[name="${g}"]:checked`); detail[g] = el? Number(el.value) : null; });
     const gateAns = {}; gateItems.forEach((_,i)=>{ const el=document.querySelector(`input[name="gate_${i}"]:checked`); gateAns['gate_'+i] = el? el.value : ''; });
     const applicEl = document.querySelector('input[name="applicability"]:checked');
-    const signoff = signers.map((party,i)=>({ party, name:($('#sign_name_'+i)?.value||'').trim(), sig:($('#sign_sig_'+i)?.value||'').trim(), date:$('#sign_date_'+i)?.value||'' }));
+    const signoff = signers.map((party,i)=>({ party, name:($('#sign_name_'+i)?.value||'').trim(), date:$('#sign_date_'+i)?.value||'' }));
     return {
       techClass: $('#q_techClass').value,
       detail,
@@ -819,11 +814,11 @@
     const fd=new FormData();
     fd.append('file', currentFile);
     fd.append('evaluation', JSON.stringify(ev));
-    fd.append('sendEmail', $('#sendEmail').checked ? '1':'0');
+    fd.append('sendEmail', '1');
     const {res,data}=await api('save',{method:'POST',body:fd});
     btn.disabled=false; btn.textContent=orig;
     if(!res.ok || !data.ok){ toast(data.error||'تعذّر الحفظ', true); return; }
-    if($('#sendEmail').checked && !data.emailSent){ toast('تم الحفظ، لكن تعذّر إرسال الإشعار: '+(data.emailError||''), true); }
+    if(!data.emailSent){ toast('تم الحفظ، لكن تعذّر إرسال الإشعار: '+(data.emailError||''), true); }
     else if(data.emailSent){ toast('تم حفظ التقييم وإرسال الإشعار للمتقدّم ✓'); }
     else { toast('تم حفظ التقييم ✓'); }
     setTimeout(()=> window.location.href = 'index.html', 1500);
