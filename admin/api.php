@@ -103,6 +103,7 @@ switch ($action) {
                     'reference'      => $json['reference']      ?? '',
                     'projectName'    => $json['projectName']    ?? '',
                     'department'     => $json['department']     ?? '',
+                    'managerName'    => $json['managerName']    ?? '',
                     'applicantName'  => $json['applicantName']  ?? '',
                     'applicantEmail' => $json['applicantEmail'] ?? '',
                     'requestType'    => $json['requestType']    ?? '',

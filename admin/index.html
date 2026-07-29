@@ -290,7 +290,7 @@
     const rows = allItems.filter(i=>{
       if(fs && i.adminStatus!==fs) return false;
       if(!q) return true;
-      return [i.reference,i.projectName,i.department,i.applicantName,i.applicantEmail].join(' ').toLowerCase().includes(q);
+      return [i.reference,i.projectName,i.department,i.managerName,i.applicantName,i.applicantEmail].join(' ').toLowerCase().includes(q);
     });
     $('#emptyMsg').classList.toggle('hidden', rows.length>0);
     $('#rowsBody').innerHTML = rows.map(i=>`
@@ -298,6 +298,7 @@
         <td class="mono">${esc(i.reference)||'—'}</td>
         <td><b>${esc(i.projectName)||'—'}</b></td>
         <td>${esc(i.department)||'—'}</td>
+        <td>${esc(i.managerName)||'—'}</td>
         <td>${esc(i.applicantName)||'—'}<div class="muted">${esc(i.applicantEmail)}</div></td>
         <td>${esc(i.savedAt? i.savedAt.slice(0,10):'—')}</td>
         <td class="mono">${i.totalScore!=null? i.totalScore+' /100':'—'}</td>

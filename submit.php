@@ -38,6 +38,7 @@ if (!is_array($data)) {
 foreach ([
     'projectName',
     'department',
+    'managerName',
     'applicantName',
     'applicantEmail',
     'submitDate',
@@ -211,6 +212,7 @@ try {
         'reference' => 'الرقم المرجعي',
         'projectName' => 'اسم المشروع / الطلب',
         'department' => 'الإدارة الطالبة',
+        'managerName' => 'مدير الإدارة',
         'applicantName' => 'مقدم الطلب',
         'applicantEmail' => 'البريد الإلكتروني لمقدم الطلب',
         'submitDate' => 'تاريخ التقديم',
