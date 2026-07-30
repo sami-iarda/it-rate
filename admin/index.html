@@ -15,6 +15,8 @@
     --green:#1f7a44; --green-bg:#e6f6ee; --amber:#a8741e; --amber-bg:#fbf0dd; --red:#b42318; --red-bg:#fbeae6;
     --radius:16px; --shadow-1:0 4px 14px rgba(0,76,37,.08); --shadow-2:0 20px 55px rgba(0,76,37,.16);
   }
+  .btn-danger{background:linear-gradient(135deg,var(--red),#8f1d13);color:#fff}
+  .btn-sm{padding:5px 10px;font-size:12px;border-radius:8px}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
@@ -213,7 +215,7 @@
         <thead>
           <tr>
             <th>الرقم المرجعي</th><th>المشروع</th><th>الإدارة</th><th>مقدم الطلب</th>
-            <th>تاريخ التقديم</th><th>النقاط</th><th>الحالة</th><th>الإشعار</th>
+            <th>تاريخ التقديم</th><th>النقاط</th><th>الحالة</th><th>الإشعار</th><th>الإرسال</th><th>العمليات</th>
           </tr>
         </thead>
         <tbody id="rowsBody"></tbody>
@@ -304,6 +306,9 @@
         <td class="mono">${i.totalScore!=null? i.totalScore+' /100':'—'}</td>
         <td><span class="badge b-${i.adminStatus==='evaluated'?'evaluated':'new'}">${statusLabel(i.adminStatus)}</span></td>
         <td>${i.resultSentAt?'<span class="sent">✓ أُرسل</span>':'<span class="muted">—</span>'}</td>
+        <td onclick="event.stopPropagation()">
+          <button class="btn-danger btn-sm" onclick="deleteRequest('${esc(i.file)}')">حذف</button>
+        </td>
       </tr>`).join('');
     $$('#rowsBody tr').forEach(tr=> tr.addEventListener('click', ()=> window.location.href = 'show.html?file=' + encodeURIComponent(tr.dataset.file)));
   }
@@ -311,6 +316,20 @@
   $('#filterStatus').addEventListener('change', renderRows);
   $('#btnRefresh').addEventListener('click', loadList);
 
+  async function deleteRequest(file) {
+    if(!confirm('هل أنت متأكد من حذف هذا الطلب وكافة ملفاته المرفقة؟ لا يمكن التراجع عن هذه العملية.')) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    const {res, data} = await api('delete', {method:'POST', body:fd});
+    if(res.ok && data.ok) {
+      toast('تم حذف الطلب بنجاح');
+      loadList();
+    } else {
+      toast(data.error || 'فشل حذف الطلب', true);
+    }
+  }
+
+  window.deleteRequest = deleteRequest;
 
   // ---------- init ----------
   checkAuth();

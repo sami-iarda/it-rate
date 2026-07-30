@@ -303,6 +303,60 @@ switch ($action) {
         out(['ok' => true, 'emailSent' => $emailError === null, 'emailError' => $emailError, 'data' => $json]);
     }
 
+    // -------------------------------------------------------------- delete
+    case 'delete': {
+        requireAuth();
+        $rel  = (string)($_POST['file'] ?? '');
+        $file = resolveReqFile($rel);
+        
+        $dir  = dirname($file);
+        $stem = basename($file, '.json');
+        
+        // Delete the JSON file and all attachments (they start with the same stem)
+        $filesToDelete = glob("$dir/{$stem}*");
+        if ($filesToDelete) {
+            foreach ($filesToDelete as $f) {
+                if (is_file($f)) {
+                    @unlink($f);
+                }
+            }
+        }
+
+        // Clean up empty parent directories up to REQUESTS_BASE
+        $base = realpath(REQUESTS_BASE);
+        $current = $dir;
+        while ($current && $current !== $base && strncmp($current, $base, strlen($base)) === 0) {
+            // Check if directory is empty (ignoring . and ..)
+            $files = scandir($current);
+            if (count($files) <= 2) { // only . and ..
+                if (@rmdir($current)) {
+                    $current = dirname($current);
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Also check if .serials directory exists and is empty
+        $serialsDir = $base . '/.serials';
+        if (is_dir($serialsDir)) {
+            // Only delete the whole folder if there are no requests left at all
+            $allRequests = glob(REQUESTS_BASE . '/*/*/*/*.json');
+            if (empty($allRequests)) {
+                // Delete all .seq files and then the folder
+                $seqFiles = glob("$serialsDir/*.seq");
+                if ($seqFiles) {
+                    foreach ($seqFiles as $sf) @unlink($sf);
+                }
+                @rmdir($serialsDir);
+            }
+        }
+        
+        out(['ok' => true]);
+    }
+
     default:
         fail('إجراء غير معروف', 404);
 }
