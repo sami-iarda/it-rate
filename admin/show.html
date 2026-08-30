@@ -524,6 +524,7 @@
       <div style="display:flex; gap:10px;">
         <button class="btn btn-primary" id="btnNext">التالي ←</button>
         <button class="btn btn-primary" id="btnReject" style="display:none; background:linear-gradient(135deg,var(--red),#8f1d13); box-shadow:0 6px 16px rgba(179,64,47,.25);">رفض الطلب</button>
+        <button class="btn btn-ghost" id="btnSaveOnly" title="حفظ التقييم بدون إرسال إشعار للمتقدّم" style="display:none;">حفظ التقييم فقط</button>
         <button class="btn btn-ghost" id="btnSave" title="حفظ التقييم واعتماده" style="display:none;">حفظ التقييم واعتماده</button>
       </div>
     </div>
@@ -588,6 +589,7 @@
     $('#btnPrev').disabled = idx === 0;
     $('#btnNext').style.display = idx === SECTIONS.length - 1 ? 'none' : '';
     $('#btnSave').style.display = idx === SECTIONS.length - 1 ? 'inline-flex' : 'none';
+    $('#btnSaveOnly').style.display = idx === SECTIONS.length - 1 ? 'inline-flex' : 'none';
     
     // Auto-expand/scroll logic for mobile if needed, but primarily ensure visibility
     window.scrollTo({top:0, behavior:'smooth'});
@@ -684,7 +686,11 @@
 
   const WEIGHTS = {op:30, st:20, tc:25, rk:25};
   const MAXRAW  = {op:35, st:25, tc:24, rk:16};
-  const DETAIL_GROUPS = ['op_scope','op_users','op_improve','automateNotes','st_plan','st_one','stOneNotes','st_multi','stMultiNotes','tc_infra1','tc_infra1Notes','tc_infra2','tc_infra2Notes','tc_infra3','tc_infra3Notes','tc_f1','tc_f1Notes','tc_f2','tc_f2Notes','tc_f3','tc_f3Notes','tc_f4','tc_f4Notes','tc_f5','tc_f5Notes','rk_impact','rk_impactNotes','rk_level','rk_levelNotes'];
+  // Radio groups (scored) — read by input[name]
+  const DETAIL_GROUPS = ['op_scope','op_users','op_improve','st_plan','st_one','st_multi','tc_infra1','tc_infra2','tc_infra3','tc_f1','tc_f2','tc_f3','tc_f4','tc_f5','rk_impact','rk_level'];
+  // Free-text justifications — read by textarea id (kept at the top level of the
+  // evaluation object, which is where api.php looks for them when building the email)
+  const DETAIL_NOTES = ['automateNotes','stOneNotes','stMultiNotes','tc_infra1Notes','tc_infra2Notes','tc_infra3Notes','tc_f1Notes','tc_f2Notes','tc_f3Notes','tc_f4Notes','tc_f5Notes','rk_impactNotes','rk_levelNotes'];
 
   const gateItems = [
     "وضوح أهداف الإدارة الطالبة ومواءمتها مع الأهداف الاستراتيجية",
@@ -776,12 +782,19 @@
     $$('.applic-card').forEach(c=>c.classList.remove('checked'));
     $('#q_techClass').value='';
     $('#committeeNotes').value='';
+    DETAIL_NOTES.forEach(id=>{ const el=$('#'+id); if(el) el.value=''; });
     signers.forEach((_,i)=>{ ['name','sig'].forEach(f=>{const el=$('#sign_'+f+'_'+i); if(el)el.value='';}); const dt=$('#sign_date_'+i); if(dt)dt.value=''; });
   }
   function setRadio(name, val){ const el=document.querySelector(`input[name="${name}"][value="${val}"]`); if(el){ el.checked=true; } }
   function populateEvaluation(ev){
     if(ev.techClass) $('#q_techClass').value = ev.techClass;
     if(ev.detail) DETAIL_GROUPS.forEach(g=>{ if(ev.detail[g]!=null && ev.detail[g]!=='') setRadio(g, ev.detail[g]); });
+    DETAIL_NOTES.forEach(id=>{
+      const el=$('#'+id); if(!el) return;
+      // top level is where notes live now; fall back to detail{} for older records
+      const v = ev[id] != null ? ev[id] : (ev.detail ? ev.detail[id] : null);
+      if(v!=null) el.value = v;
+    });
     if(ev.gate && ev.gate.answers){ Object.entries(ev.gate.answers).forEach(([k,v])=>{ if(v) setRadio(k, v); }); }
     if(ev.applicability){ const el=document.querySelector(`input[name="applicability"][value="${ev.applicability}"]`); if(el){ el.checked=true; el.closest('.applic-card').classList.add('checked'); } }
     if(ev.committeeNotes!=null) $('#committeeNotes').value = ev.committeeNotes;
@@ -791,12 +804,14 @@
   function collectEvaluation(){
     const scores = recalcScores();
     const detail = {}; DETAIL_GROUPS.forEach(g=>{ const el=document.querySelector(`input[name="${g}"]:checked`); detail[g] = el? Number(el.value) : null; });
+    const notes = {}; DETAIL_NOTES.forEach(id=>{ const el=$('#'+id); notes[id] = el? el.value.trim() : ''; });
     const gateAns = {}; gateItems.forEach((_,i)=>{ const el=document.querySelector(`input[name="gate_${i}"]:checked`); gateAns['gate_'+i] = el? el.value : ''; });
     const applicEl = document.querySelector('input[name="applicability"]:checked');
     const signoff = signers.map((party,i)=>({ party, name:($('#sign_name_'+i)?.value||'').trim(), date:$('#sign_date_'+i)?.value||'' }));
     return {
       techClass: $('#q_techClass').value,
       detail,
+      ...notes,
       gate: { answers: gateAns, status: evalGate() },
       ...scores,
       applicability: applicEl? applicEl.value : '',
@@ -806,23 +821,29 @@
     };
   }
 
-  $('#btnSave').addEventListener('click', async ()=>{
+  async function doSave(btn, sendEmail){
     if(!currentFile) return;
     const ev = collectEvaluation();
-    if(!ev.applicability){ toast('يرجى اختيار قرار قابلية التطبيق', true); return; }
-    const btn=$('#btnSave'); btn.disabled=true; const orig=btn.textContent; btn.textContent='جارٍ الحفظ...';
+    if(sendEmail && !ev.applicability){ toast('يرجى اختيار قرار قابلية التطبيق', true); return; }
+    const buttons=[$('#btnSave'), $('#btnSaveOnly')];
+    buttons.forEach(b=> b.disabled=true);
+    const orig=btn.textContent; btn.textContent='جارٍ الحفظ...';
     const fd=new FormData();
     fd.append('file', currentFile);
     fd.append('evaluation', JSON.stringify(ev));
-    fd.append('sendEmail', '1');
+    fd.append('sendEmail', sendEmail ? '1' : '0');
     const {res,data}=await api('save',{method:'POST',body:fd});
-    btn.disabled=false; btn.textContent=orig;
+    buttons.forEach(b=> b.disabled=false);
+    btn.textContent=orig;
     if(!res.ok || !data.ok){ toast(data.error||'تعذّر الحفظ', true); return; }
-    if(!data.emailSent){ toast('تم الحفظ، لكن تعذّر إرسال الإشعار: '+(data.emailError||''), true); }
-    else if(data.emailSent){ toast('تم حفظ التقييم وإرسال الإشعار للمتقدّم ✓'); }
-    else { toast('تم حفظ التقييم ✓'); }
+    if(!sendEmail){ toast('تم حفظ التقييم بدون إرسال إشعار ✓'); }
+    else if(!data.emailSent){ toast('تم الحفظ، لكن تعذّر إرسال الإشعار: '+(data.emailError||''), true); }
+    else { toast('تم حفظ التقييم وإرسال الإشعار للمتقدّم ✓'); }
     setTimeout(()=> window.location.href = 'index.html', 1500);
-  });
+  }
+
+  $('#btnSave').addEventListener('click', ()=> doSave($('#btnSave'), true));
+  $('#btnSaveOnly').addEventListener('click', ()=> doSave($('#btnSaveOnly'), false));
 
   $('#btnReject').addEventListener('click', async ()=>{
     if(!currentFile) return;
